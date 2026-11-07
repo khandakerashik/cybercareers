@@ -1,0 +1,113 @@
+name: Collect, encrypt & publish
+
+# One workflow does everything so plaintext never reaches the repository or Pages:
+#   restore encrypted state -> decrypt in the runner -> collect -> re-encrypt -> deploy.
+# Repository → Settings → Pages → Source must be "GitHub Actions".
+on:
+  workflow_dispatch:
+    inputs:
+      collect:
+        description: 'Run a collection scan before publishing'
+        type: boolean
+        default: true
+  schedule:
+    - cron: '12 * * * *'   # hourly, best effort
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'styles.css'
+      - 'app.js'
+      - 'auth.js'
+      - 'assets/**'
+      - 'config/users.json'
+      - 'vault/**'
+      - '.github/workflows/pages.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cybercareers-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      CC_MASTER_KEY: ${{ secrets.CC_MASTER_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Require the vault master key
+        run: |
+          if [ -z "$CC_MASTER_KEY" ]; then
+            echo "::error::Add the CC_MASTER_KEY repository secret (python -m vault init prints it)."; exit 1
+          fi
+      - name: Restore latest encrypted state (hourly cache)
+        uses: actions/cache/restore@v4
+        with:
+          path: encrypted
+          key: cc-vault-${{ github.run_id }}
+          restore-keys: cc-vault-
+      - name: Decrypt collector state inside the runner
+        run: python -m vault unseal
+      - name: Optional JavaScript rendering support
+        if: vars.RENDER_JS == '1'
+        run: pip install playwright && python -m playwright install --with-deps chromium
+      - name: Collect cybersecurity vacancies
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.collect)
+        env:
+          MAX_FEED_SEARCHES: '6'
+          MAX_CAREER_PAGES: '250'
+          MAX_DETAIL_PAGES: '450'
+          MAX_JOB_AGE_DAYS: '45'
+          COLLECT_WORKERS: '8'
+          RENDER_JS: ${{ vars.RENDER_JS }}
+          ALERT_IMAP_HOST: ${{ vars.ALERT_IMAP_HOST }}
+          ALERT_IMAP_FOLDER: ${{ vars.ALERT_IMAP_FOLDER }}
+          ALERT_IMAP_USER: ${{ secrets.ALERT_IMAP_USER }}
+          ALERT_IMAP_PASSWORD: ${{ secrets.ALERT_IMAP_PASSWORD }}
+          BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
+          JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+        # Output is discarded: Actions logs of a public repository are public.
+        run: python -m collector.collect > /dev/null
+      - name: Test
+        run: python -m pytest -q -p no:cacheprovider
+      - name: Encrypt (fresh data key, per-user wrapped keys)
+        id: seal
+        run: python -m vault seal
+      - name: Save encrypted state for the next hour
+        uses: actions/cache/save@v4
+        with:
+          path: encrypted
+          key: cc-vault-${{ github.run_id }}
+      - name: Commit encrypted state when the job list changed (durable backup)
+        if: steps.seal.outputs.jobs_changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add encrypted/
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore: update encrypted job vault'
+            git push
+          fi
+      - name: Build static site (ciphertext only)
+        run: python -m vault build-site --out _site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
