@@ -50,6 +50,8 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Test (code only; never depends on live data)
+        run: python -m pytest -q -p no:cacheprovider
       - name: Require the vault master key
         run: |
           if [ -z "$CC_MASTER_KEY" ]; then
@@ -83,8 +85,6 @@ jobs:
           JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
         # Output is discarded: Actions logs of a public repository are public.
         run: python -m collector.collect > /dev/null
-      - name: Test
-        run: python -m pytest -q -p no:cacheprovider
       - name: Encrypt (fresh data key, per-user wrapped keys)
         id: seal
         run: python -m vault seal
