@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-07T18:06:23+00:00",
+ "sealed_at": "2026-11-07T19:06:27+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,11 +10,11 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 329
+   "bytes": 330
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 111496
+   "bytes": 114385
   },
   "progress.json": {
    "path": "progress.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 9330
+   "bytes": 10108
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5224
+   "bytes": 5263
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "03c72d9f6241f50f7485e08dd4d5fbc4",
-  "jobs.json": "78a61f9ab4d2bb245c69abf2b678002a",
-  "progress.json": "ac313ddfae91560772e5f248abf5ea08",
+  "feed_state.json": "b289bc4ac4fea49eda40140f01b2e86b",
+  "jobs.json": "07a6a60a5a2b93fe06b1566e07bd92cc",
+  "progress.json": "ff0fef86e297345c6c4f173728aa21fe",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "5e23d8d2a219e5f477d413d33f185824",
+  "source_health.json": "3273ed59e447383cb164395dead508e5",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "92c3b8a430311dc979b4ced2611aad95"
+  "status.json": "fa496f604f831ea5a689479975fa81bf"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "IAAAzgplPEMjRL3D",
-   "ct": "l7aCg0No92SHzjal3YkxZZVeWIbb6OYi1psAP50O/NR2GKZYNFIkqJgAUlj2dpOl"
+   "iv": "D/5xaBhb3q+TJ9bG",
+   "ct": "fedmeFD1ZyUo7ceHSREzcELsyl7HE3IBRTHXrR+RiDgxyoifrounvpVgEPF+ly80"
   }
  },
  "ci": {
-  "iv": "rDe3mEovTRCrt0Yf",
-  "ct": "cbZx6f5NIUq86sF+YjLcfjuWLVSUIggAk0akFj0+8Cx2WJjb9zFnMfXJFEFz9ZrH"
+  "iv": "d2YHueYCF2FfD84r",
+  "ct": "Er8OEt1JEZh/ATLGGYpFA96kteRVY5sIrteYacxWANoTL0aDTbGTEInUBLN+GgiA"
  }
 }
