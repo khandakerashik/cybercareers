@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-07T19:06:27+00:00",
+ "sealed_at": "2026-11-07T20:06:19+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 114385
+   "bytes": 114384
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 289
+   "bytes": 287
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 10108
+   "bytes": 10956
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5263
+   "bytes": 5210
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
   "feed_state.json": "b289bc4ac4fea49eda40140f01b2e86b",
-  "jobs.json": "07a6a60a5a2b93fe06b1566e07bd92cc",
-  "progress.json": "ff0fef86e297345c6c4f173728aa21fe",
+  "jobs.json": "e7af9c2c54ba5563f6a1e9c9100ef7dd",
+  "progress.json": "4e78ffddd28901ed0a560983146aec30",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "3273ed59e447383cb164395dead508e5",
+  "source_health.json": "0937238b75e6d08f0b6f8bdf0b00c239",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "fa496f604f831ea5a689479975fa81bf"
+  "status.json": "b6eb92e61e95d51fea3bccb5cae3dc78"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "D/5xaBhb3q+TJ9bG",
-   "ct": "fedmeFD1ZyUo7ceHSREzcELsyl7HE3IBRTHXrR+RiDgxyoifrounvpVgEPF+ly80"
+   "iv": "gpx/UclbOUi+uFVw",
+   "ct": "K2bskIVQssS9rXetesMv4zJh1KY0YeEaxdjaMDS5G1Tqo9UUFAEQYhcRBcGgDqNm"
   }
  },
  "ci": {
-  "iv": "d2YHueYCF2FfD84r",
-  "ct": "Er8OEt1JEZh/ATLGGYpFA96kteRVY5sIrteYacxWANoTL0aDTbGTEInUBLN+GgiA"
+  "iv": "feQ9jAG9B9xVZOvc",
+  "ct": "t7iqLKRKetjBsQKWXiX6gNFpQ7hs1Mgi3qMQvJS60lqC3zfMDgyGDvTF4B09++A/"
  }
 }
