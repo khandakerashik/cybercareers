@@ -788,6 +788,7 @@ def parse_pdf_circular(content: bytes, url: str, company: str, sources: list[dic
     inventing titles from a general company address/boilerplate.
     """
     from pypdf import PdfReader
+    logging.getLogger('pypdf').setLevel(logging.ERROR)
     try:
         reader = PdfReader(io.BytesIO(content), strict=False)
         if len(reader.pages)>24 or not len(reader.pages):return []

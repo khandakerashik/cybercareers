@@ -21,7 +21,7 @@ def test_source_data():
 
 
 def test_job_data():
-    data=json.loads((ROOT/'data/jobs.json').read_text())
+    data=json.loads((ROOT/'tests/fixtures/seed_jobs.json').read_text())
     assert len(data['jobs'])>=1
     for j in data['jobs']:
         for field in ('id','title','company','skills','source','source_url','apply_url','description_status','company_sector'):

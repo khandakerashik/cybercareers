@@ -136,7 +136,7 @@ def test_recruitment_rss_parses_only_relevant_titles_on_official_domain():
 
 
 def test_seeded_worldwide_leads_have_original_publisher_urls():
-    content=c.get_json(c.ROOT/'data/jobs.json',{})
+    content=c.get_json(c.ROOT/'tests/fixtures/seed_jobs.json',{})
     jobs=[j for j in content.get('jobs',[]) if j.get('region')=='International']
     assert len(jobs)>=10
     assert all(j.get('eligibility_confidence')=='confirmed' for j in jobs)

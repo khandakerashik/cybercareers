@@ -45,7 +45,7 @@ def test_attribution_preserved_during_duplicate_merge():
 
 
 def test_seeded_job_database_has_publisher_identity_and_original_url():
-    payload = json.loads((ROOT/'data/jobs.json').read_text(encoding='utf-8'))
+    payload = json.loads((ROOT/'tests/fixtures/seed_jobs.json').read_text(encoding='utf-8'))
     assert len(payload['jobs']) >= 20
     for job in payload['jobs']:
         assert job['source'] and job['source_name'] and job['source_domain']
