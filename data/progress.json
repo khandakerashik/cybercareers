@@ -1,0 +1,20 @@
+{
+  "running": false,
+  "started_at": "2026-11-07T14:51:31+00:00",
+  "finished_at": "2026-11-07T14:57:31+00:00",
+  "total": 162,
+  "checked": 37,
+  "remaining": 125,
+  "succeeded": 24,
+  "failed": 7,
+  "partial": 6,
+  "skipped": 0,
+  "jobs_found_this_run": 144,
+  "new_jobs": 47,
+  "current_source": "Failed",
+  "last_checked": "Midland Bank",
+  "phase": "error",
+  "errors": [
+    "PermissionError: collection interrupted"
+  ]
+}

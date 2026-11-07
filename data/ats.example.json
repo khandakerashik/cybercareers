@@ -1,0 +1,52 @@
+[
+  {
+    "provider": "greenhouse",
+    "board_token": "YOUR_GREENHOUSE_BOARD_TOKEN",
+    "company": "Example Employer"
+  },
+  {
+    "provider": "lever",
+    "board_token": "YOUR_LEVER_ACCOUNT_NAME",
+    "company": "Example Employer"
+  },
+  {
+    "provider": "ashby",
+    "board_token": "YOUR_ASHBY_BOARD_NAME",
+    "company": "Example Employer"
+  },
+  {
+    "provider": "workable",
+    "board_token": "ACCOUNT (from apply.workable.com/ACCOUNT)",
+    "company": "Example"
+  },
+  {
+    "provider": "smartrecruiters",
+    "board_token": "CompanyId (from jobs.smartrecruiters.com/CompanyId)",
+    "company": "Example"
+  },
+  {
+    "provider": "workday",
+    "board_token": "tenant|wd3|SiteName (from tenant.wd3.myworkdayjobs.com/SiteName)",
+    "company": "Example"
+  },
+  {
+    "provider": "recruitee",
+    "board_token": "subdomain",
+    "company": "Example"
+  },
+  {
+    "provider": "bamboohr",
+    "board_token": "subdomain",
+    "company": "Example"
+  },
+  {
+    "provider": "personio",
+    "board_token": "subdomain",
+    "company": "Example"
+  },
+  {
+    "provider": "breezy",
+    "board_token": "subdomain",
+    "company": "Example"
+  }
+]

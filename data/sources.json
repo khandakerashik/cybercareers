@@ -1,0 +1,1956 @@
+[
+  {
+    "id": "job portal-001",
+    "name": "LinkedIn Jobs",
+    "sector": "Job portal",
+    "website": "https://www.linkedin.com/jobs/search/?keywords=information%20security&location=Bangladesh",
+    "careers_url": "",
+    "domain": "linkedin.com",
+    "mode": "restricted",
+    "notes": "Source links only. LinkedIn restricts unauthorized automated collection; use employer site or authorized ATS for details."
+  },
+  {
+    "id": "job portal-002",
+    "name": "Bdjobs",
+    "sector": "Job portal",
+    "website": "https://bdjobs.com",
+    "careers_url": "",
+    "domain": "bdjobs.com",
+    "mode": "index",
+    "notes": "Public employer careers hosted on Bdjobs may be linked from their official sites; direct portal automation only if permission is available."
+  },
+  {
+    "id": "job portal-003",
+    "name": "Indeed Bangladesh",
+    "sector": "Job portal",
+    "website": "https://bd.indeed.com",
+    "careers_url": "",
+    "domain": "bd.indeed.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-004",
+    "name": "Glassdoor",
+    "sector": "Job portal",
+    "website": "https://www.glassdoor.com/Job/bangladesh-jobs-SRCH_IL.0,10_IN27.htm",
+    "careers_url": "",
+    "domain": "glassdoor.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-005",
+    "name": "Careerjet Bangladesh",
+    "sector": "Job portal",
+    "website": "https://www.careerjet.com.bd",
+    "careers_url": "",
+    "domain": "careerjet.com.bd",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-006",
+    "name": "Jora Bangladesh",
+    "sector": "Job portal",
+    "website": "https://bd.jora.com",
+    "careers_url": "",
+    "domain": "bd.jora.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-007",
+    "name": "Chakri.com",
+    "sector": "Job portal",
+    "website": "https://chakri.com",
+    "careers_url": "",
+    "domain": "chakri.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-008",
+    "name": "Skill Jobs",
+    "sector": "Job portal",
+    "website": "https://skill.jobs",
+    "careers_url": "",
+    "domain": "skill.jobs",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-009",
+    "name": "Nextjobz",
+    "sector": "Job portal",
+    "website": "https://nextjobz.com",
+    "careers_url": "",
+    "domain": "nextjobz.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-010",
+    "name": "Job.com.bd",
+    "sector": "Job portal",
+    "website": "https://job.com.bd",
+    "careers_url": "",
+    "domain": "job.com.bd",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-011",
+    "name": "Jobs.com.bd",
+    "sector": "Job portal",
+    "website": "https://jobs.com.bd",
+    "careers_url": "",
+    "domain": "jobs.com.bd",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-012",
+    "name": "Dohaj",
+    "sector": "Job portal",
+    "website": "https://dohaj.com",
+    "careers_url": "",
+    "domain": "dohaj.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-013",
+    "name": "Shomvob",
+    "sector": "Job portal",
+    "website": "https://shomvob.com",
+    "careers_url": "",
+    "domain": "shomvob.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-014",
+    "name": "Job Lagbe",
+    "sector": "Job portal",
+    "website": "https://joblagbe.online/jobs?category=Cybersecurity",
+    "careers_url": "",
+    "domain": "joblagbe.online",
+    "mode": "index",
+    "notes": "Third-party aggregator, link discovery only."
+  },
+  {
+    "id": "job portal-015",
+    "name": "Prothom Alo Chakri",
+    "sector": "Job portal",
+    "website": "https://www.prothomalo.com/chakri",
+    "careers_url": "",
+    "domain": "prothomalo.com",
+    "mode": "index",
+    "notes": "Index discovery only."
+  },
+  {
+    "id": "job portal-016",
+    "name": "AllJobs by Teletalk",
+    "sector": "Job portal",
+    "website": "https://alljobs.teletalk.com.bd",
+    "careers_url": "",
+    "domain": "alljobs.teletalk.com.bd",
+    "mode": "index",
+    "notes": "Official public jobs portal."
+  },
+  {
+    "id": "job portal-018",
+    "name": "BD Government Jobs",
+    "sector": "Job portal",
+    "website": "https://www.bpsc.gov.bd",
+    "careers_url": "",
+    "domain": "bpsc.gov.bd",
+    "mode": "index",
+    "notes": "Govt circulars discovery only."
+  },
+  {
+    "id": "banking-020",
+    "name": "Sonali Bank",
+    "sector": "Banking",
+    "website": "https://www.sonalibank.com.bd",
+    "careers_url": "",
+    "domain": "sonalibank.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-021",
+    "name": "Janata Bank",
+    "sector": "Banking",
+    "website": "https://jb.com.bd/",
+    "careers_url": "",
+    "domain": "janatabank-bd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "banking-022",
+    "name": "Agrani Bank",
+    "sector": "Banking",
+    "website": "https://www.agranibank.org",
+    "careers_url": "https://www.agranibank.org/index.php/home/career",
+    "domain": "agranibank.org",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "banking-023",
+    "name": "Rupali Bank",
+    "sector": "Banking",
+    "website": "https://www.rupalibank.org",
+    "careers_url": "",
+    "domain": "rupalibank.org",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-024",
+    "name": "Bangladesh Krishi Bank",
+    "sector": "Banking",
+    "website": "https://krishibank.gov.bd/",
+    "careers_url": "https://krishibank.gov.bd/pages/notification-circulars",
+    "domain": "krishibank.gov.bd",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally",
+    "career_alternates": [
+      "https://bkb.teletalk.com.bd/posts.php"
+    ]
+  },
+  {
+    "id": "banking-025",
+    "name": "Rajshahi Krishi Unnayan Bank",
+    "sector": "Banking",
+    "website": "https://www.rakub.org.bd",
+    "careers_url": "https://www.rakub.org.bd/recruitment.php",
+    "domain": "www.rakub.org.bd",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "banking-026",
+    "name": "Bangladesh Development Bank",
+    "sector": "Banking",
+    "website": "https://www.bdbl.com.bd",
+    "careers_url": "",
+    "domain": "bdbl.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-027",
+    "name": "BASIC Bank",
+    "sector": "Banking",
+    "website": "https://www.basicbanklimited.com.bd/",
+    "careers_url": "https://www.basicbanklimited.com.bd/index.php/en/careers",
+    "domain": "www.basicbanklimited.com.bd",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "banking-028",
+    "name": "Karmasangsthan Bank",
+    "sector": "Banking",
+    "website": "https://www.karmasangsthanbank.gov.bd",
+    "careers_url": "",
+    "domain": "karmasangsthanbank.gov.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-029",
+    "name": "Ansar VDP Unnayan Bank",
+    "sector": "Banking",
+    "website": "https://ansarvdpbank.gov.bd",
+    "careers_url": "",
+    "domain": "ansarvdpbank.gov.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-030",
+    "name": "AB Bank",
+    "sector": "Banking",
+    "website": "https://www.abbl.com",
+    "careers_url": "https://career.abbl.com/",
+    "domain": "abbl.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "career_alternates": [
+      "https://abbl.com/Career/"
+    ]
+  },
+  {
+    "id": "banking-031",
+    "name": "Al-Arafah Islami Bank",
+    "sector": "Banking",
+    "website": "https://www.aibl.com.bd",
+    "careers_url": "https://www.aibl.com.bd/career/",
+    "domain": "www.aibl.com.bd",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally",
+    "career_alternates": [
+      "https://career.aibl.com.bd/"
+    ]
+  },
+  {
+    "id": "banking-032",
+    "name": "Bangladesh Commerce Bank",
+    "sector": "Banking",
+    "website": "https://www.bcblbd.com",
+    "careers_url": "",
+    "domain": "bcblbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-033",
+    "name": "Bank Asia",
+    "sector": "Banking",
+    "website": "https://www.bankasia-bd.com",
+    "careers_url": "https://www.bankasia-bd.com/career/",
+    "domain": "bankasia-bd.com",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "banking-034",
+    "name": "BRAC Bank",
+    "sector": "Banking",
+    "website": "https://www.bracbank.com",
+    "careers_url": "https://bracbank.taleo.net/careersection/external/jobsearch.ftl?lang=en",
+    "domain": "bracbank.taleo.net",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-035",
+    "name": "Dhaka Bank",
+    "sector": "Banking",
+    "website": "https://www.dhakabank.com.bd",
+    "careers_url": "https://dhakabank.com.bd/human-resources/",
+    "domain": "dhakabank.com.bd",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "banking-036",
+    "name": "Dutch-Bangla Bank",
+    "sector": "Banking",
+    "website": "https://www.dutchbanglabank.com",
+    "careers_url": "",
+    "domain": "dutchbanglabank.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-037",
+    "name": "Eastern Bank",
+    "sector": "Banking",
+    "website": "https://www.ebl.com.bd",
+    "careers_url": "https://ebl.bdjobs.com/",
+    "domain": "ebl.bdjobs.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-038",
+    "name": "EXIM Bank",
+    "sector": "Banking",
+    "website": "https://www.eximbankbd.com",
+    "careers_url": "",
+    "domain": "eximbankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-039",
+    "name": "First Security Islami Bank",
+    "sector": "Banking",
+    "website": "https://www.fsiblbd.com",
+    "careers_url": "",
+    "domain": "fsiblbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-040",
+    "name": "ICB Islamic Bank",
+    "sector": "Banking",
+    "website": "https://www.icbislamic-bd.com",
+    "careers_url": "",
+    "domain": "icbislamic-bd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-041",
+    "name": "IFIC Bank",
+    "sector": "Banking",
+    "website": "https://www.ificbank.com.bd",
+    "careers_url": "https://ificbank.com.bd/career",
+    "domain": "ificbank.com.bd",
+    "mode": "career",
+    "notes": "Official career page; fetched only when robots and site terms permit."
+  },
+  {
+    "id": "banking-042",
+    "name": "Islami Bank Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.islamibankbd.com",
+    "careers_url": "",
+    "domain": "islamibankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-043",
+    "name": "Jamuna Bank",
+    "sector": "Banking",
+    "website": "https://www.jamunabankbd.com",
+    "careers_url": "",
+    "domain": "jamunabankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-044",
+    "name": "Meghna Bank",
+    "sector": "Banking",
+    "website": "https://www.meghnabank.com.bd",
+    "careers_url": "",
+    "domain": "meghnabank.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-045",
+    "name": "Mercantile Bank",
+    "sector": "Banking",
+    "website": "https://www.mblbd.com",
+    "careers_url": "",
+    "domain": "mblbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-046",
+    "name": "Midland Bank",
+    "sector": "Banking",
+    "website": "https://www.midlandbankbd.net",
+    "careers_url": "",
+    "domain": "midlandbankbd.net",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-047",
+    "name": "Mutual Trust Bank",
+    "sector": "Banking",
+    "website": "https://www.mutualtrustbank.com",
+    "careers_url": "",
+    "domain": "mutualtrustbank.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-048",
+    "name": "National Bank",
+    "sector": "Banking",
+    "website": "https://www.nblbd.com",
+    "careers_url": "",
+    "domain": "nblbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-049",
+    "name": "NRB Bank",
+    "sector": "Banking",
+    "website": "https://www.nrbbankbd.com",
+    "careers_url": "",
+    "domain": "nrbbankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-050",
+    "name": "NCC Bank",
+    "sector": "Banking",
+    "website": "https://www.nccbank.com.bd",
+    "careers_url": "https://www.nccbank.com.bd/Career",
+    "domain": "www.nccbank.com.bd",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "banking-051",
+    "name": "NRBC Bank",
+    "sector": "Banking",
+    "website": "https://www.nrbcommercialbank.com",
+    "careers_url": "",
+    "domain": "nrbcommercialbank.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-052",
+    "name": "ONE Bank",
+    "sector": "Banking",
+    "website": "https://www.onebank.com.bd",
+    "careers_url": "",
+    "domain": "onebank.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-053",
+    "name": "Premier Bank",
+    "sector": "Banking",
+    "website": "https://thepremierbankplc.com/",
+    "careers_url": "https://thepremierbankplc.com/career/",
+    "domain": "thepremierbankplc.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1 publicly listed recruitment source."
+  },
+  {
+    "id": "banking-054",
+    "name": "Prime Bank",
+    "sector": "Banking",
+    "website": "https://www.primebank.com.bd",
+    "careers_url": "https://www.primebank.com.bd/career",
+    "domain": "primebank.com.bd",
+    "mode": "career",
+    "notes": "Official career page; fetched only when robots and site terms permit."
+  },
+  {
+    "id": "banking-055",
+    "name": "Pubali Bank",
+    "sector": "Banking",
+    "website": "https://www.pubalibangla.com",
+    "careers_url": "https://www.pubalibangla.com/career/",
+    "domain": "www.pubalibangla.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "banking-056",
+    "name": "Shahjalal Islami Bank",
+    "sector": "Banking",
+    "website": "https://www.sjiblbd.com",
+    "careers_url": "",
+    "domain": "sjiblbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-057",
+    "name": "Social Islami Bank",
+    "sector": "Banking",
+    "website": "https://www.siblbd.com",
+    "careers_url": "",
+    "domain": "siblbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-058",
+    "name": "South Bangla Agriculture & Commerce Bank",
+    "sector": "Banking",
+    "website": "https://www.sbacbank.com",
+    "careers_url": "https://career.sbacdigital.com/",
+    "domain": "career.sbacdigital.com",
+    "mode": "restricted",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1 publicly listed recruitment source. Login required for vacancies: link-only, excluded from unattended collection."
+  },
+  {
+    "id": "banking-059",
+    "name": "Southeast Bank",
+    "sector": "Banking",
+    "website": "https://www.southeastbank.com.bd",
+    "careers_url": "",
+    "domain": "southeastbank.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-060",
+    "name": "Standard Bank",
+    "sector": "Banking",
+    "website": "https://www.standardbankbd.com",
+    "careers_url": "",
+    "domain": "standardbankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-061",
+    "name": "City Bank",
+    "sector": "Banking",
+    "website": "https://www.citybankplc.com",
+    "careers_url": "https://www.citybankplc.com/p/careers",
+    "domain": "citybankplc.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-062",
+    "name": "Trust Bank",
+    "sector": "Banking",
+    "website": "https://www.tblbd.com",
+    "careers_url": "https://career.tblbd.com/",
+    "domain": "career.tblbd.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-063",
+    "name": "Union Bank",
+    "sector": "Banking",
+    "website": "https://www.unionbank.com.bd",
+    "careers_url": "",
+    "domain": "unionbank.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-064",
+    "name": "United Commercial Bank",
+    "sector": "Banking",
+    "website": "https://www.ucb.com.bd",
+    "careers_url": "",
+    "domain": "ucb.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-065",
+    "name": "Uttara Bank",
+    "sector": "Banking",
+    "website": "https://www.uttarabank-bd.com",
+    "careers_url": "",
+    "domain": "uttarabank-bd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-066",
+    "name": "Bank Alfalah Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.bankalfalah.com",
+    "careers_url": "https://www.bankalfalah.com/bd/career-opportunities/",
+    "domain": "bankalfalah.com",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "banking-067",
+    "name": "Citibank Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.citigroup.com",
+    "careers_url": "",
+    "domain": "citigroup.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-068",
+    "name": "Commercial Bank of Ceylon",
+    "sector": "Banking",
+    "website": "https://www.combank.net.bd",
+    "careers_url": "",
+    "domain": "combank.net.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-069",
+    "name": "Habib Bank Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.hbl.com",
+    "careers_url": "",
+    "domain": "hbl.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-070",
+    "name": "National Bank of Pakistan",
+    "sector": "Banking",
+    "website": "https://www.nbp.com.pk",
+    "careers_url": "",
+    "domain": "nbp.com.pk",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-071",
+    "name": "Standard Chartered Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.sc.com/bd/",
+    "careers_url": "",
+    "domain": "sc.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-072",
+    "name": "State Bank of India Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.sbi.co.in",
+    "careers_url": "",
+    "domain": "sbi.co.in",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-073",
+    "name": "HSBC Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.hsbc.com.bd",
+    "careers_url": "",
+    "domain": "hsbc.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-074",
+    "name": "Woori Bank Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.wooribank.com",
+    "careers_url": "",
+    "domain": "wooribank.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-075",
+    "name": "Community Bank Bangladesh",
+    "sector": "Banking",
+    "website": "https://www.communitybankbd.com",
+    "careers_url": "",
+    "domain": "communitybankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-076",
+    "name": "Shimanto Bank",
+    "sector": "Banking",
+    "website": "https://www.shimantobank.com",
+    "careers_url": "",
+    "domain": "shimantobank.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-077",
+    "name": "Bengal Commercial Bank",
+    "sector": "Banking",
+    "website": "https://www.bgcb.com.bd",
+    "careers_url": "",
+    "domain": "bgcb.com.bd",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-078",
+    "name": "Citizens Bank",
+    "sector": "Banking",
+    "website": "https://www.citizensbankbd.com",
+    "careers_url": "",
+    "domain": "citizensbankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-079",
+    "name": "Global Islami Bank",
+    "sector": "Banking",
+    "website": "https://www.globalislamibankbd.com",
+    "careers_url": "",
+    "domain": "globalislamibankbd.com",
+    "mode": "search",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "banking-080",
+    "name": "Padma Bank",
+    "sector": "Banking",
+    "website": "https://www.padmabankbd.com",
+    "careers_url": "https://www.padmabankbd.com/career-job-openings",
+    "domain": "www.padmabankbd.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "banking-081",
+    "name": "Grameen Bank",
+    "sector": "Banking",
+    "website": "https://www.grameenbank.org.bd",
+    "careers_url": "https://www.grameenbank.org.bd/about/career",
+    "domain": "grameenbank.org.bd",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring."
+  },
+  {
+    "id": "fintech-082",
+    "name": "bKash",
+    "sector": "Fintech",
+    "website": "https://www.bkash.com",
+    "careers_url": "https://www.bkash.com/en/career",
+    "domain": "bkash.com",
+    "mode": "restricted",
+    "notes": "Official careers link for manual access only; no automated crawling under published terms."
+  },
+  {
+    "id": "fintech-083",
+    "name": "Nagad",
+    "sector": "Fintech",
+    "website": "https://nagad.com.bd",
+    "careers_url": "",
+    "domain": "nagad.com.bd",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-084",
+    "name": "Rocket / Dutch-Bangla MFS",
+    "sector": "Fintech",
+    "website": "https://www.dutchbanglabank.com",
+    "careers_url": "",
+    "domain": "dutchbanglabank.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-085",
+    "name": "Upay",
+    "sector": "Fintech",
+    "website": "https://www.upaybd.com",
+    "careers_url": "",
+    "domain": "upaybd.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-086",
+    "name": "SureCash",
+    "sector": "Fintech",
+    "website": "https://www.surecash.net",
+    "careers_url": "",
+    "domain": "surecash.net",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-087",
+    "name": "Tap / Trust Axiata Pay",
+    "sector": "Fintech",
+    "website": "https://tapbd.com/",
+    "careers_url": "",
+    "domain": "tapbd.com",
+    "mode": "search",
+    "notes": "v4.1 publicly listed recruitment source."
+  },
+  {
+    "id": "fintech-088",
+    "name": "SSL Wireless",
+    "sector": "Fintech",
+    "website": "https://www.sslwireless.com",
+    "careers_url": "",
+    "domain": "sslwireless.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-089",
+    "name": "ShurjoPay",
+    "sector": "Fintech",
+    "website": "https://www.shurjopay.com.bd",
+    "careers_url": "",
+    "domain": "shurjopay.com.bd",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-090",
+    "name": "ShopUp",
+    "sector": "Fintech",
+    "website": "https://shopup.org",
+    "careers_url": "",
+    "domain": "shopup.org",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "fintech-091",
+    "name": "Pathao",
+    "sector": "Fintech",
+    "website": "https://pathao.com",
+    "careers_url": "https://careers.pathao.com/job-openings/",
+    "domain": "pathao.com",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "telecom-092",
+    "name": "Grameenphone",
+    "sector": "Telecom",
+    "website": "https://www.grameenphone.com",
+    "careers_url": "https://www.grameenphone.com/about/career/career-opportunities",
+    "domain": "grameenphone.com",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "telecom-093",
+    "name": "Robi Axiata",
+    "sector": "Telecom",
+    "website": "https://www.robi.com.bd",
+    "careers_url": "https://www.robicareer.com/",
+    "domain": "robicareer.com",
+    "mode": "career",
+    "notes": ""
+  },
+  {
+    "id": "telecom-094",
+    "name": "Banglalink",
+    "sector": "Telecom",
+    "website": "https://www.banglalink.net",
+    "careers_url": "https://www.banglalink.net/en/careers",
+    "domain": "fa-esth-saasfaprod1.fa.ocs.oraclecloud.com",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check."
+  },
+  {
+    "id": "telecom-095",
+    "name": "Teletalk Bangladesh",
+    "sector": "Telecom",
+    "website": "https://www.teletalk.com.bd",
+    "careers_url": "https://www.teletalk.com.bd/about/career",
+    "domain": "www.teletalk.com.bd",
+    "mode": "career",
+    "notes": "Verified public career URL; actual job discovery requires a successful source check. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally",
+    "career_alternates": [
+      "https://www.teletalk.com.bd/about/career/vacant-position"
+    ]
+  },
+  {
+    "id": "telecom-096",
+    "name": "Summit Communications",
+    "sector": "Telecom",
+    "website": "https://www.summitcommunications.net",
+    "careers_url": "https://www.summitcommunications.net/career",
+    "domain": "www.summitcommunications.net",
+    "mode": "career",
+    "notes": "v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "telecom-097",
+    "name": "Fiber@Home",
+    "sector": "Telecom",
+    "website": "https://www.fiberathome.net",
+    "careers_url": "https://www.fiberathome.net/career",
+    "domain": "fiberathome.net",
+    "mode": "career",
+    "notes": ""
+  },
+  {
+    "id": "multinational-098",
+    "name": "Unilever Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.unilever.com",
+    "careers_url": "https://careers.unilever.com/en/location/bangladesh-jobs/34155/1210997/2",
+    "domain": "careers.unilever.com",
+    "mode": "career",
+    "notes": "v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally",
+    "career_alternates": [
+      "https://careers.unilever.com/en/bangladesh"
+    ]
+  },
+  {
+    "id": "multinational-099",
+    "name": "British American Tobacco Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.bat.com",
+    "careers_url": "https://careers.bat.com/en/location/bangladesh-jobs/27325/1210997/2",
+    "domain": "careers.bat.com",
+    "mode": "career",
+    "notes": "v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "multinational-100",
+    "name": "Nestle Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.nestle.com",
+    "careers_url": "https://www.nestle.com.bd/jobs",
+    "domain": "nestle.com",
+    "mode": "career",
+    "notes": ""
+  },
+  {
+    "id": "multinational-101",
+    "name": "Gildan Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.gildan.com",
+    "careers_url": "",
+    "domain": "gildan.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-102",
+    "name": "Siemens Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.siemens.com",
+    "careers_url": "",
+    "domain": "siemens.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-103",
+    "name": "Ericsson Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.ericsson.com",
+    "careers_url": "",
+    "domain": "ericsson.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-104",
+    "name": "Nokia Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.nokia.com",
+    "careers_url": "",
+    "domain": "nokia.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-105",
+    "name": "Huawei Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.huawei.com",
+    "careers_url": "",
+    "domain": "huawei.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-106",
+    "name": "Microsoft Bangladesh",
+    "sector": "Multinational",
+    "website": "https://careers.microsoft.com",
+    "careers_url": "",
+    "domain": "careers.microsoft.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-107",
+    "name": "IBM Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.ibm.com",
+    "careers_url": "",
+    "domain": "ibm.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-108",
+    "name": "Samsung Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.samsung.com/bd",
+    "careers_url": "",
+    "domain": "samsung.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-109",
+    "name": "Deloitte",
+    "sector": "Multinational",
+    "website": "https://www.deloitte.com",
+    "careers_url": "",
+    "domain": "deloitte.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-110",
+    "name": "PwC",
+    "sector": "Multinational",
+    "website": "https://www.pwc.com",
+    "careers_url": "",
+    "domain": "pwc.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-111",
+    "name": "KPMG Bangladesh",
+    "sector": "Multinational",
+    "website": "https://kpmg.com",
+    "careers_url": "",
+    "domain": "kpmg.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-112",
+    "name": "EY",
+    "sector": "Multinational",
+    "website": "https://www.ey.com",
+    "careers_url": "",
+    "domain": "ey.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-113",
+    "name": "Standard Chartered Global Careers",
+    "sector": "Multinational",
+    "website": "https://www.sc.com",
+    "careers_url": "",
+    "domain": "sc.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "multinational-114",
+    "name": "Deel",
+    "sector": "Multinational",
+    "website": "https://www.deel.com",
+    "careers_url": "",
+    "domain": "deel.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-115",
+    "name": "BRAC",
+    "sector": "Other",
+    "website": "https://www.brac.net",
+    "careers_url": "",
+    "domain": "brac.net",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-116",
+    "name": "icddr,b",
+    "sector": "Other",
+    "website": "https://www.icddrb.org",
+    "careers_url": "",
+    "domain": "icddrb.org",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-117",
+    "name": "Square Group",
+    "sector": "Other",
+    "website": "https://www.squaregroup.com",
+    "careers_url": "https://career.squarepharma.com.bd/",
+    "domain": "career.squarepharma.com.bd",
+    "mode": "career",
+    "notes": "v4.1 publicly listed recruitment source. This is the recruiting portal for Square Pharmaceuticals, a Square Group company.",
+    "career_alternates": [
+      "https://squarepharma.com.bd/career_4.php"
+    ]
+  },
+  {
+    "id": "other-118",
+    "name": "ACI Limited",
+    "sector": "Other",
+    "website": "https://www.aci-bd.com",
+    "careers_url": "",
+    "domain": "aci-bd.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-119",
+    "name": "Walton",
+    "sector": "Other",
+    "website": "https://waltonbd.com",
+    "careers_url": "",
+    "domain": "waltonbd.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-120",
+    "name": "Bashundhara Group",
+    "sector": "Other",
+    "website": "https://www.bashundharagroup.com",
+    "careers_url": "",
+    "domain": "bashundharagroup.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-121",
+    "name": "PRAN-RFL Group",
+    "sector": "Other",
+    "website": "https://www.pranfoods.net",
+    "careers_url": "",
+    "domain": "pranfoods.net",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "other-122",
+    "name": "Akij Group",
+    "sector": "Other",
+    "website": "https://www.akij.net",
+    "careers_url": "https://career.akijgroup.co/",
+    "domain": "career.akijgroup.co",
+    "mode": "career",
+    "notes": "v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally",
+    "career_alternates": [
+      "https://career.akijgroup.co/all-jobs"
+    ]
+  },
+  {
+    "id": "tech / consulting-123",
+    "name": "Newroz Technologies",
+    "sector": "Tech / consulting",
+    "website": "https://newroztech.com",
+    "careers_url": "",
+    "domain": "newroztech.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-124",
+    "name": "Brain Station 23",
+    "sector": "Tech / consulting",
+    "website": "https://brainstation-23.com",
+    "careers_url": "",
+    "domain": "brainstation-23.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-125",
+    "name": "BJIT",
+    "sector": "Tech / consulting",
+    "website": "https://bjitgroup.com",
+    "careers_url": "",
+    "domain": "bjitgroup.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-126",
+    "name": "DataSoft",
+    "sector": "Tech / consulting",
+    "website": "https://datasoft-bd.com",
+    "careers_url": "",
+    "domain": "datasoft-bd.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-127",
+    "name": "TigerIT",
+    "sector": "Tech / consulting",
+    "website": "https://www.tigerit.com",
+    "careers_url": "",
+    "domain": "tigerit.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-128",
+    "name": "REVE Systems",
+    "sector": "Tech / consulting",
+    "website": "https://www.revesoft.com",
+    "careers_url": "",
+    "domain": "revesoft.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-129",
+    "name": "Synesis IT",
+    "sector": "Tech / consulting",
+    "website": "https://www.synesisit.com.bd",
+    "careers_url": "https://synesisit.com.bd/career/",
+    "domain": "synesisit.com.bd",
+    "mode": "career",
+    "notes": "v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "tech / consulting-130",
+    "name": "Cefalo",
+    "sector": "Tech / consulting",
+    "website": "https://www.cefalo.com",
+    "careers_url": "",
+    "domain": "cefalo.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-131",
+    "name": "Vivasoft",
+    "sector": "Tech / consulting",
+    "website": "https://vivasoftltd.com",
+    "careers_url": "",
+    "domain": "vivasoftltd.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-132",
+    "name": "Therap BD",
+    "sector": "Tech / consulting",
+    "website": "https://www.therapbd.com",
+    "careers_url": "",
+    "domain": "therapbd.com",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-133",
+    "name": "SIMEC System",
+    "sector": "Tech / consulting",
+    "website": "https://simec-inc.net",
+    "careers_url": "",
+    "domain": "simec-inc.net",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "tech / consulting-134",
+    "name": "Cyber Security Centre Bangladesh",
+    "sector": "Tech / consulting",
+    "website": "https://www.cirt.gov.bd",
+    "careers_url": "",
+    "domain": "cirt.gov.bd",
+    "mode": "search",
+    "notes": ""
+  },
+  {
+    "id": "banking-135",
+    "name": "Probashi Kallyan Bank",
+    "sector": "Banking",
+    "website": "https://pkb.gov.bd",
+    "careers_url": "https://pkb.teletalk.com.bd/",
+    "domain": "pkb.gov.bd",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-136",
+    "name": "Bangladesh Infrastructure Finance Fund",
+    "sector": "NBFI / financial services",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "nbfi---financial-services-137",
+    "name": "IDLC Finance",
+    "sector": "NBFI / financial services",
+    "website": "https://idlc.com",
+    "careers_url": "",
+    "domain": "idlc.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-138",
+    "name": "IPDC Finance",
+    "sector": "NBFI / financial services",
+    "website": "https://www.ipdcbd.com",
+    "careers_url": "",
+    "domain": "www.ipdcbd.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-139",
+    "name": "LankaBangla Finance",
+    "sector": "NBFI / financial services",
+    "website": "https://www.lankabangla.com",
+    "careers_url": "",
+    "domain": "www.lankabangla.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-140",
+    "name": "United Finance",
+    "sector": "NBFI / financial services",
+    "website": "https://unitedfinance.com.bd",
+    "careers_url": "",
+    "domain": "unitedfinance.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-141",
+    "name": "DBH Finance",
+    "sector": "NBFI / financial services",
+    "website": "https://www.dblbd.com",
+    "careers_url": "",
+    "domain": "www.dblbd.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-142",
+    "name": "Bangladesh Finance",
+    "sector": "NBFI / financial services",
+    "website": "https://bd.finance",
+    "careers_url": "",
+    "domain": "bd.finance",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "nbfi---financial-services-143",
+    "name": "Bay Leasing & Investment",
+    "sector": "NBFI / financial services",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "nbfi---financial-services-144",
+    "name": "Islamic Finance and Investment",
+    "sector": "NBFI / financial services",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "nbfi---financial-services-145",
+    "name": "Industrial and Infrastructure Development Finance Company",
+    "sector": "NBFI / financial services",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "fintech-146",
+    "name": "Dmoney",
+    "sector": "Fintech",
+    "website": "https://dmoney.com.bd",
+    "careers_url": "",
+    "domain": "dmoney.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "fintech-147",
+    "name": "iPay Systems",
+    "sector": "Fintech",
+    "website": "https://www.ipay.com.bd",
+    "careers_url": "",
+    "domain": "www.ipay.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "fintech-148",
+    "name": "SSLCommerz",
+    "sector": "Fintech",
+    "website": "https://sslcommerz.com",
+    "careers_url": "",
+    "domain": "sslcommerz.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-149",
+    "name": "Chaldal",
+    "sector": "Tech / consulting",
+    "website": "https://chaldal.com",
+    "careers_url": "",
+    "domain": "chaldal.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-150",
+    "name": "Daraz Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.daraz.com.bd",
+    "careers_url": "",
+    "domain": "www.daraz.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-151",
+    "name": "Foodpanda Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.foodpanda.com.bd",
+    "careers_url": "",
+    "domain": "www.foodpanda.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "telecom-152",
+    "name": "Grameenphone IT",
+    "sector": "Telecom",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "telecom-153",
+    "name": "Link3 Technologies",
+    "sector": "Telecom",
+    "website": "https://www.link3.net",
+    "careers_url": "https://link3.net/career",
+    "domain": "www.link3.net",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "telecom-154",
+    "name": "Amber IT",
+    "sector": "Telecom",
+    "website": "https://amberit.com.bd",
+    "careers_url": "",
+    "domain": "amberit.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "telecom-155",
+    "name": "Aamra Networks",
+    "sector": "Telecom",
+    "website": "https://aamranetworks.com",
+    "careers_url": "",
+    "domain": "aamranetworks.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "telecom-156",
+    "name": "Bangladesh Telecommunications Company",
+    "sector": "Telecom",
+    "website": "https://btcl.gov.bd/",
+    "careers_url": "https://btcl.gov.bd/pages/static-pages/6922e088933eb65569e2770d",
+    "domain": "btcl.gov.bd",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "telecom-157",
+    "name": "Bangladesh Submarine Cables PLC",
+    "sector": "Telecom",
+    "website": "https://bscplc.gov.bd",
+    "careers_url": "https://bscplc.gov.bd/pages/jobs",
+    "domain": "bscplc.gov.bd",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified. | v4.1: official employer recruiting URL reviewed via public index 2026-11-07; live accessibility must be checked locally"
+  },
+  {
+    "id": "multinational-158",
+    "name": "Chevron Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.chevron.com",
+    "careers_url": "",
+    "domain": "www.chevron.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-159",
+    "name": "MetLife Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.metlife.com.bd",
+    "careers_url": "",
+    "domain": "www.metlife.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-160",
+    "name": "BAT Bangladesh",
+    "sector": "Multinational",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "multinational-161",
+    "name": "Marico Bangladesh",
+    "sector": "Multinational",
+    "website": "https://marico.com",
+    "careers_url": "",
+    "domain": "marico.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-162",
+    "name": "BASF Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.basf.com",
+    "careers_url": "",
+    "domain": "www.basf.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-163",
+    "name": "Bayer Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.bayer.com",
+    "careers_url": "https://www.bayer.com/en/careers",
+    "domain": "www.bayer.com",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified.",
+    "career_alternates": [
+      "https://jobs.bayer.com/"
+    ]
+  },
+  {
+    "id": "multinational-164",
+    "name": "Oracle Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.oracle.com",
+    "careers_url": "https://careers.oracle.com/en/sites/jobsearch",
+    "domain": "careers.oracle.com",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified. | v4.1 publicly listed recruitment source."
+  },
+  {
+    "id": "multinational-165",
+    "name": "Accenture",
+    "sector": "Multinational",
+    "website": "https://www.accenture.com",
+    "careers_url": "https://www.accenture.com/ae-en/careers",
+    "domain": "www.accenture.com",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-166",
+    "name": "TCS Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.tcs.com",
+    "careers_url": "https://www.tcs.com/careers",
+    "domain": "www.tcs.com",
+    "mode": "career",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "multinational-167",
+    "name": "Wipro Bangladesh",
+    "sector": "Multinational",
+    "website": "https://www.wipro.com",
+    "careers_url": "",
+    "domain": "www.wipro.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-168",
+    "name": "Genex Infosys",
+    "sector": "Tech / consulting",
+    "website": "https://www.genexinfosys.com",
+    "careers_url": "",
+    "domain": "www.genexinfosys.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-169",
+    "name": "Southtech Group",
+    "sector": "Tech / consulting",
+    "website": "https://southtechgroup.com",
+    "careers_url": "",
+    "domain": "southtechgroup.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-170",
+    "name": "Enosis Solutions",
+    "sector": "Tech / consulting",
+    "website": "https://www.enosisbd.com",
+    "careers_url": "",
+    "domain": "www.enosisbd.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-171",
+    "name": "Datasoft Systems Bangladesh",
+    "sector": "Tech / consulting",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "tech---consulting-172",
+    "name": "Kona Software Lab",
+    "sector": "Tech / consulting",
+    "website": "https://konasl.com",
+    "careers_url": "",
+    "domain": "konasl.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-173",
+    "name": "Selise Digital Platforms",
+    "sector": "Tech / consulting",
+    "website": "https://www.selisegroup.com",
+    "careers_url": "",
+    "domain": "www.selisegroup.com",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "tech---consulting-174",
+    "name": "Cefalo Bangladesh",
+    "sector": "Tech / consulting",
+    "website": "",
+    "careers_url": "",
+    "domain": "",
+    "mode": "directory",
+    "notes": "Employer name in directory, no confirmed corporate URL. Manual link-search only."
+  },
+  {
+    "id": "tech---consulting-175",
+    "name": "Kaz Software",
+    "sector": "Tech / consulting",
+    "website": "https://kaz.com.bd",
+    "careers_url": "",
+    "domain": "kaz.com.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "public-sector-176",
+    "name": "Bangladesh Computer Council",
+    "sector": "Public sector",
+    "website": "https://bcc.gov.bd",
+    "careers_url": "",
+    "domain": "bcc.gov.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "public-sector-177",
+    "name": "Bangladesh Hi-Tech Park Authority",
+    "sector": "Public sector",
+    "website": "https://bhtpa.gov.bd",
+    "careers_url": "",
+    "domain": "bhtpa.gov.bd",
+    "mode": "search",
+    "notes": "Directory target; career endpoint not yet verified."
+  },
+  {
+    "id": "remote-job-feed-178",
+    "name": "Himalayas",
+    "sector": "Remote job feed",
+    "website": "https://himalayas.app/jobs",
+    "careers_url": "",
+    "domain": "himalayas.app",
+    "mode": "public-api",
+    "notes": "Public publisher feed or index link; check source terms."
+  },
+  {
+    "id": "remote-job-feed-179",
+    "name": "Remotive",
+    "sector": "Remote job feed",
+    "website": "https://remotive.com/remote-jobs",
+    "careers_url": "",
+    "domain": "remotive.com",
+    "mode": "public-api",
+    "notes": "Public publisher feed or index link; check source terms."
+  },
+  {
+    "id": "remote-job-feed-180",
+    "name": "Remote OK",
+    "sector": "Remote job feed",
+    "website": "https://remoteok.com",
+    "careers_url": "",
+    "domain": "remoteok.com",
+    "mode": "public-api",
+    "notes": "Public publisher feed or index link; check source terms."
+  },
+  {
+    "id": "remote-job-feed-181",
+    "name": "We Work Remotely",
+    "sector": "Remote job feed",
+    "website": "https://weworkremotely.com",
+    "careers_url": "",
+    "domain": "weworkremotely.com",
+    "mode": "public-api",
+    "notes": "Free public feed polled by the collector (RSS / JSON API)."
+  },
+  {
+    "id": "remote-job-feed-182",
+    "name": "FlexJobs",
+    "sector": "Remote job feed",
+    "website": "https://www.flexjobs.com",
+    "careers_url": "",
+    "domain": "www.flexjobs.com",
+    "mode": "index",
+    "notes": "Public publisher feed or index link; check source terms."
+  },
+  {
+    "id": "remote-job-feed-183",
+    "name": "Working Nomads",
+    "sector": "Remote job feed",
+    "website": "https://www.workingnomads.com",
+    "careers_url": "",
+    "domain": "www.workingnomads.com",
+    "mode": "public-api",
+    "notes": "Free public feed polled by the collector (RSS / JSON API)."
+  },
+  {
+    "id": "remote-job-feed-184",
+    "name": "Jobicy",
+    "sector": "Remote job feed",
+    "website": "https://jobicy.com",
+    "careers_url": "",
+    "domain": "jobicy.com",
+    "mode": "public-api",
+    "notes": "Public publisher feed or index link; check source terms."
+  },
+  {
+    "id": "remote-job-feed-185",
+    "name": "Remote.co",
+    "sector": "Remote job feed",
+    "website": "https://remote.co",
+    "careers_url": "",
+    "domain": "remote.co",
+    "mode": "index",
+    "notes": "Public publisher feed or index link; check source terms."
+  },
+  {
+    "id": "banking-modhumoti-bank",
+    "name": "Modhumoti Bank",
+    "sector": "Banking",
+    "website": "https://www.modhumotibankplc.com",
+    "careers_url": "https://www.modhumotibankplc.com/career/",
+    "domain": "modhumotibankplc.com",
+    "mode": "career",
+    "notes": "Official career page (verified 7 Nov 2026); vacancies require source checking."
+  },
+  {
+    "id": "external-shortcut-01",
+    "name": "Facebook — Public Job Announcements",
+    "sector": "Social media",
+    "website": "https://www.facebook.com/search/posts/?q=cybersecurity%20jobs%20Bangladesh",
+    "careers_url": "",
+    "domain": "www.facebook.com",
+    "mode": "link-only",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "external-shortcut-02",
+    "name": "Facebook — বাংলা নিয়োগ ঘোষণা",
+    "sector": "Social media",
+    "website": "https://www.facebook.com/search/posts/?q=%E0%A6%B8%E0%A6%BE%E0%A6%87%E0%A6%AC%E0%A6%BE%E0%A6%B0%20%E0%A6%A8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%AA%E0%A6%A4%E0%A7%8D%E0%A6%A4%E0%A6%BE%20%E0%A6%9A%E0%A6%BE%E0%A6%95%E0%A6%B0%E0%A6%BF%20%E0%A6%A8%E0%A6%BF%E0%A7%9F%E0%A7%8B%E0%A6%97",
+    "careers_url": "",
+    "domain": "www.facebook.com",
+    "mode": "link-only",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "external-shortcut-03",
+    "name": "LinkedIn — Banking Information Security",
+    "sector": "Job portal",
+    "website": "https://www.linkedin.com/jobs/search/?keywords=information%20security%20bank&location=Bangladesh",
+    "careers_url": "",
+    "domain": "www.linkedin.com",
+    "mode": "restricted",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "external-shortcut-04",
+    "name": "LinkedIn — Cybersecurity Bangladesh",
+    "sector": "Job portal",
+    "website": "https://www.linkedin.com/jobs/search/?keywords=cybersecurity&location=Bangladesh",
+    "careers_url": "",
+    "domain": "www.linkedin.com",
+    "mode": "restricted",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "external-shortcut-05",
+    "name": "LinkedIn — SOC & Cyber Defense",
+    "sector": "Job portal",
+    "website": "https://www.linkedin.com/jobs/search/?keywords=SOC%20cyber%20defense&location=Bangladesh",
+    "careers_url": "",
+    "domain": "www.linkedin.com",
+    "mode": "restricted",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "external-shortcut-06",
+    "name": "LinkedIn — Remote AppSec Worldwide",
+    "sector": "Job portal",
+    "website": "https://www.linkedin.com/jobs/search/?keywords=remote%20application%20security&f_WT=2",
+    "careers_url": "",
+    "domain": "www.linkedin.com",
+    "mode": "restricted",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "external-shortcut-07",
+    "name": "Facebook — Bank Careers Announcements",
+    "sector": "Social media",
+    "website": "https://www.facebook.com/search/posts/?q=%E0%A6%AC%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%82%E0%A6%95%20%E0%A6%A4%E0%A6%A5%E0%A7%8D%E0%A6%AF%20%E0%A6%A8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%AA%E0%A6%A4%E0%A7%8D%E0%A6%A4%E0%A6%BE%20%E0%A6%A8%E0%A6%BF%E0%A7%9F%E0%A7%8B%E0%A6%97",
+    "careers_url": "",
+    "domain": "www.facebook.com",
+    "mode": "link-only",
+    "notes": "Manual search shortcut only; no unauthorized collection or scraping is performed."
+  },
+  {
+    "id": "public-sector-201",
+    "name": "ICT Division",
+    "sector": "Public sector",
+    "website": "https://ictd.gov.bd",
+    "careers_url": "",
+    "domain": "ictd.gov.bd",
+    "mode": "search",
+    "notes": "Government ICT recruitment notices; homepage career-link discovery."
+  },
+  {
+    "id": "public-sector-202",
+    "name": "Aspire to Innovate (a2i)",
+    "sector": "Public sector",
+    "website": "https://a2i.gov.bd",
+    "careers_url": "",
+    "domain": "a2i.gov.bd",
+    "mode": "search",
+    "notes": "Digital government programme; homepage career-link discovery."
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "users": {
+    "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
+      "salt": "9lYIdFcJo/c32+bO42MhYA==",
+      "iterations": 600000,
+      "name": {
+        "iv": "Joahp2wPDwT8znoD",
+        "ct": "NAsBUpchFd59zsQiR31i3qDxdfQY"
+      },
+      "kek_escrow": {
+        "iv": "dFoFrkwAYEvhm31K",
+        "ct": "PX9lDihI+IkxXDvY6ZL02RI1WHKCq2r841LC2tEYCVJqV6+YA1q/HOsd5CeGYP8f"
+      },
+      "created_at": "2026-11-07T15:05:59+00:00",
+      "updated_at": "2026-11-07T15:05:59+00:00"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "updated_at": "",
+  "engine": "Job Intelligence v4: Bengali + English career discovery, free feeds, per-source health and progress",
+  "refresh_interval_minutes": 60,
+  "no_paid_api": true,
+  "queries_run": 0,
+  "jobs_count": 26,
+  "bangladesh_jobs": 14,
+  "international_jobs": 12,
+  "new_candidates": 0,
+  "sources_in_directory": 191,
+  "official_career_targets_checked": 0,
+  "official_career_targets_reachable": 0,
+  "active_ats_boards": 0,
+  "source_health": [],
+  "errors": [],
+  "collection_policy": "Public employer pages, official ATS, PDF/RSS and publisher feeds. Social/LinkedIn remain manual-search links.",
+  "archived_expired": 0,
+  "older_unverified": 0,
+  "data_note": "Preloaded reviewed job leads, not results of a completed local scan. First internet-connected run updates every source state."
+}

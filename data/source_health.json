@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "updated_at": "2026-11-07T14:57:31+00:00",
+  "sources": {
+    "feed:Himalayas": {
+      "id": "feed:Himalayas",
+      "name": "Himalayas",
+      "sector": "Remote job feed",
+      "mode": "Free publisher feed",
+      "history": [
+        {
+          "at": "2026-11-07T14:51:39+00:00",
+          "result": "success",
+          "jobs_found": 131,
+          "new_jobs": 36,
+          "message": "131 cybersecurity candidates from 255 raw records"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:51:39+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 131
+    },
+    "feed:Remotive": {
+      "id": "feed:Remotive",
+      "name": "Remotive",
+      "sector": "Remote job feed",
+      "mode": "Free publisher feed",
+      "history": [
+        {
+          "at": "2026-11-07T14:51:40+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "0 cybersecurity candidates from 12 raw records"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:51:40+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "feed:Remote OK": {
+      "id": "feed:Remote OK",
+      "name": "Remote OK",
+      "sector": "Remote job feed",
+      "mode": "Free publisher feed",
+      "history": [
+        {
+          "at": "2026-11-07T14:51:44+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "0 cybersecurity candidates from 100 raw records"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:51:44+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "feed:Jobicy": {
+      "id": "feed:Jobicy",
+      "name": "Jobicy",
+      "sector": "Remote job feed",
+      "mode": "Free publisher feed",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:01+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "0 cybersecurity candidates from 458 raw records"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:01+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "feed:We Work Remotely": {
+      "id": "feed:We Work Remotely",
+      "name": "We Work Remotely",
+      "sector": "Remote job feed",
+      "mode": "Free publisher feed",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:07+00:00",
+          "result": "success",
+          "jobs_found": 13,
+          "new_jobs": 11,
+          "message": "13 cybersecurity candidates from 130 raw records"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:07+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 13
+    },
+    "feed:Working Nomads": {
+      "id": "feed:Working Nomads",
+      "name": "Working Nomads",
+      "sector": "Remote job feed",
+      "mode": "Free publisher feed",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:11+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "0 cybersecurity candidates from 32 raw records"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:11+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-027": {
+      "id": "banking-027",
+      "name": "BASIC Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:12+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "www.basicbanklimited.com.bd: robots.txt DNS/network connection failed | www.basicbanklimited.com.bd: Robots policy unavailable or disallows this URL"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:12+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-029": {
+      "id": "banking-029",
+      "name": "Ansar VDP Unnayan Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:12+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "ansarvdpbank.gov.bd: robots.txt HTTP 500 (server error: treated as disallow)"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:12+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-030": {
+      "id": "banking-030",
+      "name": "AB Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:13+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:13+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-026": {
+      "id": "banking-026",
+      "name": "Bangladesh Development Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:13+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "www.bdbl.com.bd: robots.txt DNS/network connection failed"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:13+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-034": {
+      "id": "banking-034",
+      "name": "BRAC Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:14+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:14+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-024": {
+      "id": "banking-024",
+      "name": "Bangladesh Krishi Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:15+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "krishibank.gov.bd: robots.txt DNS/network connection failed | bkb.teletalk.com.bd: robots.txt DNS/network connection failed | krishibank.gov.bd: Robots policy unavailable or disallows this URL"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:15+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-031": {
+      "id": "banking-031",
+      "name": "Al-Arafah Islami Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:17+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:17+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-022": {
+      "id": "banking-022",
+      "name": "Agrani Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:19+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:19+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-032": {
+      "id": "banking-032",
+      "name": "Bangladesh Commerce Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:19+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:19+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-066": {
+      "id": "banking-066",
+      "name": "Bank Alfalah Bangladesh",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:20+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:20+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-033": {
+      "id": "banking-033",
+      "name": "Bank Asia",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:24+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:24+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-068": {
+      "id": "banking-068",
+      "name": "Commercial Bank of Ceylon",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:24+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:24+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-067": {
+      "id": "banking-067",
+      "name": "Citibank Bangladesh",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:25+00:00",
+          "result": "partial",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Company homepage reachable; recruitment page not verified"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:25+00:00",
+      "successes": 0,
+      "failures": 0,
+      "partial_count": 1,
+      "last_result": "partial",
+      "jobs_found_last_check": 0
+    },
+    "banking-078": {
+      "id": "banking-078",
+      "name": "Citizens Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:31+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:31+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-061": {
+      "id": "banking-061",
+      "name": "City Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:31+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:31+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-035": {
+      "id": "banking-035",
+      "name": "Dhaka Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:32+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:32+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-039": {
+      "id": "banking-039",
+      "name": "First Security Islami Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:33+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "www.fsiblbd.com: Page redirects outside approved employer hosts"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:33+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-079": {
+      "id": "banking-079",
+      "name": "Global Islami Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:33+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "www.globalislamibankbd.com: robots.txt DNS/network connection failed"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:33+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-038": {
+      "id": "banking-038",
+      "name": "EXIM Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:34+00:00",
+          "result": "partial",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Company homepage reachable; recruitment page not verified"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:34+00:00",
+      "successes": 0,
+      "failures": 0,
+      "partial_count": 1,
+      "last_result": "partial",
+      "jobs_found_last_check": 0
+    },
+    "banking-037": {
+      "id": "banking-037",
+      "name": "Eastern Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:35+00:00",
+          "result": "partial",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Company homepage reachable; recruitment page not verified (fallback used; ebl.bdjobs.com: Not an approved employer host)"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:35+00:00",
+      "successes": 0,
+      "failures": 0,
+      "partial_count": 1,
+      "last_result": "partial",
+      "jobs_found_last_check": 0
+    },
+    "banking-081": {
+      "id": "banking-081",
+      "name": "Grameen Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:37+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:37+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-077": {
+      "id": "banking-077",
+      "name": "Bengal Commercial Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:37+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:37+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-073": {
+      "id": "banking-073",
+      "name": "HSBC Bangladesh",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:38+00:00",
+          "result": "partial",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Company homepage reachable; recruitment page not verified"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:38+00:00",
+      "successes": 0,
+      "failures": 0,
+      "partial_count": 1,
+      "last_result": "partial",
+      "jobs_found_last_check": 0
+    },
+    "banking-041": {
+      "id": "banking-041",
+      "name": "IFIC Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:41+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:41+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-036": {
+      "id": "banking-036",
+      "name": "Dutch-Bangla Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:44+00:00",
+          "result": "partial",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Company homepage reachable; recruitment page not verified"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:44+00:00",
+      "successes": 0,
+      "failures": 0,
+      "partial_count": 1,
+      "last_result": "partial",
+      "jobs_found_last_check": 0
+    },
+    "banking-040": {
+      "id": "banking-040",
+      "name": "ICB Islamic Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:52+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:52+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-021": {
+      "id": "banking-021",
+      "name": "Janata Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:53+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:53+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-028": {
+      "id": "banking-028",
+      "name": "Karmasangsthan Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:53+00:00",
+          "result": "failed",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "www.karmasangsthanbank.gov.bd: robots.txt DNS/network connection failed"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:53+00:00",
+      "successes": 0,
+      "failures": 1,
+      "partial_count": 0,
+      "last_result": "failed",
+      "jobs_found_last_check": 0
+    },
+    "banking-043": {
+      "id": "banking-043",
+      "name": "Jamuna Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:55+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:55+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-042": {
+      "id": "banking-042",
+      "name": "Islami Bank Bangladesh",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:52:56+00:00",
+          "result": "success",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Public career page reachable"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:52:56+00:00",
+      "successes": 1,
+      "failures": 0,
+      "partial_count": 0,
+      "last_result": "success",
+      "jobs_found_last_check": 0
+    },
+    "banking-046": {
+      "id": "banking-046",
+      "name": "Midland Bank",
+      "sector": "Banking",
+      "mode": "Official employer",
+      "history": [
+        {
+          "at": "2026-11-07T14:53:00+00:00",
+          "result": "partial",
+          "jobs_found": 0,
+          "new_jobs": 0,
+          "message": "Company homepage reachable; recruitment page not verified"
+        }
+      ],
+      "last_checked_at": "2026-11-07T14:53:00+00:00",
+      "successes": 0,
+      "failures": 0,
+      "partial_count": 1,
+      "last_result": "partial",
+      "jobs_found_last_check": 0
+    }
+  }
+}

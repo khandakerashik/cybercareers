@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d0c">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="Cybersecurity job intelligence for Bangladesh and international remote opportunities that accept Bangladesh-based applicants. Hourly checks, public job feeds, application links and skill matching.">
+  <title>CyberCareers BD · Job Intelligence & Source Health</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="app.js" type="module"></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="auth-gate" id="authGate" hidden>
+    <div class="auth-grid" aria-hidden="true"></div>
+    <form class="auth-card" id="authForm" autocomplete="on" novalidate>
+      <div class="auth-brand">
+        <span class="brand-logo"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3.4 35 12v16L20 36.6 5 28V12L20 3.4Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 23.2h7l4-6.4 5 0M12 17h5l3 4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="23" r="2" fill="currentColor"/><circle cx="28" cy="16.8" r="2" fill="currentColor"/></svg></span>
+        <span class="brand-text">CYBER<span>CAREERS</span><small>BD / JOB INTELLIGENCE</small></span>
+      </div>
+      <div class="auth-kicker"><span class="signal-pulse"></span> RESTRICTED WORKSPACE</div>
+      <h1>Sign in to unlock</h1>
+      <p class="auth-lede">This dashboard is encrypted. Only approved accounts can decrypt it in this browser.</p>
+      <label class="auth-field"><span>USERNAME</span><input id="authUser" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="64" required></label>
+      <label class="auth-field"><span>PASSWORD</span><input id="authPass" name="password" type="password" autocomplete="current-password" maxlength="256" required></label>
+      <label class="auth-remember"><input type="checkbox" name="remember"><span>Keep me signed in on this device for 7 days</span></label>
+      <p class="auth-error" id="authError" role="alert" aria-live="assertive"></p>
+      <button class="auth-submit" id="authSubmit" type="submit"><span class="auth-submit-label">Unlock dashboard</span><span class="auth-spinner" aria-hidden="true"></span></button>
+      <div class="auth-foot"><span data-icon="lock"></span><span>AES-256-GCM · PBKDF2-SHA256 (600k) · decrypted locally, never sent to a server</span></div>
+    </form>
+  </div>
+  <div class="mobile-shade" id="mobileShade"></div>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#jobs" aria-label="CyberCareers BD home">
+        <span class="brand-logo"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3.4 35 12v16L20 36.6 5 28V12L20 3.4Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 23.2h7l4-6.4 5 0M12 17h5l3 4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="23" r="2" fill="currentColor"/><circle cx="28" cy="16.8" r="2" fill="currentColor"/></svg></span>
+        <span class="brand-text">CYBER<span>CAREERS</span><small>BD / JOB INTELLIGENCE</small></span>
+      </a>
+      <div class="sidebar-section-title">WORKSPACE <span>01</span></div>
+      <nav class="primary-nav" aria-label="Workspace navigation">
+        <a class="nav-link active" href="#jobs" data-page="jobs"><span class="nav-icon" data-icon="grid"></span>Job Intelligence : Bangladesh<span class="nav-count" id="navJobsCount">—</span></a>
+        <a class="nav-link" href="#international" data-page="international"><span class="nav-icon" data-icon="globe"></span>International Jobs<span class="nav-count" id="navInternationalCount">—</span></a>
+        <a class="nav-link" href="#saved" data-page="saved"><span class="nav-icon" data-icon="bookmark"></span>Saved Opportunities<span class="nav-count" id="navSavedCount">0</span></a>
+        <a class="nav-link" href="#sources" data-page="sources"><span class="nav-icon" data-icon="radar"></span>Source Watchlist<span class="nav-count" id="navSourcesCount">—</span></a>
+        <a class="nav-link" href="#health" data-page="health"><span class="nav-icon" data-icon="activity"></span>Source Health<span class="nav-count" id="navHealthCount">—</span></a>
+        <a class="nav-link" href="#profile" data-page="profile"><span class="nav-icon" data-icon="sliders"></span>Match Profile</a>
+      </nav>
+      <div class="sidebar-section-title sidebar-section-title-gap">NETWORK STATUS <span>02</span></div>
+      <div class="system-widget">
+        <div class="widget-top"><span class="signal-pulse"></span><strong>COLLECTION MONITOR</strong><span class="widget-terminal">LIVE / DATA</span></div>
+        <div class="widget-meter"><div class="widget-meter-bar"></div></div>
+        <div class="system-row"><span>Source targets</span><strong id="sideSourceCount">—</strong></div>
+        <div class="system-row"><span>Last dataset update</span><strong id="sideUpdated">—</strong></div>
+        <div class="system-row"><span>Refresh cadence</span><strong id="sideEngine">HOURLY</strong></div>
+        <p id="sidePolicyNote">No API keys required. Hourly local checks, source-specific rate limits.</p>
+      </div>
+      <div class="side-bottom">
+        <div class="sidebar-mini-icon" data-icon="shield"></div>
+        <div><strong>Built for security professionals</strong><span>Find the roles your expertise deserves.</span></div>
+      </div>
+      <div class="sidebar-footer">© 2026 CYBERCAREERS BD <span>v5.0</span></div>
+    </aside>
+    <main class="main-content" id="mainContent">
+      <header class="topbar">
+        <div class="topbar-left"><button class="icon-button mobile-menu" id="menuToggle" aria-label="Open navigation" data-icon="menu"></button><span class="breadcrumb-root">INTELLIGENCE CENTER</span><span class="breadcrumb-sep">/</span><span id="currentBreadcrumb" class="breadcrumb-active">BANGLADESH JOBS</span></div>
+        <div class="topbar-right"><span class="data-status"><span class="green-dot"></span><span id="topStatusText">Dataset ready</span></span><span class="topbar-rule"></span><button class="ghost-button local-refresh" id="refreshJobsButton" type="button" hidden title="Check permitted sources for new jobs"><span data-icon="radar"></span> Refresh jobs</button><button class="ghost-button" data-page-button="profile"><span data-icon="user"></span> My profile</button><span class="topbar-rule vault-only" hidden></span><span class="session-chip vault-only" id="sessionChip" hidden><span data-icon="lock"></span><span id="sessionUser">—</span></span><button class="ghost-button vault-only" id="logoutButton" type="button" hidden>Sign out</button></div>
+      </header>
+
+      <section id="hourlyProgress" class="refresh-progress" aria-label="Hourly collection progress">
+        <div class="refresh-progress-head">
+          <div><span class="progress-status-icon" id="progressPulse"></span><strong id="progressTitle">HOURLY SOURCE SCANNER</strong><span id="progressPhase">Waiting for the next scheduled collection</span></div>
+          <strong id="progressPercent">0%</strong>
+        </div>
+        <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Sources checked" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill" class="progress-fill"></div></div>
+        <div class="progress-numbers">
+          <span><b id="progressChecked">0</b> checked <span class="progress-divide">/</span> <b id="progressTotal">0</b> scheduled</span>
+          <span><b id="progressRemaining">0</b> remaining</span>
+          <span class="progress-success"><b id="progressOk">0</b> successful</span>
+          <span class="progress-limited"><b id="progressLimited">0</b> limited</span><span class="progress-failure"><b id="progressBad">0</b> failed</span>
+          <span class="progress-new"><b id="progressNewJobs">0</b> new jobs</span>
+        </div>
+        <div class="progress-current"><span>NOW CHECKING</span><strong id="progressCurrent">Awaiting next scan</strong><a href="#health">View source health →</a></div>
+      </section>
+
+      <section id="page-jobs" class="page active">
+        <div class="eyebrow"><span class="eyebrow-line"></span> BANGLADESH / CYBERSECURITY / OPPORTUNITIES <span class="eyebrow-suffix">// OPERATIONAL VIEW</span></div>
+        <section class="hero" aria-label="Cybersecurity job overview">
+          <div class="hero-text">
+            <div class="hero-super"><span class="hero-super-dot"></span> JOB INTELLIGENCE : BANGLADESH <span class="hero-super-slash">///</span></div>
+            <h1>Track the market.<br><em>Find your fit.</em></h1>
+            <p>Intelligence on cybersecurity, information security, GRC, SOC, AppSec and related vacancies across Bangladesh. Public-source checks hourly, publisher-attributed leads and application links.</p>
+            <div class="hero-actions"><button class="button button-green" id="exploreButton">Explore live listings <span data-icon="arrow"></span></button><button class="button button-outline" data-page-button="profile"><span data-icon="sliders"></span> Refine my match</button></div>
+          </div>
+          <div class="hero-art" aria-hidden="true"><div class="hero-art-halo h1"></div><div class="hero-art-halo h2"></div><div class="hero-art-halo h3"></div><div class="hero-art-corner tl"></div><div class="hero-art-corner tr"></div><div class="hero-art-corner bl"></div><div class="hero-art-corner br"></div><svg viewBox="0 0 300 300" class="hero-illustration"><defs><linearGradient id="hexfill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#224a32"/><stop offset="1" stop-color="#101e19"/></linearGradient></defs><path d="M150 33 249 90v115l-99 57-99-57V90Z" fill="url(#hexfill)" stroke="#59d788" stroke-width="1.3" opacity=".83"/><path d="M150 64 222 106v86l-72 41-72-41v-86Z" fill="none" stroke="#54e58c" stroke-width=".8" opacity=".55"/><path d="M150 88 201 118v61l-51 30-51-30v-61Z" fill="#0e2018" stroke="#63ed97" stroke-width="1.5"/><path d="m122 148 19 19 38-40" stroke="#a4ffb9" stroke-width="10" fill="none" stroke-linecap="square" stroke-linejoin="miter"/><g fill="#9cffb4"><circle cx="150" cy="33" r="3"/><circle cx="249" cy="90" r="3"/><circle cx="51" cy="205" r="3"/></g></svg><div class="hero-art-readout readout-1">[ SIGNAL ACTIVE ]</div><div class="hero-art-readout readout-2">BD / SEC 01</div></div>
+          <div class="hero-topline">CAREER INTELLIGENCE <span>// BANGLADESH</span></div>
+        </section>
+
+        <div id="dataBanner" class="data-banner"><span data-icon="info"></span><span>Loading verified vacancies and source collection status…</span></div>
+        <div class="metrics-grid" id="metricsGrid" aria-label="Job intelligence statistics">
+          <div class="metric"><div class="metric-label">TRACKED JOB LEADS <span data-icon="briefcase"></span></div><div class="metric-value" id="metricTotal">—</div><div class="metric-meta">From the current dataset <span class="metric-tick">↗</span></div></div>
+          <div class="metric"><div class="metric-label">HIGH MATCH <span data-icon="target"></span></div><div class="metric-value" id="metricMatch">—</div><div class="metric-meta">70%+ estimated alignment</div></div>
+          <div class="metric"><div class="metric-label">EMPLOYERS <span data-icon="building"></span></div><div class="metric-value" id="metricCompanies">—</div><div class="metric-meta">With discovered openings</div></div>
+          <div class="metric"><div class="metric-label">SOURCE WATCHLIST <span data-icon="radar"></span></div><div class="metric-value" id="metricSources">—</div><div class="metric-meta">Employer & portal targets</div></div>
+        </div>
+
+        <div class="section-heading" id="openingsHeader"><div><div class="section-kicker">JOB INTELLIGENCE : BANGLADESH <span>// 01</span></div><h2>Bangladesh job radar</h2></div><div class="section-heading-right"><span id="resultsCount">— results</span><button class="text-button" id="exportButton"><span data-icon="download"></span> Export CSV</button></div></div>
+        <div class="category-tabs" id="categoryTabs" role="group" aria-label="Security specialization filters"></div>
+        <div class="results-layout">
+          <aside class="filter-panel" aria-label="Job filters">
+            <div class="filter-title"><span>FILTERS</span><button id="clearFilters" class="clear-button">Reset all</button></div>
+            <label class="field-label" for="jobSearch">SEARCH JOBS</label>
+            <div class="search-field"><span data-icon="search"></span><input id="jobSearch" type="search" placeholder="Role, company, skill..." autocomplete="off"><kbd>/</kbd></div>
+            <label class="field-label" for="sectorSelect">EMPLOYER SECTOR</label><div class="select-wrap"><select id="sectorSelect"><option value="all">All sectors</option></select><span data-icon="chevron"></span></div>
+            <label class="field-label" for="locationSelect">LOCATION</label><div class="select-wrap"><select id="locationSelect"><option value="all">All locations</option><option value="Dhaka">Dhaka</option><option value="Chattogram">Chattogram</option><option value="Remote">Remote / Bangladesh-wide</option></select><span data-icon="chevron"></span></div>
+            <label class="field-label" for="workplaceSelect">WORK ARRANGEMENT</label><div class="select-wrap"><select id="workplaceSelect"><option value="all">Any arrangement</option><option value="Remote">Remote</option><option value="On-site">On-site</option><option value="Hybrid">Hybrid</option></select><span data-icon="chevron"></span></div>
+            <label class="field-label" for="sourceSelect">SOURCE / PORTAL</label><div class="select-wrap"><select id="sourceSelect" aria-label="Filter by collection platform"><option value="all">Every platform</option></select><span data-icon="chevron"></span></div>
+            <label class="field-label" for="sourceSiteSelect">ORIGINAL POSTING WEBSITE</label><div class="select-wrap"><select id="sourceSiteSelect" aria-label="Filter by original posting website"><option value="all">Every website</option></select><span data-icon="chevron"></span></div>
+            <div class="filter-divider"></div>
+            <div class="filter-row"><label class="field-label compact" for="matchRange">MINIMUM SKILL MATCH</label><span id="matchRangeText" class="range-value">0%</span></div><input id="matchRange" type="range" min="0" max="100" step="10" value="0"><div class="range-legend"><span>ALL</span><span>STRONG FIT</span></div>
+            <div class="filter-divider"></div>
+            <label class="toggle-row"><input type="checkbox" id="recentOnly"><span class="toggle-box"></span><span>Posted in last 7 days</span></label>
+            <label class="toggle-row"><input type="checkbox" id="hasDeadline"><span class="toggle-box"></span><span>Has application deadline</span></label>
+            <label class="toggle-row"><input type="checkbox" id="hideUnverified"><span class="toggle-box"></span><span>Hide index-only results</span></label>
+            <label class="toggle-row"><input type="checkbox" id="includeExpired"><span class="toggle-box"></span><span>Include expired job archive</span></label>
+            <div class="filter-help"><span data-icon="info"></span><p>Match scores are estimates from your profile and listed requirements—not employer assessments.</p></div>
+          </aside>
+          <div class="results-main">
+            <div class="results-toolbar"><div class="result-left"><span class="result-indicator"></span><span id="filterSummary">Searching the radar…</span></div><div class="result-sort"><label for="sortSelect">SORT BY</label><div class="select-wrap compact-select"><select id="sortSelect"><option value="match">Best match</option><option value="newest">Newest</option><option value="deadline">Closing soon</option><option value="company">Company A–Z</option></select><span data-icon="chevron"></span></div></div></div>
+            <div id="jobsGrid" class="jobs-grid"><div class="loading-state"><div class="loading-spinner"></div>Loading opportunities…</div></div>
+            <div class="results-foot" id="resultsFoot"></div>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="page-international" class="page" hidden>
+        <div class="eyebrow"><span class="eyebrow-line"></span> CROSS-BORDER / REMOTE / INFORMATION SECURITY <span class="eyebrow-suffix">// GLOBAL OPPORTUNITIES</span></div>
+        <section class="international-hero" aria-label="Global job intelligence">
+          <div class="international-hero-copy">
+            <div class="global-signal"><span class="green-dot"></span> INTERNATIONAL OPPORTUNITY SCAN <span class="global-indicator">BD → WORLDWIDE</span></div>
+            <h1>Work beyond <em>borders.</em></h1>
+            <p>Cybersecurity and information security opportunities worldwide. Explicitly worldwide/BD-eligible listings are separated from regional and unspecified eligibility leads for manual verification.</p>
+            <div class="intl-hero-stats"><div><span>CONFIRMED WORLDWIDE / BD</span><strong id="intlHeroCount">0</strong></div><div><span>HIGH SKILL ALIGNMENT</span><strong id="intlHeroMatch">0</strong></div><div><span>DISCOVERY</span><strong>NO API KEY</strong></div></div>
+          </div>
+          <div class="global-orbit" aria-hidden="true"><div class="orbit-ring ring-1"></div><div class="orbit-ring ring-2"></div><div class="orbit-ring ring-3"></div><div class="orbit-globe">✳</div><span class="orbit-label orbit-label-1">INTL / OSINT</span><span class="orbit-label orbit-label-2">REMOTE / BD +6</span></div>
+        </section>
+        <div class="data-banner intl-note"><span data-icon="info"></span><span><strong>Eligibility-aware discovery.</strong> Worldwide and Bangladesh-eligible roles are preferred. “Asia / APAC” postings require checking the original employer's country, payroll and visa rules. A remote label alone is not evidence of eligibility.</span></div>
+        <div class="intl-section-header"><div><div class="section-kicker">INTERNATIONAL CYBERSECURITY <span>// 02</span></div><h2>Global opportunity stream</h2><p>Publisher-attributed listings · original application links · skill-fit estimates</p></div><span id="intlResultsCount" class="result-pill">0 opportunities</span></div>
+        <div class="intl-controls">
+          <div class="search-field intl-search"><span data-icon="search"></span><input id="intlSearch" type="search" placeholder="Search remote information security, AppSec, SOC, country…" autocomplete="off"></div>
+          <div class="select-wrap intl-control"><select id="intlSourceSelect" aria-label="Filter international jobs by source platform"><option value="all">Every source / portal</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap intl-control"><select id="intlSourceSiteSelect" aria-label="Filter international jobs by posting website"><option value="all">Every source website</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap intl-control"><select id="intlEligibilitySelect" aria-label="International job eligibility"><option value="all">All worldwide, regional & unconfirmed</option><option value="confirmed">Worldwide / Bangladesh eligible</option><option value="regional">Regional — verify eligibility</option><option value="unconfirmed">Eligibility not specified</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap intl-control"><select id="intlSortSelect" aria-label="International sort"><option value="match">Best skill match</option><option value="newest">Newest listed</option></select><span data-icon="chevron"></span></div>
+        </div>
+        <div class="intl-feed-health-heading"><span>LIVE FEED DIAGNOSTICS</span><span>Each publisher follows its own refresh interval</span></div><div id="intlFeedHealth" class="intl-feed-health"></div><label class="intl-archive-toggle"><input type="checkbox" id="intlIncludeExpired"> Include expired opportunities from the archive (clearly labelled)</label><div id="intlJobsGrid" class="jobs-grid intl-grid"><div class="loading-state"><div class="loading-spinner"></div>Checking global sources…</div></div>
+        <div id="intlMore" class="intl-more" hidden><button type="button" class="button button-outline" id="intlMoreButton">Load more global opportunities <span data-icon="arrow"></span></button></div>
+        <div class="intl-provider-attribution">Public feed attribution: <a href="https://himalayas.app/jobs" rel="noopener noreferrer" target="_blank">Himalayas</a> · <a href="https://remotive.com/remote-jobs" rel="noopener noreferrer" target="_blank">Remotive</a> · <a href="https://remoteok.com" rel="noopener noreferrer" target="_blank">Remote OK</a> · <a href="https://jobicy.com" rel="noopener noreferrer" target="_blank">Jobicy</a>. Availability and eligibility are independently checked by each employer.</div>
+      </section>
+
+      <section id="page-saved" class="page" hidden>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> PRIVATE WORKSPACE / SAVED OPPORTUNITIES</div><h1>Saved <em>opportunities.</em></h1><p>Your shortlisted roles are kept in this browser—no account, no CV upload.</p></div>
+        <div class="results-toolbar standalone"><div class="result-left"><span class="result-indicator"></span><span id="savedSummary">Your shortlist</span></div><button class="ghost-button" data-page-button="jobs">Browse all jobs <span data-icon="arrow"></span></button></div>
+        <div id="savedGrid" class="jobs-grid saved-grid"></div>
+      </section>
+
+      <section id="page-sources" class="page" hidden>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> INTEGRATION NETWORK / SOURCE INTELLIGENCE</div><h1>Source <em>watchlist.</em></h1><p>Bangladesh employers, bank recruitment pages, technology companies, international publishers and job boards included in the source watchlist. Listed targets do not imply active extraction or available vacancies.</p></div>
+        <div class="source-stat-grid"><div><span>TARGETS IN DIRECTORY</span><strong id="sourceTotal">—</strong></div><div><span>BANKING SOURCES</span><strong id="sourceBanking">—</strong></div><div><span>JOB PORTALS</span><strong id="sourcePortals">—</strong></div><div><span>CAREER PAGES CHECKED / LAST RUN</span><strong id="sourceChecked">—</strong></div></div>
+        <div class="source-toolbar"><div class="search-field source-search"><span data-icon="search"></span><input id="sourceSearch" type="search" placeholder="Search employer or portal…"></div><div class="select-wrap source-select"><select id="sourceSector"><option value="all">All source categories</option></select><span data-icon="chevron"></span></div></div>
+        <div class="source-list-heading"><span>TRACKED WEBSITE / CAREER TARGET</span><span>COLLECTION MODE / STATUS</span><span>WEBSITE</span></div><div id="sourcesList" class="sources-list"></div>
+        <section class="discovery-panel" aria-label="Search intelligence keywords"><div class="discovery-heading"><div><div class="section-kicker">BILINGUAL SEARCH INTELLIGENCE</div><h2>Search beyond the feeds.</h2><p>43 focused English/Bangla queries for banks, telecoms, public job boards, social announcements and international hiring. External searches open in your browser; they are not unauthorized automated scraping.</p></div></div>
+          <div class="discovery-tabs"><button type="button" class="query-tab active" data-query-group="all">All</button><button type="button" class="query-tab" data-query-group="বাংলা — বাংলাদেশ">বাংলা</button><button type="button" class="query-tab" data-query-group="English — Bangladesh">English</button><button type="button" class="query-tab" data-query-group="Banks & telecom careers">Banks & telecom</button><button type="button" class="query-tab" data-query-group="Job portals & social (manual link search)">Portals & social</button><button type="button" class="query-tab" data-query-group="International — eligibility check required">International</button></div>
+          <div id="discoveryQueryGrid" class="discovery-grid"></div>
+          <div class="discovery-more"><button class="button button-outline" id="moreDiscovery" type="button">Show more queries</button></div>
+        </section>
+        <p class="footnote">Collection respects robots.txt, publisher rate limits and applicable platform terms. Official company homepage discovery, sitemap discovery, published ATS and free job feeds are supported; sites requiring authorization are link-only.</p>
+      </section>
+
+      <section id="page-health" class="page" hidden>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> COLLECTION RELIABILITY / PER-SOURCE HISTORY</div><h1>Source <em>health intelligence.</em></h1><p>Ten most recent attempted fetches for each source. Green means the source responded successfully—even if no cybersecurity positions were found. Amber means only a company homepage was reachable, not a verified recruiting page. Red means a fetch failed. Gray indicates no fetch history; restricted and manually searched portals are link-only.</p></div>
+        <div class="health-summary">
+          <div class="health-metric"><span>MONITORED SOURCES</span><strong id="healthTotal">—</strong><small>Directory + discovered ATS</small></div>
+          <div class="health-metric"><span>WITH FETCH HISTORY</span><strong id="healthObserved">—</strong><small>At least one real attempt</small></div>
+          <div class="health-metric"><span>LAST CHECK SUCCESS</span><strong class="text-good" id="healthSuccess">—</strong><small>Reachable last attempt</small></div>
+          <div class="health-metric"><span>LAST CHECK FAILED</span><strong class="text-bad" id="healthFailures">—</strong><small>Blocked, timed out, or HTTP error</small></div>
+        </div>
+        <div class="health-controls">
+          <div class="search-field health-query"><span data-icon="search"></span><input id="healthSearch" type="search" autocomplete="off" placeholder="Find a source, bank, telco, domain…"></div>
+          <div class="select-wrap health-select"><select id="healthSector" aria-label="Filter source health by industry"><option value="all">Every industry</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap health-select"><select id="healthFilter" aria-label="Filter fetch outcome"><option value="all">All fetch states</option><option value="success">Latest: success</option><option value="failed">Latest: failed</option><option value="partial">Latest: homepage only</option><option value="never">Never checked</option><option value="link-only">Link-only / restricted</option></select><span data-icon="chevron"></span></div>
+        </div>
+        <div class="health-legend"><span><i class="health-square good"></i> Successful fetch</span><span><i class="health-square partial"></i> Career unverified</span><span><i class="health-square bad"></i> Failed fetch</span><span><i class="health-square empty"></i> No attempt recorded</span><span>Oldest → newest</span></div>
+        <div class="health-list-header"><span>SOURCE / INDUSTRY</span><span>LAST 10 CHECKS</span><span>LAST RESULT</span><span>OPEN</span></div>
+        <div class="health-list" id="healthRows"></div>
+        <div class="health-list-more" id="healthMoreWrap" hidden><button class="button button-outline" id="healthMore" type="button">Show more sources</button></div>
+        <p class="footnote">History persists in <code>data/source_health.json</code>; the current run's progress persists in <code>data/progress.json</code>. Cached and link-only sources do not create fake success/failure results. Some sites may be unavailable, or prohibit automated fetching.</p>
+      </section>
+
+      <section id="page-profile" class="page" hidden>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> PERSONAL ALIGNMENT / PROFILE ENGINE</div><h1>Your experience. <em>Your signal.</em></h1><p>Tell the matching engine what you actually know. Your profile is saved only in local browser storage and never transmitted to this site.</p></div>
+        <div class="profile-layout">
+          <form id="profileForm" class="profile-card">
+            <div class="profile-card-heading"><div class="profile-card-number">01</div><div><h2>Professional profile</h2><p>Used to estimate your technical and experience fit.</p></div></div>
+            <div class="profile-form-grid"><div class="form-group"><label for="profileTitle">CURRENT TITLE / FOCUS</label><input id="profileTitle" name="title" type="text" placeholder="e.g. Cybersecurity Manager" maxlength="120"></div><div class="form-group"><label for="profileYears">YEARS OF EXPERIENCE</label><input id="profileYears" name="years" type="number" min="0" max="45" step="0.5" placeholder="Leave blank if not set"></div></div>
+            <div class="form-group"><label for="profileSkills">YOUR SECURITY SKILLS</label><textarea id="profileSkills" rows="6" placeholder="Web Security, API Security, LLM Security, Burp Suite, ..."></textarea><small>Separate skills with commas or new lines. Only include skills you possess.</small></div>
+            <div class="form-group"><label for="profileCerts">CERTIFICATIONS (OPTIONAL)</label><input id="profileCerts" type="text" placeholder="e.g. OSCP, CISSP, CEH"></div>
+            <div class="form-group"><label for="profileCategories">PREFERRED SECURITY SPECIALIZATIONS</label><div id="profileCategories" class="check-grid"></div></div>
+            <div class="form-group"><label for="profileSectors">PREFERRED EMPLOYER SECTORS</label><div id="profileSectors" class="check-grid"></div></div>
+            <div class="profile-controls"><button type="submit" class="button button-green">Save match profile <span data-icon="check"></span></button><button type="button" class="button button-muted" id="resetProfile">Reset defaults</button></div>
+          </form>
+          <div class="profile-aside"><div class="match-explainer"><div class="profile-card-number">02</div><h2>How scoring works</h2><p>Each job receives a transparent 0–100% <strong>fit estimate</strong>. Scores depend on what the listing specifies and the information you've entered.</p><div class="weight-row"><span>Listed technical skills</span><strong>63%</strong></div><div class="weight-track"><i style="width:63%"></i></div><div class="weight-row"><span>Years of experience</span><strong>20%</strong></div><div class="weight-track"><i style="width:20%"></i></div><div class="weight-row"><span>Specialization preference</span><strong>12%</strong></div><div class="weight-track"><i style="width:12%"></i></div><div class="weight-row"><span>Employer sector preference</span><strong>5%</strong></div><div class="weight-track"><i style="width:5%"></i></div><div class="explainer-warning"><span data-icon="shield"></span><span>A high score does not guarantee eligibility, hiring success or recruiter approval. Missing experience and requirements should be checked manually.</span></div></div><div class="profile-privacy"><span data-icon="lock"></span><div><strong>Privacy by design</strong><p>No account, external resume processor or browser-side AI API. Matching runs locally.</p></div></div></div>
+        </div>
+      </section>
+
+      <section id="page-about" class="page" hidden><div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> ABOUT THE PLATFORM</div><h1>Clear data. <em>Real sources.</em></h1><p>Our collection method is transparent: free publisher feeds, publicly documented ATS endpoints, and employer pages where automated access is permitted. Restricted portals remain link-only.</p></div></section>
+      <footer class="page-footer"><span>CYBERCAREERS BD <span class="footer-divider">//</span> FREE HOURLY JOB INTELLIGENCE</span><span class="footer-credit">Developed by Khandaker Ashikul Hoque</span><a href="#sources" data-page="sources">SOURCE TRANSPARENCY <span>↗</span></a></footer>
+    </main>
+  </div>
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside id="jobDrawer" class="job-drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer-head"><span class="drawer-eyebrow"><span class="green-dot"></span> OPPORTUNITY BRIEF / VERIFIED SOURCE</span><button id="closeDrawer" class="icon-button" aria-label="Close details"><span data-icon="close"></span></button></div>
+    <div id="drawerBody" class="drawer-body"></div>
+    <div class="drawer-footer" id="drawerFooter"></div>
+  </aside>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

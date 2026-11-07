@@ -1,0 +1,32 @@
+[
+  {
+    "provider": "greenhouse",
+    "board_token": "gitlab",
+    "company": "GitLab",
+    "note": "Global remote employer; only worldwide/APAC/Bangladesh-eligible security roles are kept"
+  },
+  {
+    "provider": "greenhouse",
+    "board_token": "canonical",
+    "company": "Canonical",
+    "note": "Global remote employer; only worldwide/APAC/Bangladesh-eligible security roles are kept"
+  },
+  {
+    "provider": "greenhouse",
+    "board_token": "cloudflare",
+    "company": "Cloudflare",
+    "note": "Global remote employer; only worldwide/APAC/Bangladesh-eligible security roles are kept"
+  },
+  {
+    "provider": "greenhouse",
+    "board_token": "mozilla",
+    "company": "Mozilla",
+    "note": "Global remote employer; only worldwide/APAC/Bangladesh-eligible security roles are kept"
+  },
+  {
+    "provider": "greenhouse",
+    "board_token": "wikimedia",
+    "company": "Wikimedia Foundation",
+    "note": "Global remote employer; only worldwide/APAC/Bangladesh-eligible security roles are kept"
+  }
+]

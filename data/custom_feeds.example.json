@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Google Alert — information security job Bangladesh",
+    "url": "https://www.google.com/alerts/feeds/REPLACE_ME/REPLACE_ME",
+    "region": "auto",
+    "enabled": false,
+    "poll_minutes": 60
+  },
+  {
+    "name": "Google Alert — সাইবার নিরাপত্তা নিয়োগ",
+    "url": "https://www.google.com/alerts/feeds/REPLACE_ME/REPLACE_ME",
+    "region": "Bangladesh",
+    "enabled": false,
+    "poll_minutes": 120
+  }
+]
