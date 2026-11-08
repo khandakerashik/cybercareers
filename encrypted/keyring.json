@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-08T10:06:02+00:00",
+ "sealed_at": "2026-11-08T11:06:47+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 114384
+   "bytes": 114385
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 287
+   "bytes": 290
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13280
+   "bytes": 13342
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5214
+   "bytes": 5262
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "be133570cde2abf6d0bcc1cebd500e73",
-  "jobs.json": "25243d6f7c4e11dd678f8149039dfce7",
-  "progress.json": "f4f7ec9e509c37b3e7ff7462da08c379",
+  "feed_state.json": "d39df7fbfabd10f36dd736f6d2920c63",
+  "jobs.json": "b8ea9fb4a69470a276d20af497d856e8",
+  "progress.json": "d49dae70a7a41c6cbdc8bda9a5dae9a3",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "c2213713ab3bd3772251abbb474adc5d",
+  "source_health.json": "4a85ccb46495d934b4d37f8a928069e5",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "e92383ebd41f6927f8d179b1499461c2"
+  "status.json": "5e9ed6d639309a75582c261f5c0b66b4"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "ROQHhkgwM6AciXyP",
-   "ct": "OesFW6BB+R6PmIGTAzSjHPS2oJu0rREFweR9nut7alf3GfK89w/fzxEGXEfJ/jPV"
+   "iv": "QAkzqPIpUT7GqDPb",
+   "ct": "g0dt1IXnhtW6vB91eKSea4hbcf91fXWm9iUP1YdyH0bE0XPR6hz/MCOdlUqO5gZ5"
   }
  },
  "ci": {
-  "iv": "h42PAvrLKC7zZU40",
-  "ct": "wdAWgURvDoDbex9I+RCkaNGqJufPB1XIGYJLyA4hLspdaIj1T/P38Jnnc3aUZHra"
+  "iv": "+lt4COeFRe3vp6UI",
+  "ct": "PqxVliAP6T1xNZjAzs2emLzn7xh1Jl98xyqhWjBdv7IZd5csM3DYVhthCggKbRRo"
  }
 }
