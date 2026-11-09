@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-09T10:07:53+00:00",
+ "sealed_at": "2026-11-09T11:06:50+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,7 +10,7 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 343
+   "bytes": 357
   },
   "jobs.json": {
    "path": "jobs.bin",
@@ -18,7 +18,7 @@
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 289
+   "bytes": 288
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13304
+   "bytes": 13282
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5218
+   "bytes": 5241
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "a44fa627a78706893184b614f3e21727",
-  "jobs.json": "26b0e640a747a594eaf23a1a67ac166b",
-  "progress.json": "2fc2859f23bc3e3650512b5a0924d04b",
+  "feed_state.json": "721dcd7fb3b7027e635eed5a890d5e91",
+  "jobs.json": "e23e9c15586def80839e0acf1a1b1edd",
+  "progress.json": "8282d65c1eb9e8ee94ebdee0a559990d",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "e12fc3f19bf404a42c0db450edeb04ee",
+  "source_health.json": "14127b6173962b8aaf1b82894fec2ca6",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "d585516120e1456ddb195ae6aa53c8c5"
+  "status.json": "57bef00381fcdd8b1bd9164b35da70cb"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "xfrT4Idr6jmvdG9C",
-   "ct": "TDXEnKYjEKENplEM4Xz9hIAMHAq1MQD0BueNQvCMk/NWIcYcf+4UBX4/rgxxwQeO"
+   "iv": "kOJ3tn9GSNYoiGvz",
+   "ct": "2PzNAdstdhvEEKInvDtmx58AAvWaqk9BBMlfsuqE0S3y0G5+aH2S0iik/aiQvC4W"
   }
  },
  "ci": {
-  "iv": "ZfcH2rYOLworASrs",
-  "ct": "Yxrr7+zRrP4cI4RJ72ZhLuIkBVJkCGwn5YddAX9szBCo4KCn5NbkQesVY2BlEQZF"
+  "iv": "gdLWtggb0ks0VtmC",
+  "ct": "KtgE7nxybiwRPvxqQcdB3BZFa7VxBfW3JpC4rRPoHbCS+IThJIcBKqfzI3q9Ge+J"
  }
 }
