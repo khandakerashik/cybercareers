@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-10T09:06:51+00:00",
+ "sealed_at": "2026-11-10T09:48:18+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 115126
+   "bytes": 115127
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 288
+   "bytes": 287
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13627
+   "bytes": 13616
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5251
+   "bytes": 5227
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
   "feed_state.json": "5ece348637dc62d084fffa66163744de",
-  "jobs.json": "a3604b71b005ef3ea8712f1a83d7b019",
-  "progress.json": "032d16b0023df3665012c13c9785270a",
+  "jobs.json": "3cfaf324c78c2cd9e36b5b65e7e6145c",
+  "progress.json": "9fc01e9113909d7fe8ab837c49feab9c",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "3246a996757da84e1c4da2d25f8eff8c",
+  "source_health.json": "a21cdf92912f1c7c2df43853ac5652f2",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "c2303930174daf2a0f4789bc4310fd27"
+  "status.json": "eb3ad27b682efa1b1da7064bbe6282f7"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "HvnAe/NUbDNIELvW",
-   "ct": "8Qz25DApRI0TMCVGpa6RdPOQCkmcmuwf0NnStCgR+YXGQKRgoQ5K8+KGPJM6R0eo"
+   "iv": "5jRkLpCjoXyrKdDY",
+   "ct": "xCYfKgChLuKePCf5LG74HBiltXl+k5LkFhOBppf5pdEAl3xXJF8m/BtWq234V9eW"
   }
  },
  "ci": {
-  "iv": "TKkAeMxOejfAAL8I",
-  "ct": "Lv1JWTDt37lCGdTN2CkNbCB3Pp5sUxr66fugAz+u16d9pGHV1SBFnNhjkCRANz5f"
+  "iv": "U3ODQMGUNip6dVbW",
+  "ct": "Zvk1OHq8SpC7IuumFyr0TFFuBs67+CX4HaI65YQA5H0Sujk9YuMAqvbijyQtDZos"
  }
 }
