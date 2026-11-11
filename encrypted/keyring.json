@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-11T12:06:53+00:00",
+ "sealed_at": "2026-11-11T13:07:20+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,11 +10,11 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 341
+   "bytes": 345
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 119728
+   "bytes": 119729
   },
   "progress.json": {
    "path": "progress.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13437
+   "bytes": 13428
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5243
+   "bytes": 5273
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "7304becff298cdea0cd8d8b81a14c2cf",
-  "jobs.json": "433548448f9099d1060d197ff4698b3f",
-  "progress.json": "fdc7c61d739e6a3ddf33826cf33dd200",
+  "feed_state.json": "f58b09745104284e2baf9d2a0233136b",
+  "jobs.json": "539ce37d9187d4017565526a4e373a8e",
+  "progress.json": "12bf265578ee303f7dc2a46e033adb44",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "9a52ea978ced66149133e937512e9163",
+  "source_health.json": "7890abf4d9f8c72e6dde746047855ad7",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "3ec196a1eca0e76327260b7326d70fb0"
+  "status.json": "7d7c859d557e6287b1b3d221763e6bee"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "KTIyte4BtZC2e/8r",
-   "ct": "DP6+OZwgAX6QwuWX6+LuqZIR2ymFhhdNaXEXd5mMECqcLwg6ZOQrC9lviRFq5Xo+"
+   "iv": "TBld4IPJBRRTCfRD",
+   "ct": "EUpYjsA/gjekswaLgjG/Rdiv3WIQr5mLCM0DPtd68Jwq7NlDeI5YKqG8+rhW34Pg"
   }
  },
  "ci": {
-  "iv": "DXG0tAb92Kqkbni5",
-  "ct": "KTv2sKweUOO6juQqnV8Pmy3WHX4OMnjjGYgv7EgfjysocTVt5XmV+Oi7VjLjyNfM"
+  "iv": "E9UsNTa/gDk0jtAI",
+  "ct": "KOyNUPTmW8lCEXOTACaKifI3PdCYAsqa4sILACgz96GXthzKCSaBG5GbK0vnqZjG"
  }
 }
