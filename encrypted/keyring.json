@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-12T15:07:16+00:00",
+ "sealed_at": "2026-11-12T16:07:04+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,11 +10,11 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 345
+   "bytes": 360
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 119749
+   "bytes": 119750
   },
   "progress.json": {
    "path": "progress.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13712
+   "bytes": 13682
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5264
+   "bytes": 5233
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "92095df8955c5e0179f49df072a1e9bf",
-  "jobs.json": "39855c91459e44c3678ff430150e8843",
-  "progress.json": "e9f2c88029049187a80447fc754b3aa1",
+  "feed_state.json": "67c14ef165bf046d2d22b15b7cb10f12",
+  "jobs.json": "c0bd1b2b18ac09516b8c86f2533fa83d",
+  "progress.json": "3e6febbb5e75c827452d489f226da911",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "585cda4ac462603afda1c62dc206052b",
+  "source_health.json": "e2d8b866149607fc20698553709b9401",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "3794b298de394be3759717521bd515e0"
+  "status.json": "afa1d2698c3815bda6bd1cd600057b4c"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "FT295C7iGI3Nq4WG",
-   "ct": "aEv0K3sL48gGvjkKkrH/Yf7zXrfMZPb++LN/5WlT3NI6EAtc3Tf9Udzk8t4Iyn5Y"
+   "iv": "ifTyKoeaZM+U4Jln",
+   "ct": "Fkn1MjiIDQAUzz+nUhvG7kn6IOjYuYQ7UXK0chVYlaIQNPapAJaG4w555zxDYQoP"
   }
  },
  "ci": {
-  "iv": "c6IluiKziFuUlvaf",
-  "ct": "d2mUPgkIvLiesYLVJ7sezEllWBzy56mbLdsTSHtJfe2+qnNxU2DJMk1/mp0Ni9Nv"
+  "iv": "56QyYjibq2UQAPfr",
+  "ct": "q4DIQeG7UENWp0/RWWE8G1Bihbao8jEzb1sJ7NteTVNKvB/LHfnulN3WYdnyp8Qq"
  }
 }
