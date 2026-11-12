@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-12T20:06:49+00:00",
+ "sealed_at": "2026-11-12T21:06:29+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 120097
+   "bytes": 120098
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 288
+   "bytes": 287
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13934
+   "bytes": 13888
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5277
+   "bytes": 5222
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
   "feed_state.json": "76964dc2d405ba54f0626bf641325448",
-  "jobs.json": "f243102b58700196c1ba811566ff5f29",
-  "progress.json": "f506fc2e27b23ae3a88b0f83cec9a60a",
+  "jobs.json": "26b465db925ef562e04e15af2e4bdc48",
+  "progress.json": "03ee0b2860c1d68c7875466fa4b5a900",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "a3724093b4c38c8058be23ca2c1c6ab8",
+  "source_health.json": "36b2e9f5a1596625ab48f8b93935a1f1",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "b8fe1565872c5b912e12b07c6369b819"
+  "status.json": "dfd1acc737b6887ffa6f42056e379e83"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "24FuMjgXjQOAROWV",
-   "ct": "oyMaj9tSrlSRWxojdJciplAAs2uU/jubhOZ9pWXJW3fkWlmnAKyNxpQ7fGlC9IKW"
+   "iv": "Oa2xqN15zqJTUE9l",
+   "ct": "aipzXe1SOYmM1axpcWOUnrnOVROXF0wBMvOYKbzKtfhaRcOEuh3wsUqYPlCMOCjh"
   }
  },
  "ci": {
-  "iv": "jVpyOaWDOQ5ms1q0",
-  "ct": "SRJ7joitPYQ5HWiX/hRt4w+WdMNQlW0PXLwuuEkQqfB7jCKEmnl3SYbiYzJlMmF+"
+  "iv": "u9I8M/iOg4hb58y3",
+  "ct": "/B/0sgUCpF8WTfjxX83cp+szZkCtd2jMoqbomK3Kb3VimV+b6nbW60JKd6q7KvR0"
  }
 }
