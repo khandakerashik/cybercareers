@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-12T19:06:33+00:00",
+ "sealed_at": "2026-11-12T20:06:49+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,11 +10,11 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 369
+   "bytes": 365
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 118187
+   "bytes": 120097
   },
   "progress.json": {
    "path": "progress.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13906
+   "bytes": 13934
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5226
+   "bytes": 5277
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "fd561c4d540d83b79b9b6f436d1caa7b",
-  "jobs.json": "093c116d4d63f4bff1eafda38ce221af",
-  "progress.json": "760d660c105a5008d4b963f0da1b949c",
+  "feed_state.json": "76964dc2d405ba54f0626bf641325448",
+  "jobs.json": "f243102b58700196c1ba811566ff5f29",
+  "progress.json": "f506fc2e27b23ae3a88b0f83cec9a60a",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "dc3adc5f6a1a6c1a15060ef0a883d947",
+  "source_health.json": "a3724093b4c38c8058be23ca2c1c6ab8",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "f93ee3ea1114255698172b2ea454340e"
+  "status.json": "b8fe1565872c5b912e12b07c6369b819"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "RLxTBCG+agKLdZKr",
-   "ct": "vI5Wd+e+WJG9ZW4Adm8NUPub1AFPvCgefz51s0UbQUVp7Zp0rrrLzfXaKCwOhI92"
+   "iv": "24FuMjgXjQOAROWV",
+   "ct": "oyMaj9tSrlSRWxojdJciplAAs2uU/jubhOZ9pWXJW3fkWlmnAKyNxpQ7fGlC9IKW"
   }
  },
  "ci": {
-  "iv": "iFtzbouwZP23baxL",
-  "ct": "sksG1588yVgHAB1yWP1lfN753jmr4X8J9JIa0ZNbYbI4NnkXWvTzpYI8JP7s3wVv"
+  "iv": "jVpyOaWDOQ5ms1q0",
+  "ct": "SRJ7joitPYQ5HWiX/hRt4w+WdMNQlW0PXLwuuEkQqfB7jCKEmnl3SYbiYzJlMmF+"
  }
 }
