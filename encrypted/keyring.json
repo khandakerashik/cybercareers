@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-12T08:07:05+00:00",
+ "sealed_at": "2026-11-12T09:06:50+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 119750
+   "bytes": 119749
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 286
+   "bytes": 288
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13728
+   "bytes": 13708
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5246
+   "bytes": 5264
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "8aaa681f1aa3ac44739c837684188120",
-  "jobs.json": "cdd5db5451866d6288b1d9a094c18cf5",
-  "progress.json": "2770f1fbb793a9708d0372802c9e06c0",
+  "feed_state.json": "9540f1a9978e715f090da9eb0431bb73",
+  "jobs.json": "2a1051150191cb06d7b77a80e6f7a8ad",
+  "progress.json": "4f8605c8f564eba4690dbdb1c7aea885",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "3998aa8fdc49f50ebaf03b2373fd1e00",
+  "source_health.json": "12576c1cf98283681a80f0941cc1e646",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "c9b7fa3e12cc98b75547735e140253d4"
+  "status.json": "3352a8e54b80f8bb4dc61c9bd2fda2b9"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "BCLcXrCJ99eILFkJ",
-   "ct": "iwuaGpjuJmwTc7nGBqz/HaGBGspZ6Eald39jecyUbQ5arTi8vVgfAPfjvGbmCXLF"
+   "iv": "BKtc0xUtYyfeoAAX",
+   "ct": "cHm/sALSIqYapMZvaiitQ010OCmx1l8XPX5A1TwL9nsUjpUhWIrR9qUUAfQB/nvv"
   }
  },
  "ci": {
-  "iv": "M/6ibqGhECQxDyFH",
-  "ct": "sD485E4hPZHD6gVwDdJrr38UqET1oNCDS9cUirISOAnogMb0TtxkavYAE1YUiQqu"
+  "iv": "k+uFKxRJN0VcMfIr",
+  "ct": "DK6m6oU6MK+1alEjMDoyOd+flv6/6ml9bLX4JS1YRoGYdXe1H3ciRQhxpXkuykcI"
  }
 }
