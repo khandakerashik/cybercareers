@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-13T00:21:44+00:00",
+ "sealed_at": "2026-11-13T01:06:27+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 120096
+   "bytes": 120098
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 288
+   "bytes": 289
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13716
+   "bytes": 13722
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5221
+   "bytes": 5225
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
   "feed_state.json": "ed92d26f0a7b0fd4a94e283a2d75d4d6",
-  "jobs.json": "42f438ad8c6d44c023ecfa85901162c5",
-  "progress.json": "74606989d389bdba94bc27c5239531e2",
+  "jobs.json": "a260669c3546cd965052a0dcff5a1b4a",
+  "progress.json": "1404282aa65ec914aa97850f02c9ae94",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "58c7395edd8c1989b9315a07d739acba",
+  "source_health.json": "de1ec0311dfb8abe270db672af0bee93",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "65cd210567fc1bd4875325464683587c"
+  "status.json": "e7f22198f9c0b08224880c03d82713d5"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "kHY8VRS50EbNPnA2",
-   "ct": "mqcNGTlASv23tmoVq4MoY6wD2gvOdM6REoyjE4K+l6MaQ5G1Not7ViQl4fWZgFm7"
+   "iv": "5hIufnP6SiYhbLUS",
+   "ct": "y6wtwmOq+e+HtIdvYe+pqi4kHzEK3SFXJJUrFO/D05KEZN3MB3UQD2g9SFcPsAvR"
   }
  },
  "ci": {
-  "iv": "h6IP0pPbyvzjfVr4",
-  "ct": "mvbnG8Z5cl5I8F9yy6HHM1rQ2Y+cALXaAoXHiLF3OaaFSqFE26Rav7sBuCSIN+gx"
+  "iv": "L/HAS4gdagUCCTmF",
+  "ct": "121yVZ5KzYxfYO5td2ILMmeLGju35AwUKKrqsOeBispEHnp7ig/AXN980KfmF6b5"
  }
 }
