@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-13T19:07:04+00:00",
+ "sealed_at": "2026-11-13T20:06:33+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 122327
+   "bytes": 122326
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 289
+   "bytes": 286
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13526
+   "bytes": 13510
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5297
+   "bytes": 5218
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
   "feed_state.json": "fdc80c4a06b3fa7c5cc142b112fb5ceb",
-  "jobs.json": "30f42eac9d232955c8bde121339e66ea",
-  "progress.json": "fa92ebedca6b9967db2b7cb63419ad06",
+  "jobs.json": "3f56b1d97ff7cac037571d5edfcb28e5",
+  "progress.json": "fdb7d08da05d7c679a741c6372aecda6",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "992dff457d920de8286087037a6b616d",
+  "source_health.json": "45d943c85d2d9b9065bd2a299278fa71",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "e9b4746ac5f944b0a51e53cc0a415922"
+  "status.json": "acf4c02e7c79ad01963d6ac77cd06d9d"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "qiYkgWH8YacDUz0Z",
-   "ct": "isvG0lBIGXWzalyJP0h00jb9R05GYA/Xp5SLZuVllhkbxvM7HWdgiFARfQv+9CW9"
+   "iv": "r+NmRmpJoz3VZgYD",
+   "ct": "PfkFirBC4FT2na34zFR16dMg15Nsdqfj0xwLVSo/LeB086jrXBv2zOL5dmPSg+f7"
   }
  },
  "ci": {
-  "iv": "IYX8gHAon2U1uPu3",
-  "ct": "oaEWIz2FBuG/Zvz9D5SBNCJtgvTE8L+U+A38R6kWQR4UibizaLOPoPoniaMYzRlv"
+  "iv": "RS+b0YVgpQlw7m5a",
+  "ct": "Orvl+PfgJaWr3CNP9XcSgMPQMO98RicdVaLKqPGbODtU0y4+xwrRamB7FpYIdhRV"
  }
 }
