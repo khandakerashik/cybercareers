@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-13T23:06:40+00:00",
+ "sealed_at": "2026-11-14T00:07:22+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 122307
+   "bytes": 122306
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 288
+   "bytes": 286
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13513
+   "bytes": 13512
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5219
+   "bytes": 5244
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
-  "feed_state.json": "37e9e1392c71a94b58bf55357f020e9b",
-  "jobs.json": "cdfd48d9b1d0706dec35549cd0f95728",
-  "progress.json": "beb54d99b38958a1108fa7272032ec5c",
+  "feed_state.json": "1f03c52029af141197209feca2bc1cc8",
+  "jobs.json": "04348819bc108e6146c132cc8e1c62ad",
+  "progress.json": "1c0ee70a9812c8ba0b7b2c1b02233797",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "9df8513e025995d1f30226acd9e135f4",
+  "source_health.json": "75f094fe42b1addbb79f6a608bd470f3",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "c124cbafb4c747659a0550a102924c55"
+  "status.json": "56c8046b6d75d0000ad3842701c3fec5"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "WlgUuhT02zvJ35RJ",
-   "ct": "ffHR72v+tPdj5RAnpwqyxNMlTvfAJ9Qn9qG4mnWcdd35cLPT8G2eKbtGyyL1CV7/"
+   "iv": "VYpQaxDRHI2HImzP",
+   "ct": "KGv09hsd9kdTv/Q7hAKQ4FigeXrxP+e7E2OfMjkBdhfOMeBqn5Mh5QYKzTFibx53"
   }
  },
  "ci": {
-  "iv": "wKhFMlkpaqPA+yHs",
-  "ct": "9c9xiruVfRKQGIggFQCG7D+1O9Rhev8yjj3uyg2Zmx4EX+xo+IZuE8PLWSmwSs3o"
+  "iv": "Bp+CiB1tZZu3InpB",
+  "ct": "MX4JqffRA1xDdsrvFAeFj8L5yloh79Wsv9VPEZSfe2yp+eCo78BAoBJIDkgnXl8d"
  }
 }
