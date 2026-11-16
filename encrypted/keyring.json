@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-16T05:05:18+00:00",
+ "sealed_at": "2026-11-16T06:04:41+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 126570
+   "bytes": 126571
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 297
+   "bytes": 289
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13682
+   "bytes": 13650
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5305
+   "bytes": 5253
   }
  },
  "fingerprints": {
   "ats_discovered.json": "efff7c2d8f51cf36c6b58a1b10dc6328",
   "feed_state.json": "4f2ce635d89a2e476d857ffa3aec1261",
-  "jobs.json": "1db119460ee6f5a908ba1c86c0382a5f",
-  "progress.json": "0482190eb3a96cb58c256299bcc39a57",
+  "jobs.json": "94b0ba3f271a306bce6858c580697171",
+  "progress.json": "c0ed85db1741d8752765cafb5f110f0d",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "91ab80d29acf9e7f77e8972aac8bb968",
+  "source_health.json": "6c13592d1796bb2383d86d6cdfe37b65",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "7533f8b9de06330d3726bc47c70a75a5"
+  "status.json": "65532164de5d6aed3df41971b1285a33"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "TZCPu+V3jFDidZPp",
-   "ct": "G35JBNdqYHTwAoEHLmdwzfzt3OYHwRyB0YHBPKDBUaLuvnxaaqeSUK//cKsob1Kr"
+   "iv": "S0CQPq636AweJPf9",
+   "ct": "pUsj0i6a+D/s284RhSSZukpCmq84QCIWIn+9P+90Eai2Vnhkjq18V+y1zxS3Qfwx"
   }
  },
  "ci": {
-  "iv": "BNEOeyOp9V1K8RQK",
-  "ct": "TyMrN6iXWbLawC3e7LhKff4RfZMOobjgxwlgu7b+RrX4yCYouUSh0pxcHclA5hon"
+  "iv": "tfviUW9308Eam+o8",
+  "ct": "Ls4/M7q56lXfQJ01UrQHZxWhP9AkI1eXyrR+LU3MhzyO+0uyuajtYNbYXTULoG1p"
  }
 }
