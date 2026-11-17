@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-17T11:05:23+00:00",
+ "sealed_at": "2026-11-17T12:04:48+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 124275
+   "bytes": 128818
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 291
+   "bytes": 290
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13806
+   "bytes": 13860
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5293
+   "bytes": 5265
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "65dfdee6153787b0cfd5cce7cb44da3b",
-  "jobs.json": "fedb6cbfaca4b7b1c733571ac21791a6",
-  "progress.json": "87b58408ba881a303f4c0212b7d82285",
+  "jobs.json": "b00379271570b3c741179a6b15b35574",
+  "progress.json": "410ece038af8e533398afe6ca8f3a915",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "5f76d93d581b8871a7e23c904f9f5e53",
+  "source_health.json": "82cc6da2b8c334ee27aa3de80a0b91d6",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "7c83f40782039bd8b5fa6775530ff8ed"
+  "status.json": "3f6d065785330b925a0935fe0f591a98"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "ksOM5wEAJde5x51X",
-   "ct": "Y+iruos8ypvMureQrHLSgXnqetAy7m4gOK4zY/g7VF76j6p0QKFizb8M9T+nvsY0"
+   "iv": "b9QgYAFhp1+sKX8D",
+   "ct": "+GrP2/uUXPSWzcmDGMDGxXKbmUkxiZt26U3ai8O+Z4UOfIDn8gW5LSgg5KcIW/kp"
   }
  },
  "ci": {
-  "iv": "KSE1iri3Wg6/Q9Wm",
-  "ct": "pSFNCG8aGq4VmaXu64RIeK/5INglbAyyPzUPcBHjPXjTDEeGTfb0Uynj/2Za+zPi"
+  "iv": "ljxeoz4i87p52UE0",
+  "ct": "3OZP1oa3DPwpJs6+qUbl2VxzsPi3YFLvT71eZgZrm8Mp2tMIOiLNClTa0gq9pqBy"
  }
 }
