@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-17T17:04:59+00:00",
+ "sealed_at": "2026-11-17T18:04:32+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 128819
+   "bytes": 128835
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 291
+   "bytes": 290
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13950
+   "bytes": 13922
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5324
+   "bytes": 5263
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "560b0459a865a95358d1b4e87a2c9d33",
-  "jobs.json": "a8a4a6f69a2716a34f6053c0b7930dd4",
-  "progress.json": "a0afaadc35b292ab7ffa2a478402501b",
+  "jobs.json": "7a321de54ce968913e69172aef148453",
+  "progress.json": "38a0034e7ff88adc65c9ce46de3afc49",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "e74db6040884004ac73c9c27efa359b2",
+  "source_health.json": "ae085be2684d6db71a265e32072c05ce",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "7f5ebb8e48252d8fb0da3ed55aecc3b4"
+  "status.json": "efadea12d237c3b8548dd4e47d93d0af"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "aB0c9fnkfdBsD0MF",
-   "ct": "16rhobnjRoTnkhlOp1vqk++bQw03ufmPEyiL1UQejElQHHrXMl7xSXOBWKOeKR0Q"
+   "iv": "NlDIGfzIrto0xuNl",
+   "ct": "7lysGq5xifYzCmjp7A5xsi3/ePQLfVRHm1V6Mm0QqCkVjahDgd/tnNqdN4MdEojS"
   }
  },
  "ci": {
-  "iv": "eUtZ0+s4zQFi5KIt",
-  "ct": "ISrrU/orDcM8zmSlin1Fwm93xaVcic2rGkom8nqP2tZDIlGeumEPwOx741gq03td"
+  "iv": "pa7tvlR5FV8EpY/I",
+  "ct": "L/OPydPZD3jCa0oxaobtp8qsztCPFsW35O4qYqycHltNF+iCbpwWVM0/fLw6I+x2"
  }
 }
