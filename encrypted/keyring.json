@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-18T21:05:17+00:00",
+ "sealed_at": "2026-11-18T21:57:43+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 130151
+   "bytes": 130152
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 290
+   "bytes": 291
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13845
+   "bytes": 13864
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5295
+   "bytes": 5248
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "2f9bf72737ed19995bcc181d07452f49",
-  "jobs.json": "75e6adc60ee822b16e4536cf9904fc72",
-  "progress.json": "4972dc647d99e467605f275abb79d729",
+  "jobs.json": "ecfc4200fc9b0d0aa76203aa793591ff",
+  "progress.json": "17124ff34a2eed863525fcf307ce9765",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "6cd7997afa2b937450075f20516c7a05",
+  "source_health.json": "87d6da58fda61d0e13a1b0c8a96c8d5a",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "9b33717988331e20c98b617c5df2f450"
+  "status.json": "e0f5023a29711a2c8d054c5d89facfa7"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "Zeedo4/pfHV1xvLZ",
-   "ct": "QFHrhptdo/ftHfDRIFciUcy18W5Pj1FAm9UdrkWbP7Xn8HTeSrExNv8VRhPB38F6"
+   "iv": "lYgsRiXIp1tObL68",
+   "ct": "6+ldylWMr19K5lhpJxDt4EtnaHybNldcUvblTn5FXyyo99wxrEzkx8YR9Qr/ILdO"
   }
  },
  "ci": {
-  "iv": "LVAIMrgeJ0wK88zL",
-  "ct": "KJ0m/9Qk/j3teuZHImH13U1gqm9zOaKcSh6s4ab9feh6XMQDvQ4D2N8hDOnHBQdj"
+  "iv": "d32udvfLt+4J6pAW",
+  "ct": "osDRKSeT7fAO8V0cAxLbO0wdtaj6zy3HVK8aoL3QF0tpvSvz7XywQmjqLMqRl+IR"
  }
 }
