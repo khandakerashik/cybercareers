@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-19T16:05:00+00:00",
+ "sealed_at": "2026-11-19T17:05:00+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,7 +10,7 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 359
+   "bytes": 362
   },
   "jobs.json": {
    "path": "jobs.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13885
+   "bytes": 13904
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5283
+   "bytes": 5287
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "c7f0114d5e838dcfc0f20e1e83af01d5",
-  "jobs.json": "c6ea48293526c3b3e8163c8aea70d671",
-  "progress.json": "f7fad4f6a09439011f0db74d06297313",
+  "feed_state.json": "84b2f828cf8b85c15fd0e048dbe08959",
+  "jobs.json": "50a091778b4cc38ba95312e074ae2d66",
+  "progress.json": "e3d25bd6b86dd25e9fd5758467964915",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "f41d8347c2914c3804b7eb35f1b23498",
+  "source_health.json": "0a3a3c627961c43c69f4edb021ce32ef",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "2da6dc901fc564916dcfbd55800d34ba"
+  "status.json": "9d6243c6c9e10b6ae4d9983b801a875d"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "Z9r194HyDgIdZyNg",
-   "ct": "3ns0HUaDiG44sm/OTdxbsVPZsfKi19LzXWp7m/gq9ZM6n4in8Gi6wvz6PS4/Qa9c"
+   "iv": "mhJheWKvGkrzog8Y",
+   "ct": "9RU3nV8lzRa+A/MJ7z5TNf5+lvzphGreSL6L128I0VrtOjPyBKs7i1vJY+8ZoTUE"
   }
  },
  "ci": {
-  "iv": "NhLwVFNQzNX9zolZ",
-  "ct": "X9oG3thcr3LchcUY/kjcBxpb7sIVbF6vE6hLeMrAsRFLX0w61xnpAy7Gt33L6L/n"
+  "iv": "Fj2igUl6qUjcZNVp",
+  "ct": "2vmwwfB+u3rdYatdRXA5DSckLBxg/ZyD29VBWHrqcOTSECK6E5L8M7h5X/OvWSXt"
  }
 }
