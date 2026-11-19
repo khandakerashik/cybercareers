@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-19T03:24:17+00:00",
+ "sealed_at": "2026-11-19T04:04:47+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 130152
+   "bytes": 130150
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 290
+   "bytes": 291
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13877
+   "bytes": 13954
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5292
+   "bytes": 5262
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "94a33ea36878ae5511801bf91afe133e",
-  "jobs.json": "6668bd62ecd978f74ae2c91b80d8de14",
-  "progress.json": "e48159e6c077ead923333c918e5343e7",
+  "jobs.json": "2847606972299d039faa3e32621f1bb6",
+  "progress.json": "02c03621944b3d4401b1870b3b5233fe",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "0b114ec7e707f70e59c67d3d96db5f22",
+  "source_health.json": "89ec932ca4f8be8fb0e249ebeac653a1",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "4fa5b3dde3a677c7432156ca20262000"
+  "status.json": "e021cc1a0e39c2820224fb0a52ddb63d"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "aKb1hmGup0QXsvgt",
-   "ct": "wvMJV4rgdiSFVN5mPU+ESBZBbE7fL0vpIX4QV3dkfSKSApjg/IR5DTvQX9LOV3ND"
+   "iv": "OwNF5+3rusWrRpGG",
+   "ct": "65ekeKgMj871ex2/PCaglm2gZ5yGvzAoRulXdy0b22Js1HN6KtNmP9yHek65AZwq"
   }
  },
  "ci": {
-  "iv": "RsEVoVreMlRrCnll",
-  "ct": "7DU9Lw7FlqNqSn4SnH4o7y8JvQKbn6rk4EWw9Bxh4SWvcoNrp0YttZGHLDQ6MnMx"
+  "iv": "NrKfky0blt7XYWxc",
+  "ct": "b3tzx2anF8zpBiicjc0MwM+kEObtv+6a9fvHew76Gwf6LgWK6iAYvUxYRDu/1h+w"
  }
 }
