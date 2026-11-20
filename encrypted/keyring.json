@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-20T15:05:31+00:00",
+ "sealed_at": "2026-11-20T16:05:14+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,7 +10,7 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 347
+   "bytes": 361
   },
   "jobs.json": {
    "path": "jobs.bin",
@@ -18,7 +18,7 @@
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 289
+   "bytes": 288
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13765
+   "bytes": 13761
   },
   "sources.json": {
    "path": "sources.bin",
@@ -39,24 +39,24 @@
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "f57cba351c876b2f65cb6a03176f827a",
-  "jobs.json": "f09acbfcc855fa8524f6f38dba90ca38",
-  "progress.json": "56a51859980ae117bd218aa403f16d22",
+  "feed_state.json": "ac4af92353c86e3fe5d7482c60046d26",
+  "jobs.json": "8bc1eaac1d4d9754463f646c0ef2f027",
+  "progress.json": "4feae3c2d5d08152a9de4fb39abd5831",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "235dfc98909c5f4d388ba2b08395d591",
+  "source_health.json": "48e8a6826ff6f05ba20b1ad60bd86773",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "c759522787c00d9c11f30834af8bc53c"
+  "status.json": "aae803a66cf82855828962a3a0ac4c16"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "Q+SxH7oSyrBrMnnM",
-   "ct": "bsQwUi5K93Smyv1HkFkwpmiXTkV7MJJ1rQ2HdcHijY+tLc+7NxOZDSptoCB9hzLF"
+   "iv": "ZInsOxjbJWnlERnA",
+   "ct": "iZfgxvbVdnb4Vj4Md86rqh2+LaaCRYcwchg1Rg3S4YvETlrzpCdKn61RPYdzpgv1"
   }
  },
  "ci": {
-  "iv": "x/NS58OxlHULrE2n",
-  "ct": "4iXW3AJp5Sc70jjf/SCO/YibklqxrVVeRkzSh6GJBvEcs1TZF9LS1s0xdbjUpNjL"
+  "iv": "T7IZlM7Zog4I/Z3Y",
+  "ct": "daZWcPC1KelYI1fNPqtvfmDUVxMASvB/7PxPURwSoomxVwt5VOYBI1gH9Z5pGXRd"
  }
 }
