@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-21T09:45:30+00:00",
+ "sealed_at": "2026-11-21T10:05:00+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,11 +10,11 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 365
+   "bytes": 362
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 167780
+   "bytes": 167778
   },
   "progress.json": {
    "path": "progress.bin",
@@ -26,7 +26,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13767
+   "bytes": 13707
   },
   "sources.json": {
    "path": "sources.bin",
@@ -34,29 +34,29 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5284
+   "bytes": 5266
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "d42a0717fde8e012a4428569e4d6a8c2",
-  "jobs.json": "d91adfd958f00cf498a8507d5109f8dd",
-  "progress.json": "0c8439c5e80b2c396d87a3cf8aa999ca",
+  "feed_state.json": "f69504a1a5daaaee38127bbc467ed15b",
+  "jobs.json": "feeaf94860ecb16c6aac602857e045a5",
+  "progress.json": "a816b546f66be77f90a1e4f44c7f9f2f",
   "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "12e3cf21394cfd45a1716bce9bdd1bd7",
+  "source_health.json": "d99f22cc6f82a6d1948ea7cc41944523",
   "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "8a34a04740f449ea1928c15f41c3747b"
+  "status.json": "43d49b49d5b575e90adb6fd3a0ab532c"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "qflJ1Ex7DD8OK4bO",
-   "ct": "SECzA4e++Ke1rp/kNlznFF6AEPNouNBuI5ridXfHjFd/3Zi2IAjPnd2mBE8fpAsO"
+   "iv": "k7vcX8iadQQdm25J",
+   "ct": "nJ1es9ZpCyujtjRE+rVTsk6ntNPuDIR6wCZY3GrEpq2abGLur8DQjk7Ei/5jNBk8"
   }
  },
  "ci": {
-  "iv": "uUH37CVCmczfMJ/Y",
-  "ct": "M85qOVkC7CbccA+APWXd8vzBcnAkZVakZW0bFxh3MyANjaiSPhQ8/qujkRdyhExs"
+  "iv": "WlPHI14LhpUBG/lD",
+  "ct": "H5aIICvYlUjc+/OCrYjO/HMl4ZkhoTiVlCZaMSDE5lFoaN062uTQ638tcHPzqMFP"
  }
 }
