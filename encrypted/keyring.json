@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-22T16:04:43+00:00",
+ "sealed_at": "2026-11-22T16:30:04+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,53 +10,58 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 365
+   "bytes": 377
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 177999
+   "bytes": 158510
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 291
+   "bytes": 488
+  },
+  "rejected_jobs.json": {
+   "path": "rejected_jobs.bin",
+   "bytes": 23110
   },
   "search_queries.json": {
    "path": "search_queries.bin",
-   "bytes": 1857
+   "bytes": 2272
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 13759
+   "bytes": 19832
   },
   "sources.json": {
    "path": "sources.bin",
-   "bytes": 6654
+   "bytes": 7166
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 5303
+   "bytes": 8054
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "881e7c6a406751ba1aa088d36e7db1a6",
-  "jobs.json": "ad3412e1521083d82b604545c37b2afc",
-  "progress.json": "6b20c80490688b786916f2332780cccb",
-  "search_queries.json": "4933e47a7c3b69dc7189e75ba27e5431",
-  "source_health.json": "c8719339de2a747efd3aae891aaba650",
-  "sources.json": "633677dd7e2510752207c1c59d4d336f",
-  "status.json": "f8302aff2204fd2e5e275804251d3d51"
+  "feed_state.json": "63460fcc8287042ef18b535d9243646b",
+  "jobs.json": "4e5347b3f9b8b8d58f89282a01c882e1",
+  "progress.json": "efa3bf0583de957392795438d85cb9c0",
+  "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
+  "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
+  "source_health.json": "99483df419d887038a54ebb789345398",
+  "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
+  "status.json": "c4756b2d92a0aa1fabb9fad25a0be59a"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "h7WiS2iF40lk5PSZ",
-   "ct": "+GfwlEZDreD8CWVQJuT7+NBwv5e3n9qrHe4eNH1yH0myeFCdCTfdM5d4Dmlil5yu"
+   "iv": "+kY/trWnjBZRKI+W",
+   "ct": "wvCY+DlZ71iVRvsGxyk2jaI/DlY7Hf9zuhkXTSdaE09jYMoyxJnQ6LRXapnitJFy"
   }
  },
  "ci": {
-  "iv": "q5bHFan11/5M7c2V",
-  "ct": "O8J7fAEJTZcpazxLt+7KeEDq3O7ZRzpbkvdQLLcKTOFbJPYMWUHakBQ21FeSPo+H"
+  "iv": "cH2AHxHiNLFw0E+W",
+  "ct": "Zpnnkhbqj3VCzAPhACtiOeXejAllptZFBJS9kugXIFvtiujNoMcnM6eSOJI1SUGs"
  }
 }
