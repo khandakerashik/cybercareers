@@ -59,8 +59,111 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+      - name: Check complete release upload
+        # Inline so a partial upload cannot omit the checker itself. This reads
+        # public code paths only, before dependencies, keys or job data are used.
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          required = (
+              'requirements.txt', 'index.html', 'styles.css', 'app.js', 'auth.js',
+              'applications.js', 'github-scan.js', 'assets/favicon.svg',
+              'collector/__init__.py', 'collector/ci.py', 'collector/github_progress.py',
+              'collector/collect.py', 'collector/telemetry.py', 'collector/relevance.py',
+              'collector/vacancy.py', 'collector/textmine.py', 'collector/robots.py',
+              'collector/render.py', 'collector/ats.py', 'collector/free_feeds.py',
+              'collector/custom_feeds.py', 'collector/email_alerts.py', 'collector/search_apis.py',
+              'server/__init__.py', 'server/app.py',
+              'vault/__init__.py', 'vault/__main__.py', 'vault/backup.py',
+          )
+          missing = [name for name in required if not Path(name).is_file()]
+          if missing:
+              print('::error::Incomplete release upload. Missing runtime files: ' + ', '.join(missing) +
+                    '. Upload the complete release folders together, preserving your existing vault and user configuration.')
+              raise SystemExit(1)
+          print('Required release runtime files are present.')
+          PY
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Check release compatibility
+        run: |
+          python - <<'PY'
+          import contextlib
+          import importlib
+          import inspect
+          import os
+          import re
+          import sys
+          from pathlib import Path
+
+          problems, modules = [], {}
+          def require(label, check):
+              try:
+                  valid = bool(check())
+              except (Exception, SystemExit):
+                  valid = False
+              if not valid:
+                  problems.append(label)
+
+          def flush_private(*streams):
+              for stream in streams:
+                  try:
+                      stream.flush()
+                  except (AttributeError, OSError, ValueError):
+                      pass
+              try:
+                  import ctypes
+                  flush = ctypes.CDLL(None).fflush
+                  flush.argtypes = [ctypes.c_void_p]
+                  flush.restype = ctypes.c_int
+                  flush(None)
+              except (ImportError, AttributeError, OSError):
+                  pass
+
+          # Imports are inspected, never executed as collection entrypoints.
+          # Suppress Python and native import output; report fixed labels only.
+          original_streams = (sys.stdout, sys.stderr, sys.__stdout__, sys.__stderr__)
+          sink = None
+          saved = [os.dup(fd) for fd in (1, 2)]
+          try:
+              with open(os.devnull, 'w') as sink:
+                  for fd in (1, 2):
+                      os.dup2(sink.fileno(), fd)
+                  with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+                      for name in ('collector.collect', 'collector.telemetry', 'collector.github_progress',
+                                   'collector.ci', 'vault', 'vault.backup', 'server.app'):
+                          try:
+                              modules[name] = importlib.import_module(name)
+                          except (Exception, SystemExit):
+                              problems.append('cannot import ' + name)
+                      require('collector callback interface', lambda:
+                              {'on_progress', 'force_feeds'} <= set(inspect.signature(modules['collector.collect'].run).parameters))
+                      require('source progress interface', lambda: all(callable(getattr(
+                              modules['collector.telemetry'].CollectionTelemetry, name, None))
+                              for name in ('plan_sources', 'started', 'snapshot')))
+                      for name in ('collector.ci', 'collector.github_progress', 'vault.backup'):
+                          require(name + ' entrypoint', lambda name=name: callable(getattr(modules[name], 'main', None)))
+                      assets = {'app.js', 'auth.js', 'applications.js', 'github-scan.js'}
+                      require('vault frontend assets', lambda: assets <= set(modules['vault'].SITE_FILES))
+                      require('server frontend assets', lambda: assets <= set(modules['server.app'].PUBLIC_ROOT_FILES))
+                      require('live progress decryption export', lambda: re.search(
+                              r'export\s+async\s+function\s+decryptLiveProgress\b', Path('auth.js').read_text(encoding='utf-8')))
+                      require('live scan frontend import', lambda: re.search(
+                              r"import\s*\{[^}]*\bcreateGitHubScanner\b[^}]*\}\s*from\s*['\"]\./github-scan\.js(?:\?[^'\"]*)?['\"]",
+                              Path('app.js').read_text(encoding='utf-8')))
+          finally:
+              # Buffered original Python streams and native printf must flush
+              # while descriptors still point to the null device.
+              flush_private(sink, *original_streams, sys.stdout, sys.stderr, sys.__stdout__, sys.__stderr__)
+              for fd, original in zip((1, 2), saved):
+                  os.dup2(original, fd)
+                  os.close(original)
+          if problems:
+              print('::error::Incomplete release upload or incompatible runtime: ' + '; '.join(problems) +
+                    '. Upload the complete release together; keep your existing vault and user configuration.')
+              raise SystemExit(1)
+          print('Release runtime interfaces are compatible.')
+          PY
       - name: Test (code only; never depends on live data)
         run: python -m pytest -q -p no:cacheprovider
       - name: Require the vault master key
@@ -124,8 +227,9 @@ jobs:
           JOOBLE_PAGES_PER_QUERY: ${{ vars.JOOBLE_PAGES_PER_QUERY || '3' }}
           JOOBLE_MAX_REQUESTS_PER_RUN: ${{ vars.JOOBLE_MAX_REQUESTS_PER_RUN || '4' }}
           JOOBLE_DAILY_REQUEST_LIMIT: ${{ vars.JOOBLE_DAILY_REQUEST_LIMIT || '96' }}
-        # Output is discarded: Actions logs of a public repository are public.
-        run: python -m collector.github_progress > /dev/null 2>&1
+        # The wrapper suppresses private collector output and emits only safe
+        # diagnostics, so failures remain actionable in public Actions logs.
+        run: python -m collector.ci
       - name: Encrypt (fresh data key, per-user wrapped keys)
         id: seal
         run: python -m vault seal
