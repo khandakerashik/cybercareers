@@ -244,11 +244,15 @@ jobs:
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: python -m vault build-site --out _site
       - uses: actions/configure-pages@v5
+      # Re-run artifacts coexist; upload and deploy this attempt's unique name.
       - uses: actions/upload-pages-artifact@v3
         with:
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Back up encrypted state after successful deployment
         id: backup
         if: steps.deployment.outcome == 'success' && github.ref_type == 'branch'
