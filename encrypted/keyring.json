@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-22T19:39:42+00:00",
+ "sealed_at": "2026-11-22T19:56:32+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 159184
+   "bytes": 159183
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8468
+   "bytes": 8405
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26425
+   "bytes": 26536
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15661
+   "bytes": 15532
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "d3b15bb8d07c89bd67deaa19a3a5ea9d",
-  "jobs.json": "23a952b26ce4c15f5240d901397e74f7",
-  "progress.json": "2742e988237d1d1d124efa65dd722bb5",
+  "jobs.json": "3fb1d60d92dca6c8ae06f20b4491e190",
+  "progress.json": "d14df63ad199976bd0064ab4a08cc5a9",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "426e0886d4a008ebf89effe8edb2400b",
+  "source_health.json": "443284192c7ac62a74841491e7a3aa08",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "3e78e466a07645c99cf02ef84159a1a4"
+  "status.json": "5be7721da924e2ccf9f195cc0d888352"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "+6mhoxIDM8CoDVkI",
-   "ct": "0z0ukjwRM+RY58ewNC6fbBbVYvloY1zA4wuuQ18nMIOGA0QTCGu+6cWucKQvgug4"
+   "iv": "a8LKIdjunkCrbLDv",
+   "ct": "K+Ezo+0Zy+n/xdLuKUk2fzhOss9SFWQsOGiBGLx0CMs7RqsBslE0e3f51EwWzuJX"
   }
  },
  "ci": {
-  "iv": "TnaNDA0wzr8IXRaF",
-  "ct": "KpbAAPmPu4KM5ejSAnHylY1hBIFL/X/Ahv/0WApd4YpLAx0ykRoy2Or3ktfelact"
+  "iv": "OmH9+DsSpG8l1V94",
+  "ct": "i2heSlj2TCl7YunV3VkAMfdENG4ON9YTKsK0LtrelVjJr9uOe8jfl+m06A4ilyz6"
  }
 }
