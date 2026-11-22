@@ -19,9 +19,18 @@ on:
       - 'styles.css'
       - 'app.js'
       - 'auth.js'
+      - 'applications.js'
       - 'assets/**'
       - 'config/users.json'
       - 'vault/**'
+      - 'collector/**'
+      - 'server/**'
+      - 'data/sources.json'
+      - 'data/ats.json'
+      - 'data/custom_feeds.json'
+      - 'data/search_queries.json'
+      - 'requirements.txt'
+      - 'tests/**'
       - '.github/workflows/pages.yml'
 
 permissions:
@@ -66,25 +75,42 @@ jobs:
       - name: Decrypt collector state inside the runner
         run: python -m vault unseal
       - name: Optional JavaScript rendering support
-        if: vars.RENDER_JS == '1'
+        if: vars.RENDER_JS != '0'
         run: pip install playwright && python -m playwright install --with-deps chromium
       - name: Collect cybersecurity vacancies
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.collect)
+        id: collect
+        continue-on-error: true
+        if: github.event_name == 'schedule' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.collect)
         env:
           MAX_FEED_SEARCHES: '6'
           MAX_CAREER_PAGES: '250'
           MAX_DETAIL_PAGES: '450'
+          MAX_LISTING_PAGES: ${{ vars.MAX_LISTING_PAGES || '8' }}
+          ATS_MAX_PAGES: ${{ vars.ATS_MAX_PAGES || '10' }}
+          ATS_MAX_DETAILS: ${{ vars.ATS_MAX_DETAILS || '100' }}
           MAX_JOB_AGE_DAYS: '45'
           COLLECT_WORKERS: '8'
-          RENDER_JS: ${{ vars.RENDER_JS }}
+          RENDER_JS: ${{ vars.RENDER_JS || '1' }}
           ALERT_IMAP_HOST: ${{ vars.ALERT_IMAP_HOST }}
           ALERT_IMAP_FOLDER: ${{ vars.ALERT_IMAP_FOLDER }}
           ALERT_IMAP_USER: ${{ secrets.ALERT_IMAP_USER }}
           ALERT_IMAP_PASSWORD: ${{ secrets.ALERT_IMAP_PASSWORD }}
+          ALERT_LOOKBACK_DAYS: ${{ vars.ALERT_LOOKBACK_DAYS || '21' }}
+          ALERT_MAX_MESSAGES: ${{ vars.ALERT_MAX_MESSAGES || '500' }}
           BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
+          BRAVE_QUERIES_PER_RUN: ${{ vars.BRAVE_QUERIES_PER_RUN || '2' }}
+          BRAVE_PAGES_PER_QUERY: ${{ vars.BRAVE_PAGES_PER_QUERY || '2' }}
+          BRAVE_MAX_REQUESTS_PER_RUN: ${{ vars.BRAVE_MAX_REQUESTS_PER_RUN || '2' }}
+          BRAVE_MONTHLY_REQUEST_LIMIT: ${{ vars.BRAVE_MONTHLY_REQUEST_LIMIT || '1500' }}
+          BRAVE_FRESHNESS: ${{ vars.BRAVE_FRESHNESS }}
           JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+          JOOBLE_API_HOST: ${{ vars.JOOBLE_API_HOST }}
+          JOOBLE_QUERIES_PER_RUN: ${{ vars.JOOBLE_QUERIES_PER_RUN || '3' }}
+          JOOBLE_PAGES_PER_QUERY: ${{ vars.JOOBLE_PAGES_PER_QUERY || '3' }}
+          JOOBLE_MAX_REQUESTS_PER_RUN: ${{ vars.JOOBLE_MAX_REQUESTS_PER_RUN || '4' }}
+          JOOBLE_DAILY_REQUEST_LIMIT: ${{ vars.JOOBLE_DAILY_REQUEST_LIMIT || '96' }}
         # Output is discarded: Actions logs of a public repository are public.
-        run: python -m collector.collect > /dev/null
+        run: python -m collector.collect > /dev/null 2>&1
       - name: Encrypt (fresh data key, per-user wrapped keys)
         id: seal
         run: python -m vault seal
@@ -111,3 +137,8 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Report an interrupted collection after publishing its status
+        if: steps.collect.outcome == 'failure'
+        run: |
+          echo '::error::Collection was interrupted. The dashboard preserves its previous completion time and shows the failed attempt.'
+          exit 1
