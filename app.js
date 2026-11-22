@@ -1,7 +1,8 @@
 /* CyberCareers BD — dependency-free static frontend; client-side profile scoring.
    In vault mode (GitHub Pages) all data is decrypted locally after login — see auth.js. */
-import * as auth from './auth.js?v=5.3.0';
-import {createApplicationStore, NOTE_LIMIT} from './applications.js?v=5.3.0';
+import * as auth from './auth.js?v=5.4.2';
+import {createApplicationStore, NOTE_LIMIT} from './applications.js?v=5.4.2';
+import {createGitHubScanner} from './github-scan.js?v=5.4.2';
 const ICONS = {
   globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 0 0 18M12 3a15 15 0 0 1 0 18"/>',
   grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
@@ -68,6 +69,9 @@ const SECTORS=['Banking','Fintech','Telecom','Multinational','Tech / consulting'
 const DEFAULT_PROFILE={title:'Cybersecurity Analyst / Manager',years:'',skills:'Web Security, API Security, Mobile Security, LLM Security, Penetration Testing, Vulnerability Assessment, OWASP, Burp Suite, Cybersecurity Management',certs:'',categories:['Application Security','AI & LLM Security','Security Leadership'],sectors:['Banking','Fintech']};
 const state={jobs:[],sources:[],status:{},sourceHealth:{sources:{}},progress:{},discoveryQueries:[],healthQuery:'',healthSector:'all',healthFilter:'all',healthLimit:70,queryGroup:'all',queryLimit:12,profile:loadProfile(),saved:loadSaved(),intlQuery:'',intlEligibility:'all',intlSource:'all',intlSourceSite:'all',intlSort:'match',intlLimit:30,filters:{category:'All roles',q:'',sector:'all',location:'all',workplace:'all',source:'all',sourceSite:'all',sort:'match',minMatch:0,recent:false,deadline:false,verified:false},archiveQuery:'',archiveRegion:'all',archiveSort:'deadline',archiveSavedOnly:false,archiveLimit:30,appliedQuery:'',appliedStatus:'all',appliedSort:'newest',appliedLimit:30,page:'jobs',sourceQuery:'',sourceSector:'all',sourceLimit:50,drawerId:null,localServer:false,localRefreshing:false};
 let toastTimer;
+Object.assign(state,{sourceProgressQuery:'',sourceProgressFilter:'all',remoteRun:null,remoteProgress:null,remoteHeartbeat:null,remotePending:false,remoteProgressStatus:'pending',remoteError:'',localScanPending:false,localProgressError:'',localRequestUnconfirmed:false});
+const GITHUB_SCAN_CONFIG=globalThis.CC_CONFIG?.github||{};
+let githubScanner=null,githubScanSettings=null,githubScanTimer=null,githubScanBusy=false,githubGeneration=0,githubRequestEpoch=0,pendingGitHubScanner=null,pendingGitHubGeneration=0,scanDialogFocus=null,scanAfterConnect=false,progressAutoOpenedRun=null,githubLastFinishedRun=null;
 let applicationStore=null,applicationScope='',applicationIssue='';
 const applicationDrafts=new Map();
 
@@ -91,17 +95,18 @@ function completionStamp(){const p=state.progress||{},s=state.status||{};return 
 function relativeTimestamp(value){const stamp=Date.parse(value);if(!Number.isFinite(stamp))return 'No completion timestamp available';const minutes=Math.max(0,Math.floor((Date.now()-stamp)/60000));if(minutes<1)return 'Just completed';if(minutes<60)return `${minutes} minute${minutes===1?'':'s'} ago`;const hours=Math.floor(minutes/60);return hours<48?`${hours} hour${hours===1?'':'s'} ${minutes%60} min ago`:`${Math.floor(hours/24)} days ago`;}
 function renderCompletion(){
   const p=state.progress||{},s=state.status||{},stamp=completionStamp(),plan=p.schedule||s.schedule||{},box=$('.scan-completion');if(!box)return;
-  const active=Boolean(p.running),result=p.completion_status||s.completion_status||(p.phase==='completed'?'completed':p.phase==='error'?'failed':'idle');
+  const remote=githubScanner?.isConnected()?state.remoteRun:null,active=Boolean(p.running||state.localScanPending||state.remotePending||remote?.active),result=p.completion_status||s.completion_status||(p.phase==='completed'?'completed':p.phase==='error'?'failed':'idle');
   const resultLabels={running:'Fetching sources…',completed:'Completed',completed_with_issues:'Completed with source issues',incomplete:'Some targets not processed',failed:'Interrupted / failed',interrupted:'Previous run interrupted',idle:'Awaiting first fetch'};
   const last=$('#scanLastCompleted');last.textContent=stamp?formatBDTimestamp(stamp):'No completed fetch recorded';if(stamp)last.dateTime=stamp;else last.removeAttribute('datetime');
   $('#scanLastCompletedAge').textContent=stamp?relativeTimestamp(stamp):'A start time is not a completed fetch.';
-  $('#scanResult').textContent=active?'Fetching sources…':(resultLabels[result]||'Awaiting collection');
-  let seconds=active&&p.started_at?Math.max(0,(Date.now()-Date.parse(p.started_at))/1000):(p.duration_seconds??s.duration_seconds);
+  $('#scanResult').textContent=state.remotePending?'Requesting a GitHub scan…':remote?.active?(remote.status==='queued'?'Queued on GitHub':state.remoteProgress?.running===false?'Sources checked · publishing':'Scanning on GitHub'):remote&&remote.conclusion!=='success'?'Workflow ended · '+String(remote.conclusion||remote.status).replaceAll('_',' '):active?'Fetching sources…':(resultLabels[result]||'Awaiting collection');
+  const started=remote?.active?(state.remoteProgress?.started_at||remote.createdAt):p.started_at;
+  let seconds=active&&started?Math.max(0,(Date.now()-Date.parse(started))/1000):(p.duration_seconds??s.duration_seconds);
   $('#scanDuration').textContent=Number.isFinite(seconds)?`${active?'Elapsed':'Duration'}: ${Math.floor(seconds/60)} min ${Math.round(seconds%60)} sec`:'Duration not recorded';
   const next=$('#scanNextExpected'),nextAt=plan.next_scheduled_at;
   next.textContent=plan.enabled?(nextAt?formatBDTimestamp(nextAt):'Next scheduled run'):(plan.mode?'Automatic checks disabled':'Schedule not recorded');
   if(nextAt)next.dateTime=nextAt;else next.removeAttribute('datetime');
-  $('#scanScheduleNote').textContent=(plan.note||'All timestamps use Bangladesh time (BDT).')+(auth.vaultMode()?' Last published snapshot.':'');
+  $('#scanScheduleNote').textContent=(plan.note||'All timestamps use Bangladesh time (BDT).')+(auth.vaultMode()?' Completion time above is from the published dataset.':'');
   const overdue=Boolean(plan.enabled&&!active&&nextAt&&Date.now()>Date.parse(nextAt)+15*60000);
   const stale=Boolean(plan.enabled&&stamp&&!active&&Date.now()-Date.parse(stamp)>(Number(plan.interval_minutes)||60)*60000+35*60000);
   box.classList.toggle('is-stale',overdue||stale);box.classList.toggle('has-issues',['completed_with_issues','incomplete','failed','interrupted'].includes(result));
@@ -148,6 +153,7 @@ function ensureApplications(){
   const scope=new URL('.',location.href).href+'|user:'+uid;
   if(scope===applicationScope&&applicationStore)return;
   const changedAccount=Boolean(applicationScope&&scope!==applicationScope);
+  if(changedAccount)disconnectGitHubScanner({quiet:true});
   if(scope!==applicationScope){applicationDrafts.clear();applicationStore=null;applicationIssue='';clearApplicationDOM();state.appliedQuery='';state.appliedStatus='all';state.appliedSort='newest';state.appliedLimit=30;$('#appliedSearch').value='';$('#appliedStatus').value='all';$('#appliedSort').value='newest';}
   applicationScope=scope;
   try{applicationStore=createApplicationStore({storage:window.localStorage,scope});applicationIssue='';}
@@ -341,7 +347,7 @@ function healthRecord(src){
 }
 function isLinkOnly(src){return ['restricted','index','directory','link-only'].includes(src.mode) || src.sector==='Social media' || (src.sector==='Job portal');}
 function renderProgress(){
-  const p=state.progress||{};const total=Number(p.total)||0,checked=Number(p.checked)||0;
+  const p=displayedProgress();const total=Number(p.total)||0,checked=Number(p.checked)||0;
   const percentage=total?Math.min(100,Math.max(0,Math.round(100*checked/total))):0;
   const running=Boolean(p.running);
   const panel=$('#hourlyProgress');if(!panel)return;
@@ -350,16 +356,53 @@ function renderProgress(){
   panel.classList.toggle('is-error',p.phase==='error'||p.phase==='incomplete');
   $('#progressTitle').textContent=running?'SOURCE SCAN IN PROGRESS':'SOURCE FETCH STATUS';
   $('#progressPhase').textContent=running?(' · '+String(p.phase||'checking').replaceAll('_',' ')):(p.phase==='completed'?' · Last run finished':p.phase==='error'?' · Last scan interrupted':p.phase==='incomplete'?' · Incomplete run':' · Awaiting collection');
-  $('#progressPercent').textContent=percentage+'%';$('#progressFill').style.width=percentage+'%';
+  $('#progressPercent').textContent=running&&!total?'Preparing…':percentage+'%';$('#progressFill').style.width=percentage+'%';
   $('#progressTrack').setAttribute('aria-valuenow',String(percentage));
   for(const [id,key] of [['progressChecked','checked'],['progressTotal','total'],['progressRemaining','remaining'],['progressOk','succeeded'],['progressBad','failed'],['progressLimited','partial'],['progressNewJobs','new_jobs'],['progressSkipped','skipped']]){
     $('#'+id).textContent=Number(p[key]||0).toLocaleString();
   }
   $('#progressCurrentLabel').textContent=running?'NOW CHECKING':'STATUS';
-  $('#progressCurrent').textContent=running?(p.current_source||'Checking sources'):
+  const active=Array.isArray(p.active_sources)?p.active_sources:[];
+  $('#progressCurrent').textContent=running?(active.length?active.slice(0,3).map(row=>row.name).join(' · ')+(active.length>3?` · +${active.length-3} more`:''):(p.current_source||'Preparing source checks')):
     (p.phase==='completed'?`${Number(p.succeeded||0)} successful · ${Number(p.partial||0)} limited · ${Number(p.failed||0)} failed · ${Number(p.skipped||0)} cached / deferred`:
     p.phase==='error'?'The previous completion time remains visible; check source health or the run log.':p.phase==='incomplete'?'Some planned targets were not processed; completion time has not advanced.':(auth.vaultMode()?'This view shows the last published collection snapshot.':'Collection begins when the local server starts.'));
-  renderCompletion();
+  renderSourceProgress(p);renderScanControls();renderCompletion();
+}
+function displayedProgress(){
+  if(!githubScanner?.isConnected()||(!state.remoteRun&&!state.remotePending))return state.progress||{};
+  const run=state.remoteRun,p=state.remoteProgress;
+  if(p){
+    if(run&&!run.active&&p.running)return {...p,running:false,phase:'incomplete',completion_status:'incomplete',current_source:'Workflow ended before the collector reported completion',active_sources:[],sources:(p.sources||[]).map(row=>row.state==='running'?{...row,state:'interrupted'}:row)};
+    return p;
+  }
+  if(run&&!run.active&&!state.remotePending)return {...state.progress,_publishedSnapshot:true};
+  return {running:Boolean(state.remotePending||run?.active),phase:state.remotePending?'requesting_scan':run?.status==='queued'?'queued':'preparing',current_source:state.remotePending?'Confirming the scan request with GitHub':'Workflow is preparing the collector; source activity has not been received.',started_at:run?.createdAt,total:0,checked:0,sources:[],active_sources:[],run_id:run?'github-'+run.id:'github-request'};
+}
+function sourceDuration(row){
+  let seconds=Number(row.duration_seconds);if(row.state==='running'&&row.started_at)seconds=(Date.now()-Date.parse(row.started_at))/1000;
+  if(row.duration_seconds==null&&row.state!=='running'||!Number.isFinite(seconds)||seconds<0)return '—';
+  if(seconds<60)return Math.round(seconds)+' sec';return `${Math.floor(seconds/60)} min ${Math.floor(seconds%60)} sec`;
+}
+function renderSourceProgress(p=displayedProgress()){
+  const el=$('#sourceProgressList');if(!el)return;
+  const rows=Array.isArray(p.sources)?p.sources:[],q=state.sourceProgressQuery.trim().toLowerCase(),filter=state.sourceProgressFilter;
+  const states={queued:'Queued',running:'Checking',success:'Completed',partial:'Limited',failed:'Failed',skipped:'Cached / deferred',interrupted:'Interrupted'};
+  const filtered=rows.filter(row=>(!q||[row.name,row.sector,row.mode,row.message].join(' ').toLowerCase().includes(q))&&(filter==='all'||filter==='issues'&&['partial','failed','interrupted'].includes(row.state)||filter==='done'&&['success','partial','failed','skipped'].includes(row.state)||row.state===filter));
+  const order=row=>row.state==='running'?0:row.state==='queued'?2:1;
+  filtered.sort((a,b)=>order(a)-order(b)||String(b.finished_at||'').localeCompare(String(a.finished_at||''))||String(a.name).localeCompare(String(b.name)));
+  const scrollTop=el.scrollTop;
+  el.innerHTML=filtered.map(row=>{const status=states[row.state]||'Unknown',css=Object.hasOwn(states,row.state)?row.state:'unknown',finished=['success','partial','failed','skipped'].includes(row.state),jobs=finished?`${Math.max(0,Number(row.jobs_found)||0)} / +${Math.max(0,Number(row.new_jobs)||0)}`:'—';return `<div class="source-progress-row ${css}" role="row"><div class="source-progress-name" role="cell"><strong>${esc(row.name||row.id||'Source')}</strong><small>${esc([row.sector,row.mode].filter(Boolean).join(' · '))}</small>${row.message?`<p>${esc(String(row.message).slice(0,300))}</p>`:''}</div><div role="cell"><span class="source-state ${css}"><i></i>${esc(status)}</span></div><strong class="source-progress-jobs" role="cell">${jobs}</strong><span class="source-progress-duration" role="cell" title="${esc(row.started_at?'Started '+formatBDTimestamp(row.started_at):'Not started')}">${esc(sourceDuration(row))}</span></div>`;}).join('')||`<p class="source-progress-empty">${esc(rows.length?'No sources match the selected filter.':state.remoteRun?.active?'Waiting for the workflow to publish its first source update.':'Per-source activity will appear on the next scan with this version.')}</p>`;
+  el.scrollTop=scrollTop;
+  const active=rows.filter(row=>row.state==='running').length;
+  $('#sourceProgressCount').textContent=`${filtered.length} / ${Math.max(rows.length,Number(p.source_rows_total)||0)} sources${active?' · '+active+' checking':''}`;
+  const updated=state.remoteHeartbeat&&githubScanner?.isConnected()?state.remoteHeartbeat:p.updated_at||p.finished_at||p.started_at;
+  $('#sourceProgressUpdated').textContent=updated?'Updated '+formatBDTimestamp(updated,true):'No source update yet';
+  const live=Boolean(p.running),remote=githubScanner?.isConnected();
+  $('#sourceProgressNote').textContent=p._publishedSnapshot?'Last published source report. Live source detail was not available for the selected GitHub run.':remote?'GitHub source progress updates approximately every 15 seconds. Job listings refresh after the workflow publishes its dataset.':live?'Live local progress refreshes approximately every 2 seconds. Multiple sources may be checked at the same time.':'Recorded source outcomes for this scan. Cached or deferred sources did not necessarily make a new network request.';
+  if(remote&&state.remoteProgressStatus==='unavailable')$('#sourceProgressNote').textContent+=' Live source details are unavailable with this connection; workflow status remains visible.';
+  if(p.source_rows_truncated||p.source_details_truncated)$('#sourceProgressNote').textContent+=' Some source detail was shortened to fit the live update; the completed source-health report retains the full results.';
+  if(updated&&live&&Date.now()-Date.parse(updated)>90000)$('#sourceProgressNote').textContent+=' No recent update has arrived; these are the last reported states.';
+  if(live&&p.run_id&&progressAutoOpenedRun!==p.run_id){$('#sourceProgressPanel').open=true;progressAutoOpenedRun=p.run_id;}
 }
 function renderSourceHealth(){
   const records=state.sourceHealth?.sources||{},all=Object.values(records);
@@ -460,9 +503,10 @@ function openDrawer(id){const job=resolveJob(id);if(!job)return;const same=state
 function closeDrawer(){state.drawerId=null;$('#jobDrawer').classList.remove('open');$('#jobDrawer').setAttribute('aria-hidden','true');$('#drawerBackdrop').classList.remove('open');document.body.classList.remove('lock-scroll');}
 function resetFilters(){state.filters={category:'All roles',q:'',sector:'all',location:'all',workplace:'all',source:'all',sourceSite:'all',sort:'match',minMatch:0,recent:false,deadline:false,verified:false};$('#jobSearch').value='';$('#sectorSelect').value='all';$('#locationSelect').value='all';$('#workplaceSelect').value='all';$('#sourceSelect').value='all';$('#sourceSiteSelect').value='all';$('#sortSelect').value='match';$('#matchRange').value='0';$('#matchRangeText').textContent='0%';$('#recentOnly').checked=false;$('#hasDeadline').checked=false;$('#hideUnverified').checked=false;fillFilters();renderJobs();}
 function csvExport(){const fields=[['Title','title'],['Company','company'],['Sector','company_sector'],['Location','location'],['Workplace','workplace'],['Employment type','employment_type'],['Skill match %','_match'],['Posted','posted_at'],['Deadline','deadline'],['Experience years','min_years'],['Salary','salary'],['Required skills','_skills'],['Source platform','source'],['Original publisher','_source_name'],['Source website','_source_domain'],['Original source link','source_url'],['Apply link','apply_url']];const cell=s=>{let v=String(s??'');if(/^[\s]*[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';};const rows=[fields.map(p=>cell(p[0])).join(',')];getJobs().forEach(j=>rows.push(fields.map(([,k])=>cell(k==='_match'?match(j).score:k==='_skills'?(j.skills||[]).join('; '):k==='_source_name'?jobSourceLabel(j):k==='_source_domain'?jobSourceDomain(j):j[k])).join(',')));const blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`cybercareers-bd-${bdToday()}.csv`;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),3000);toast('CSV exported · spreadsheet-formula protection enabled');}
-async function loadData(){const files=['data/jobs.json','data/sources.json','data/status.json','data/source_health.json','data/progress.json','data/search_queries.json'];const results=await Promise.all(files.map(async filename=>{if(auth.vaultMode()){const name=filename.slice(5);try{return await auth.loadJSON(name);}catch(e){if(/not in the encrypted dataset/.test(e.message))return name==='jobs.json'?{jobs:[]}:name.endsWith('queries.json')||name==='sources.json'?[]:{};throw e;}}const r=await fetch(filename+'?v='+Date.now(),{cache:'no-store'});if(r.status===404&&['data/jobs.json','data/status.json','data/source_health.json','data/progress.json'].includes(filename))return filename==='data/jobs.json'?{jobs:[]}:{};if(!r.ok)throw Error(`Could not load ${filename}: ${r.status}`);return r.json();}));state.jobs=Array.isArray(results[0].jobs)?results[0].jobs:[];state.sources=Array.isArray(results[1])?results[1]:[];state.status=results[2]||{};state.sourceHealth=results[3]||{sources:{}};state.progress=results[4]||{};state.discoveryQueries=Array.isArray(results[5])?results[5]:[];}
+async function loadData({shouldApply=()=>true,progress=null}={}){const files=['data/jobs.json','data/sources.json','data/status.json','data/source_health.json','data/progress.json','data/search_queries.json'];const results=await Promise.all(files.map(async filename=>{if(auth.vaultMode()){const name=filename.slice(5);try{return await auth.loadJSON(name);}catch(e){if(/not in the encrypted dataset/.test(e.message))return name==='jobs.json'?{jobs:[]}:name.endsWith('queries.json')||name==='sources.json'?[]:{};throw e;}}const r=await fetch(filename+'?v='+Date.now(),{cache:'no-store'});if(r.status===404&&['data/jobs.json','data/status.json','data/source_health.json','data/progress.json'].includes(filename))return filename==='data/jobs.json'?{jobs:[]}:{};if(!r.ok)throw Error(`Could not load ${filename}: ${r.status}`);return r.json();}));if(!shouldApply())return false;state.jobs=Array.isArray(results[0].jobs)?results[0].jobs:[];state.sources=Array.isArray(results[1])?results[1]:[];state.status=results[2]||{};state.sourceHealth=results[3]||{sources:{}};state.progress=progress||results[4]||{};state.discoveryQueries=Array.isArray(results[5])?results[5]:[];return true;}
 // Local-only service discovery and refresh. Static GitHub Pages continues working.
-let localRefreshTimer=null;
+let localRefreshTimer=null,localPollBusy=false,localRequestEpoch=0;
+function scheduleLocalPoll(milliseconds){if(localRefreshTimer)clearTimeout(localRefreshTimer);localRefreshTimer=setTimeout(pollLocalRefresh,milliseconds);}
 function showRefreshState(running){
   state.localRefreshing=running;
   const btn=$('#refreshJobsButton');
@@ -472,23 +516,118 @@ function showRefreshState(running){
     btn.innerHTML=running?`${svg('radar')} Checking sources…`:`${svg('radar')} Refresh jobs`;
     icons(btn);
   }
-  const scan=$('#scanNowButton');
-  if(scan){
-    scan.hidden=!state.localServer;
-    scan.disabled=running;
-    scan.classList.toggle('is-running',running);
-    scan.querySelector('.scan-now-label').textContent=running?'Scanning…':'Scan now';
-    icons(scan);
-  }
+  renderScanControls();
 }
+function githubWorkflowUrl(repository=githubScanSettings?.repository||GITHUB_SCAN_CONFIG.repository||$('#scanRepository')?.value,workflow=githubScanSettings?.workflow||GITHUB_SCAN_CONFIG.workflow||'pages.yml'){
+  if(!/^[A-Za-z0-9][A-Za-z0-9_.-]*\/[A-Za-z0-9_.-]+$/.test(String(repository||''))||!/^[-A-Za-z0-9_.]+\.ya?ml$/.test(String(workflow)))return '';
+  return `https://github.com/${repository}/actions/workflows/${encodeURIComponent(workflow)}`;
+}
+function renderScanControls(){
+  const connected=Boolean(githubScanner?.isConnected()),run=connected?state.remoteRun:null;
+  const busy=Boolean(state.localScanPending||state.localRefreshing||state.remotePending||run?.active),scan=$('#scanNowButton');
+  if(scan){scan.hidden=false;scan.disabled=busy;scan.classList.toggle('is-running',busy);scan.querySelector('.scan-now-label').textContent=state.localScanPending||state.remotePending?'Requesting…':run?.active&&run.status==='queued'?'Queued…':busy?'Scanning…':'Scan now';icons(scan);}
+  const connection=$('#scanConnectionState');if(connection)connection.textContent=state.localServer?'Local collector connected':connected?`GitHub connected · ${githubScanSettings.repository}`:'GitHub scanner · connect to start and monitor';
+  const settings=$('#scanConnectionButton');if(settings){settings.hidden=state.localServer;settings.textContent=connected?'Manage connection':'Connect scanner';}
+  const link=$('#scanRunLink');if(link){const href=run?.htmlUrl;link.hidden=!href;link.href=href||'#';}
+  const message=$('#scanRunMessage');if(!message)return;
+  let note=state.localProgressError||state.remoteError||'';
+  if(!note&&state.remotePending)note='GitHub is confirming the request. Repeated dispatch is disabled.';
+  else if(!note&&run?.active){note=run.status==='queued'?'Waiting for an available GitHub runner.':state.remoteProgress?.running===false?'Source collection finished. The workflow is publishing the updated jobs.':state.remoteProgressStatus==='available'?'Receiving encrypted live source updates.':'Preparing the collector or waiting for the first source update.';}
+  else if(!note&&run){const published=state.remoteProgress?.run_id&&(state.progress.run_id===state.remoteProgress.run_id||state.status.progress_summary?.run_id===state.remoteProgress.run_id);note=run.conclusion==='success'?(published?'The completed scan is now published.':'Workflow finished. Checking for the updated published dataset…'):`GitHub run ended: ${String(run.conclusion||run.status).replaceAll('_',' ')}. Open the run for details.`;}
+  else if(!note&&state.localRefreshing)note='Collecting source results. Existing job listings stay available.';
+  else if(!note)note='Manual scans respect publisher intervals and configured API limits.';
+  message.textContent=note;message.classList.toggle('has-error',Boolean(state.localProgressError||state.remoteError));
+}
+function openScanConnection(startAfterConnect=false){
+  if(state.localServer)return;
+  scanAfterConnect=startAfterConnect;scanDialogFocus=document.activeElement;
+  const settings=githubScanSettings||GITHUB_SCAN_CONFIG;
+  $('#scanRepository').value=settings.repository||'';$('#scanRepository').readOnly=Boolean(GITHUB_SCAN_CONFIG.repository);
+  $('#scanBranch').value=settings.ref||'';$('#scanToken').value='';$('#scanConnectionError').hidden=true;
+  $('#connectScanButton').textContent=startAfterConnect?'Connect & scan':'Connect scanner';$('#connectScanButton').disabled=false;
+  $('#disconnectScanButton').hidden=!githubScanner?.isConnected();
+  $('#scanDialogIntro').textContent=auth.vaultMode()?'Start a collection workflow and follow its source progress here. Use a GitHub token authorized for this repository.':'This copy is not connected to a local collector. Start the local server, or connect the GitHub workflow that publishes your dashboard. Encrypted source details require signing in to the published dashboard.';
+  updateWorkflowLink();const dialog=$('#scanConnectionDialog');if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+  ($('#scanRepository').value?$('#scanToken'):$('#scanRepository')).focus();
+}
+function closeScanConnection(){pendingGitHubGeneration++;pendingGitHubScanner?.disconnect();pendingGitHubScanner=null;const dialog=$('#scanConnectionDialog');$('#scanToken').value='';if(typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open');scanDialogFocus?.focus?.();}
+function updateWorkflowLink(){const link=$('#scanWorkflowLink'),url=githubWorkflowUrl($('#scanRepository').value);link.href=url||'#';link.hidden=!url;}
+function disconnectGitHubScanner({quiet=false}={}){
+  pendingGitHubGeneration++;pendingGitHubScanner?.disconnect();pendingGitHubScanner=null;
+  githubGeneration++;githubScanner?.disconnect();githubScanner=null;githubScanBusy=false;
+  if(githubScanTimer)clearTimeout(githubScanTimer);githubScanTimer=null;
+  state.remoteRun=null;state.remoteProgress=null;state.remoteHeartbeat=null;state.remotePending=false;state.remoteError='';state.remoteProgressStatus='pending';githubLastFinishedRun=null;
+  if($('#scanToken'))$('#scanToken').value='';if($('#disconnectScanButton'))$('#disconnectScanButton').hidden=true;
+  renderProgress();if(!quiet)toast('Disconnected. A workflow already running on GitHub continues.');
+}
+async function connectGitHubScanner(event){
+  event.preventDefault();if(state.localServer)return;
+  const button=$('#connectScanButton'),error=$('#scanConnectionError');button.disabled=true;error.hidden=true;
+  const settings={repository:$('#scanRepository').value.trim(),workflow:GITHUB_SCAN_CONFIG.workflow||'pages.yml',ref:$('#scanBranch').value.trim()};
+  const token=$('#scanToken').value.trim();$('#scanToken').value='';
+  let candidate;const attempt=++pendingGitHubGeneration;
+  try{
+    candidate=createGitHubScanner(settings);pendingGitHubScanner=candidate;const connection=await candidate.connect(token);
+    if(attempt!==pendingGitHubGeneration){candidate.disconnect();return;}
+    pendingGitHubScanner=null;disconnectGitHubScanner({quiet:true});githubScanner=candidate;githubScanSettings={...settings,ref:connection.ref||settings.ref};
+    const start=scanAfterConnect;closeScanConnection();renderScanControls();
+    if(start)await requestRemoteScan();else{toast('GitHub scanner connected for this tab.');await pollGitHubScan();}
+  }catch(e){candidate?.disconnect();if(attempt===pendingGitHubGeneration){error.textContent=e.message||'Could not connect to GitHub.';error.hidden=false;}}
+  finally{if(pendingGitHubScanner===candidate)pendingGitHubScanner=null;button.disabled=false;}
+}
+function scheduleGitHubPoll(milliseconds){if(githubScanTimer)clearTimeout(githubScanTimer);githubScanTimer=setTimeout(pollGitHubScan,Math.max(1000,milliseconds));}
+async function requestRemoteScan(){
+  if(!githubScanner?.isConnected()){openScanConnection(true);return;}
+  if(state.remotePending||state.remoteRun?.active)return;
+  githubRequestEpoch++;if(githubScanTimer)clearTimeout(githubScanTimer);githubScanTimer=null;
+  const generation=githubGeneration,scanner=githubScanner;
+  state.remotePending=true;state.remoteProgress=null;state.remoteHeartbeat=null;state.remoteRun=null;state.remoteError='';state.remoteProgressStatus='pending';renderProgress();$('#sourceProgressPanel').open=true;
+  try{
+    const result=await scanner.requestScan();if(generation!==githubGeneration)return;
+    state.remoteRun=result.run||null;state.remotePending=result.state==='dispatch_unconfirmed'||result.run?.status==='unknown';
+    state.remoteError=result.state==='dispatch_unconfirmed'?'The dispatch response was not conclusive. Monitoring for the accepted run; do not submit another request.':'';
+    renderProgress();toast(result.state==='attached'?'A scan is already queued or running. Following its progress.':result.state==='dispatched'?'Scan requested on GitHub.':'Checking whether GitHub accepted the request.');
+    scheduleGitHubPoll(1500);
+  }catch(e){if(generation!==githubGeneration)return;state.remotePending=false;state.remoteError=e.message||'GitHub could not start the scan.';renderProgress();toast('Could not start scan · '+state.remoteError);}
+}
+async function pollGitHubScan(){
+  if(githubScanTimer)clearTimeout(githubScanTimer);githubScanTimer=null;if(!githubScanner?.isConnected()||githubScanBusy)return;
+  if(document.hidden){scheduleGitHubPoll(15000);return;}
+  const scanner=githubScanner,generation=githubGeneration,epoch=githubRequestEpoch;githubScanBusy=true;let delay=15000;
+  try{
+    let runId=state.remoteRun?.active||state.remotePending?state.remoteRun?.id:undefined;
+    if(!runId&&!state.remotePending){const latest=await scanner.latestRun();if(generation!==githubGeneration||epoch!==githubRequestEpoch)return;runId=latest?.id;}
+    const report=await scanner.getRun(runId);if(generation!==githubGeneration||epoch!==githubRequestEpoch)return;
+    if(Number(report.retryAfter)>0)delay=Math.max(delay,Math.min(86400000,Number(report.retryAfter)*1000));
+    const run=report.run;
+    if(run){
+      if(state.remoteRun?.id!==run.id||state.remoteRun?.attempt!==run.attempt){state.remoteProgress=null;state.remoteHeartbeat=null;}
+      state.remoteRun=run;state.remotePending=run.status==='unknown';
+    }
+    state.remoteProgressStatus=report.progressStatus||'pending';state.remoteError=report.message||'';
+    if(report.progressEnvelope&&run){
+      try{const progress=await auth.decryptLiveProgress(report.progressEnvelope,{repository:githubScanSettings.repository,runId:run.id,runAttempt:run.attempt});if(generation!==githubGeneration||epoch!==githubRequestEpoch)return;state.remoteProgress=progress;state.remoteHeartbeat=report.progressEnvelope.generated_at;}
+      catch{if(generation!==githubGeneration||epoch!==githubRequestEpoch)return;state.remoteProgressStatus='unavailable';state.remoteError='Source details could not be unlocked for this account. Workflow status is still available; check that this dashboard is signed in to the current published version.';}
+    }
+    if(state.remotePending&&!run)state.remoteError='GitHub has not confirmed a matching run yet. Keep monitoring or check the workflow page before trying again.';
+    renderProgress();
+    if(run&&!run.active&&run.status!=='unknown'){
+      const finishedKey=run.id+':'+run.attempt;
+      if(githubLastFinishedRun!==finishedKey){githubLastFinishedRun=finishedKey;await refreshPublishedSnapshot();}
+      delay=Math.max(delay,60000);
+    }else if(!run&&!state.remotePending)delay=Math.max(delay,60000);
+  }catch(e){if(generation!==githubGeneration||epoch!==githubRequestEpoch)return;state.remoteError=e.message||'GitHub progress is temporarily unavailable. Last reported results remain visible.';delay=Math.min(86400000,Math.max(30000,Number(e.retryAfter)*1000||30000));if(Number(e.retryAfter)>0)state.remoteError+=` Next status check in ${Math.ceil(delay/1000)} seconds.`;renderScanControls();}
+  finally{if(generation===githubGeneration){githubScanBusy=false;if(scanner.isConnected()){if(epoch===githubRequestEpoch)scheduleGitHubPoll(delay);else if(!githubScanTimer)scheduleGitHubPoll(1500);}}}
+}
+async function triggerScan(){if(state.localServer)return triggerLocalRefresh();if(githubScanner?.isConnected())return requestRemoteScan();openScanConnection(true);}
 async function fetchLocalRefreshStatus(){
   const r=await fetch('/api/refresh/status',{cache:'no-store'});
   if(!r.ok)throw Error('Local refresh status unavailable');
   return r.json();
 }
-async function reloadRefreshedData(){
+async function reloadRefreshedData(options={}){
   ensureApplications();
-  await loadData();
+  if(await loadData(options)===false)return;
   fillFilters();
   const f=state.filters;
   for(const [id,key] of [['sectorSelect','sector'],['locationSelect','location'],['workplaceSelect','workplace'],['sourceSelect','source'],['sourceSiteSelect','sourceSite'],['sortSelect','sort']])$('#'+id).value=f[key];
@@ -498,33 +637,41 @@ async function reloadRefreshedData(){
   if(state.drawerId){const opened=resolveJob(state.drawerId);if(opened)renderDrawerContent(opened);else closeDrawer();}
 }
 async function pollLocalRefresh(){
-  localRefreshTimer=null;
+  if(localPollBusy)return;
+  if(localRefreshTimer)clearTimeout(localRefreshTimer);localRefreshTimer=null;localPollBusy=true;
+  const epoch=localRequestEpoch;
   try{
     const report=await fetchLocalRefreshStatus();
+    if(epoch!==localRequestEpoch)return;
+    state.localProgressError='';
     state.progress=report.progress||state.progress;
     renderProgress();
     if(report.running){
+      state.localRequestUnconfirmed=false;
       showRefreshState(true);
       try{
         const h=await fetch('/data/source_health.json?v='+Date.now(),{cache:'no-store'});
-        if(h.ok){state.sourceHealth=await h.json();if(state.page==='health')renderSourceHealth();}
+        if(h.ok){const health=await h.json();if(epoch!==localRequestEpoch)return;state.sourceHealth=health;if(state.page==='health')renderSourceHealth();}
       }catch{/* Current progress remains visible during a brief disk write. */}
 
-      localRefreshTimer=setTimeout(pollLocalRefresh,2500);
+      scheduleLocalPoll(2000);
       return;
     }
     const wasRunning=state.localRefreshing;
     showRefreshState(false);
+    if(state.localRequestUnconfirmed){state.localRequestUnconfirmed=false;state.localProgressError='A new manual scan was not confirmed. Check the last attempt time, then try again if needed.';renderScanControls();return;}
     if(wasRunning){
-      await reloadRefreshedData();
+      await reloadRefreshedData({shouldApply:()=>epoch===localRequestEpoch,progress:report.progress});
+      if(epoch!==localRequestEpoch)return;
       const last=report.last_result;
       toast(report.last_error||(!last?'Refresh finished':`Refresh complete · ${last.jobs_count||0} jobs · ${last.new_candidates||0} candidates`));
     }
   }catch(e){
-    showRefreshState(false);
-    toast('Could not check refresh status · verify the local server');
-    console.warn(e);
+    if(epoch!==localRequestEpoch)return;
+    state.localProgressError='Live status is temporarily unavailable. The collector may still be running; retrying the status check.';
+    renderScanControls();scheduleLocalPoll(5000);
   }
+  finally{localPollBusy=false;if(epoch!==localRequestEpoch&&state.localRefreshing&&!localRefreshTimer)scheduleLocalPoll(1500);}
 }
 async function detectLocalServer(){
   if(auth.vaultMode()||!/^https?:$/.test(location.protocol))return;
@@ -538,23 +685,27 @@ async function detectLocalServer(){
     renderMetrics();
     const report=await fetchLocalRefreshStatus();
     state.progress=report.progress||state.progress;renderProgress();
-    if(report.running){showRefreshState(true);localRefreshTimer=setTimeout(pollLocalRefresh,2500);}
+    if(report.running){showRefreshState(true);scheduleLocalPoll(2500);}
     // Follow the server's independent hourly background schedule while a tab
     // remains open. Do not require a manual browser refresh to see new jobs.
     if(!window.cybercareersSyncTimer){
       window.cybercareersSyncTimer=setInterval(async()=>{
-        if(!state.localServer)return;
+        if(!state.localServer||state.localRefreshing||state.localScanPending||localPollBusy)return;
+        const epoch=localRequestEpoch;
         try{
           const progress=await fetchLocalRefreshStatus();
+          if(epoch!==localRequestEpoch||localPollBusy)return;
           state.progress=progress.progress||state.progress;renderProgress();
-          if(progress.running){showRefreshState(true);if(!localRefreshTimer)localRefreshTimer=setTimeout(pollLocalRefresh,700);return;}
+          if(progress.running){showRefreshState(true);scheduleLocalPoll(700);return;}
           const snapshot=await fetch('/data/status.json?v='+Date.now(),{cache:'no-store'});
           if(!snapshot.ok)return;
           const newest=await snapshot.json();
+          if(epoch!==localRequestEpoch||localPollBusy)return;
           if((newest.updated_at && newest.updated_at!==state.status.updated_at)||
              (newest.collection_finished_at && newest.collection_finished_at!==state.status.collection_finished_at)||
              (newest.progress_summary?.run_id && newest.progress_summary.run_id!==state.status.progress_summary?.run_id)){
-            await reloadRefreshedData();
+            await reloadRefreshedData({shouldApply:()=>epoch===localRequestEpoch&&!localPollBusy,progress:progress.progress});
+            if(epoch!==localRequestEpoch||localPollBusy)return;
             toast('Job intelligence automatically synchronized · newest source scan loaded');
           }
           if(state.localRefreshing&&!localRefreshTimer)showRefreshState(false);
@@ -564,20 +715,22 @@ async function detectLocalServer(){
   }catch{ /* The page is hosted statically; no local refresh API is available. */ }
 }
 async function triggerLocalRefresh(){
-  if(!state.localServer||state.localRefreshing)return;
+  if(!state.localServer||state.localRefreshing||state.localScanPending)return;
+  localRequestEpoch++;
+  state.localScanPending=true;state.localProgressError='';renderScanControls();
   try{
     const r=await fetch('/api/refresh',{
       method:'POST',
       headers:{'Content-Type':'application/json','X-CyberCareers-Action':'refresh'},
       body:'{}',
     });
-    if(r.status!==202&&r.status!==409)throw Error(`Request failed (${r.status})`);
-    const initial=await r.json();state.progress=initial.progress||state.progress;renderProgress();
+    if(r.status!==202&&r.status!==409)throw Object.assign(Error(`The collector rejected the scan request (${r.status}).`),{definite:true});
+    const initial=await r.json();state.progress=initial.progress||state.progress;renderProgress();$('#sourceProgressPanel').open=true;
     showRefreshState(true);
     toast(r.status===409?'A refresh is already running':'Source checking started · current jobs remain visible');
-    if(localRefreshTimer)clearTimeout(localRefreshTimer);
-    localRefreshTimer=setTimeout(pollLocalRefresh,1500);
-  }catch(e){toast('Could not start refresh · '+e.message);}
+    scheduleLocalPoll(1500);
+  }catch(e){if(e.definite){state.localProgressError=e.message;toast(e.message);}else{state.localRequestUnconfirmed=true;state.localProgressError='The scan request was not confirmed. Checking the collector before allowing another request.';state.localRefreshing=true;scheduleLocalPoll(1500);toast('Checking whether the collector accepted the scan.');}}
+  finally{state.localScanPending=false;renderScanControls();}
 }
 function applicationsCsv(){
   const cell=value=>{let text=String(value??'');if(/^[\s]*[=+\-@\t\r]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"';};
@@ -629,7 +782,18 @@ function bind(){
   $('#appliedStatus')?.addEventListener('change',e=>{state.appliedStatus=e.target.value;state.appliedLimit=30;renderApplied();});
   $('#appliedSort')?.addEventListener('change',e=>{state.appliedSort=e.target.value;renderApplied();});
   $('#exploreButton')?.addEventListener('click',()=>$('#openingsHeader').scrollIntoView({behavior:'smooth',block:'start'}));
-  $('#clearFilters')?.addEventListener('click',resetFilters);$('#exportButton')?.addEventListener('click',csvExport);$('#refreshJobsButton')?.addEventListener('click',triggerLocalRefresh);$('#scanNowButton')?.addEventListener('click',triggerLocalRefresh);
+  $('#clearFilters')?.addEventListener('click',resetFilters);$('#exportButton')?.addEventListener('click',csvExport);$('#refreshJobsButton')?.addEventListener('click',triggerScan);$('#scanNowButton')?.addEventListener('click',triggerScan);
+  $('#sourceProgressSearch')?.addEventListener('input',e=>{state.sourceProgressQuery=e.target.value;renderSourceProgress();});
+  $('#sourceProgressFilter')?.addEventListener('change',e=>{state.sourceProgressFilter=e.target.value;renderSourceProgress();});
+  $('#scanConnectionButton')?.addEventListener('click',()=>openScanConnection());
+  $('#closeScanConnection')?.addEventListener('click',closeScanConnection);
+  $('#scanConnectionDialog')?.addEventListener('cancel',e=>{e.preventDefault();closeScanConnection();});
+  $('#scanConnectionDialog')?.addEventListener('close',()=>{$('#scanToken').value='';});
+  $('#scanConnectionForm')?.addEventListener('submit',connectGitHubScanner);
+  $('#scanRepository')?.addEventListener('input',updateWorkflowLink);
+  $('#disconnectScanButton')?.addEventListener('click',()=>{disconnectGitHubScanner();closeScanConnection();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&githubScanner?.isConnected()){if(githubScanTimer)clearTimeout(githubScanTimer);pollGitHubScan();}});
+  window.addEventListener('pagehide',()=>disconnectGitHubScanner({quiet:true}));
   $('#jobSearch')?.addEventListener('input',e=>{state.filters.q=e.target.value;renderJobs();});
   $('#intlSearch')?.addEventListener('input',e=>{state.intlQuery=e.target.value;state.intlLimit=30;renderInternational();});
   $('#intlEligibilitySelect')?.addEventListener('change',e=>{state.intlEligibility=e.target.value;state.intlLimit=30;renderInternational();});
@@ -651,22 +815,18 @@ function bind(){
   $('#mobileShade')?.addEventListener('click',()=>{$('#sidebar').classList.remove('open');$('#mobileShade').classList.remove('open');});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();$('#sidebar').classList.remove('open');$('#mobileShade').classList.remove('open');}if((e.key==='/'||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'))&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();if(state.page==='international'){$('#intlSearch').focus();}else{location.hash='jobs';$('#jobSearch').focus();}}});
 }
-function showSession(){if(!auth.vaultMode())return;const who=auth.currentUser();$$('.vault-only').forEach(el=>el.hidden=false);const su=$('#sessionUser');if(su)su.textContent=who?.name||'Signed in';const logout=$('#logoutButton');if(logout)logout.onclick=()=>{if(!applicationDrafts.size||window.confirm('You have unsaved application notes. Sign out and discard those edits?')){applicationDrafts.clear();auth.logout();}};const note=$('#sidePolicyNote');if(note)note.textContent='Encrypted dataset · unlocked in this browser only. Collection runs hourly in GitHub Actions.';}
+function showSession(){if(!auth.vaultMode())return;const who=auth.currentUser();$$('.vault-only').forEach(el=>el.hidden=false);const su=$('#sessionUser');if(su)su.textContent=who?.name||'Signed in';const logout=$('#logoutButton');if(logout)logout.onclick=()=>{if(!applicationDrafts.size||window.confirm('You have unsaved application notes. Sign out and discard those edits?')){applicationDrafts.clear();disconnectGitHubScanner({quiet:true});closeScanConnection();auth.logout();}};const note=$('#sidePolicyNote');if(note)note.textContent='Encrypted dataset · unlocked in this browser only. Collection runs hourly in GitHub Actions.';}
 let vaultSyncBusy=false;
 let vaultReloadPending=false;
 let snapshotSyncStarted=false;
-function startSnapshotSync(){
-  if(snapshotSyncStarted)return;
-  snapshotSyncStarted=true;
-  setInterval(()=>{renderCompletion();refreshDeadlineViews();},30000);
-  if(!auth.vaultMode())return;
-  const sync=async()=>{
-    if(vaultSyncBusy||document.hidden)return;
+async function refreshPublishedSnapshot(){
+    if(!auth.vaultMode()||vaultSyncBusy||document.hidden)return;
     vaultSyncBusy=true;
     try{
       const result=await auth.refreshPublishedSession();
       if(result.reauthenticate){
         document.documentElement.classList.add('cc-locked');
+        disconnectGitHubScanner({quiet:true});closeScanConnection();
         clearApplicationDOM();
         await auth.requireLogin();
         ensureApplications();
@@ -680,9 +840,14 @@ function startSnapshotSync(){
       }
     }catch(e){console.warn('Snapshot refresh deferred',e);}
     finally{vaultSyncBusy=false;}
-  };
-  setInterval(sync,60000);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync();});
+}
+function startSnapshotSync(){
+  if(snapshotSyncStarted)return;
+  snapshotSyncStarted=true;
+  setInterval(()=>{renderCompletion();renderScanControls();refreshDeadlineViews();},30000);
+  if(!auth.vaultMode())return;
+  setInterval(refreshPublishedSnapshot,60000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshPublishedSnapshot();});
 }
 async function init(){
   icons();
@@ -701,6 +866,6 @@ async function init(){
     $('#jobsGrid').innerHTML=emptyState('Dataset could not be loaded.','The last published snapshot may still be updating. Automatic refresh will retry.',false);
     $('#dataBanner').textContent=auth.vaultMode()?'The published dataset is temporarily unavailable. Automatic refresh will retry.':'The job dataset was unavailable. Run python -m server.app from the project directory.';
     renderArchived();renderApplied();route();icons();
-  }finally{startSnapshotSync();if(!auth.vaultMode())await detectLocalServer();}
+  }finally{startSnapshotSync();if(!auth.vaultMode())await detectLocalServer();renderScanControls();}
 }
 init();

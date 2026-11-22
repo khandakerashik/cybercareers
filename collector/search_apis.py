@@ -90,9 +90,15 @@ def _job_key(job: dict):
 def brave_search(session: requests.Session, state: dict, sources: list[dict], *, per_run: int = 2,
                  on_source=None) -> tuple[list[dict], list[dict], dict]:
     from .collect import indexed_result_to_job
+    from .telemetry import source_started
     key = os.environ.get('BRAVE_API_KEY', '').strip()
-    if not key or per_run <= 0:
+    if not key:
         return [], [], state
+    if per_run <= 0:
+        outcome={'name':'Brave Search API','source_id':'api:brave','sector':'Search API','mode':'Licensed search index',
+                 'state':'skipped','jobs_found':0,'message':'Disabled by the configured per-run query budget'}
+        if on_source:on_source(outcome,[])
+        return [],[outcome],state
     st = dict(state.get('brave') or {})
     clock = time.time()
     month = datetime.fromtimestamp(clock, timezone.utc).strftime('%Y-%m')
@@ -112,6 +118,7 @@ def brave_search(session: requests.Session, state: dict, sources: list[dict], *,
         outcome.update(state='cached', message='Provider cooldown or configured monthly request budget reached',
                        requests_used=0, monthly_requests=used, coverage_limited=True)
         return _finish('brave', state, st, jobs, outcome, on_source)
+    source_started(on_source, outcome)
     start = _number(st.get('index')) % len(BRAVE_QUERIES)
     queries = [BRAVE_QUERIES[(start+i) % len(BRAVE_QUERIES)] for i in range(min(per_run, len(BRAVE_QUERIES)))]
     cursors = dict(st.get('page_cursors') or {})
@@ -202,9 +209,15 @@ def jooble_search(session: requests.Session, state: dict, sources: list[dict], *
                   on_source=None) -> tuple[list[dict], list[dict], dict]:
     from .collect import classify_region, clean_text, is_relevant, new_job, valid_url
     from .vacancy import assess_vacancy
+    from .telemetry import source_started
     key = os.environ.get('JOOBLE_API_KEY', '').strip()
-    if not key or per_run <= 0:
+    if not key:
         return [], [], state
+    if per_run <= 0:
+        outcome={'name':'Jooble API','source_id':'api:jooble','sector':'Aggregator API','mode':'Aggregator API (regional key)',
+                 'state':'skipped','jobs_found':0,'message':'Disabled by the configured per-run query budget'}
+        if on_source:on_source(outcome,[])
+        return [],[outcome],state
     st = dict(state.get('jooble') or {})
     host = os.environ.get('JOOBLE_API_HOST', '').strip().lower()
     outcome = {'name': 'Jooble API', 'source_id': 'api:jooble', 'sector': 'Aggregator API',
@@ -228,6 +241,7 @@ def jooble_search(session: requests.Session, state: dict, sources: list[dict], *
         outcome.update(state='cached', requests_used=0, daily_requests=used, coverage_limited=True,
                        message='Provider cooldown or configured daily request budget reached')
         return _finish('jooble', state, st, jobs, outcome, on_source)
+    source_started(on_source, outcome)
     start = _number(st.get('index')) % len(JOOBLE_KEYWORDS)
     words = [JOOBLE_KEYWORDS[(start+i) % len(JOOBLE_KEYWORDS)] for i in range(min(per_run, len(JOOBLE_KEYWORDS)))]
     cursors = dict(st.get('page_cursors') or {})

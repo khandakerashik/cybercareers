@@ -110,3 +110,19 @@ def test_site_rejects_an_unexpected_ciphertext_manifest_path(env):
     (out/'keyring.json').write_text(json.dumps(ring))
     with pytest.raises(v.VaultError,match='unexpected encrypted file'):
         v.build_site(root/'_site',vault_dir=out)
+
+
+def test_build_ships_scan_module_and_only_public_github_configuration(env,monkeypatch):
+    root,master,data,out=env
+    v.add_user('ashik','correct horse battery staple',master)
+    v.seal(master,data_dir=data,out_dir=out)
+    monkeypatch.setenv('GITHUB_REPOSITORY','ExampleOwner/cybercareers')
+    monkeypatch.setenv('GITHUB_REF_TYPE','branch')
+    monkeypatch.setenv('GITHUB_REF_NAME','release/live')
+    monkeypatch.setenv('GH_PROGRESS_TOKEN','synthetic-private-progress-token')
+    site=v.build_site(root/'_site',vault_dir=out)
+    config=(site/'config.js').read_text()
+    metadata=json.loads(config.split('github: ',1)[1].rsplit(' });',1)[0])
+    assert metadata=={'repository':'ExampleOwner/cybercareers','workflow':'pages.yml','ref':'release/live'}
+    assert 'synthetic-private-progress-token' not in config and 'CC_MASTER_KEY' not in config
+    assert (site/'github-scan.js').is_file()

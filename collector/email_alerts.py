@@ -319,11 +319,13 @@ def rows_to_jobs(rows: list[dict], sources: list[dict], *, diagnostics: dict | N
 
 
 def collect_email_alerts(sources: list[dict], on_source=None, *, state: dict | None = None) -> tuple[list[dict], list[dict]]:
+    from .telemetry import source_started
     if not configured():
         return [], []
     outcome = {'name': 'Job-alert mailbox', 'source_id': 'email:alerts', 'sector': 'Job alerts',
                'mode': 'IMAP (subscribed alerts)', 'coverage': 'Subscribed alerts only; not all LinkedIn jobs',
                'upstream_frequency': 'LinkedIn alerts are daily or weekly'}
+    source_started(on_source, outcome)
     stats: dict = {}
     try:
         # Parsing/conversion must succeed before acknowledging UIDs. The outer

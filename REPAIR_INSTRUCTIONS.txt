@@ -1,0 +1,30 @@
+CyberCareers BD v5.4.2 - complete scanner repair
+
+Read docs/UPGRADE_v5.4.2.md for the confirmed cause and complete instructions.
+
+This archive repairs an EXISTING installation. Extract it, then upload its
+contents at the repository root while retaining their relative paths. Include
+all supplied code and .github/workflows/pages.yml in the completed update.
+Do not upload the ZIP itself or add an extra enclosing directory.
+
+Use a repair branch if code and workflow uploads take separate commits; merge
+the complete branch into main once all files are present. Then verify the new
+workflow run from that commit.
+
+Required new scanner files include:
+  collector/ci.py
+  collector/github_progress.py
+  github-scan.js
+
+The accompanying collector, telemetry, frontend, server and vault modules must
+also be updated together. Replacing only the workflow and backup helper is not
+enough for the incomplete installation observed in run #424.
+
+The archive omits config.js, data/, encrypted/, config/users.json, .env and
+.vault/. Keep those existing files and your existing CC_MASTER_KEY secret.
+Merge the included files; do not delete the repository or reset the vault.
+
+The repaired workflow reports missing files before scanning starts and exposes
+only safe failure diagnostics in public logs. It keeps real errors visible.
+
+Developed by Khandaker Ashikul Hoque.

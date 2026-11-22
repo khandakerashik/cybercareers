@@ -1,10 +1,18 @@
-# CyberCareers BD v5.4.1
+# CyberCareers BD v5.4.2 — Cybersecurity Jobs & Application Tracker
 
 An hourly job radar for cybersecurity and information security roles in Bangladesh, plus international remote roles open to Bangladesh-based applicants. You can run it locally, or publish it to **GitHub Pages behind a login**: only you and the people you allow can sign in, and the published data is encrypted.
 
 > A posting in the dashboard is a lead. Always confirm the vacancy, deadline and eligibility on the original posting.
 
 ---
+
+## v5.4.2 — Complete scanner repair
+
+**If Actions now fails at collection, start with the [complete repair guide](docs/UPGRADE_v5.4.2.md).** The inspected failed run had the updated workflow but was missing `collector/github_progress.py`; the repository also lacked `github-scan.js`. Updating only the backup helper and workflow was insufficient for that installation.
+
+The repair package supplies the complete application code and tests together. It preserves the existing installation's user accounts, vault, source configuration and collected data. An inline workflow check now names missing files and incompatible scanner components before collection or publishing begins. The collection entry point reports a safe error category and code location without printing private job data, credentials or raw exception messages.
+
+All source, detection, archive, application-note, hourly timestamp, manual scan and live-progress features from the earlier updates remain included. The repair still needs to be uploaded to the existing repository; see the guide's verification steps.
 
 ## v5.4.1 — Publishing recovery
 
@@ -188,6 +196,7 @@ Optional settings are in `.env.example`. Local mode reads plaintext `data/*.json
 | `collector/collect.py` | Pipeline, employer crawl, parsing, deduplication, region routing |
 | `collector/telemetry.py` | Durable scan lifecycle, per-source results and completion history |
 | `collector/github_progress.py` | Optional encrypted GitHub Checks progress publisher and collector CLI wrapper |
+| `collector/ci.py` | CI entry point that suppresses private collector output and reports safe failure diagnostics |
 | `vault/backup.py` | Optional encrypted repository backup after deployment, with concurrent-change checks and bounded push retries |
 | `collector/relevance.py` | Weighted English and Bangla cybersecurity relevance engine |
 | `collector/robots.py` | RFC 9309 robots.txt matcher |

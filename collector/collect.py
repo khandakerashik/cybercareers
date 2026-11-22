@@ -34,6 +34,7 @@ from . import relevance as _relevance
 from .vacancy import assess_vacancy, assess_record, source_kind_for_record, has_role_title, is_job_detail_url
 from . import textmine
 from .robots import ALLOW_ALL, RobotsPolicy
+from .telemetry import source_started
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data'
@@ -1324,25 +1325,38 @@ def ats_posting_to_job(item: dict, *, company: str, provider: str, sources: list
                    description_status='Full description' if len(desc) > 200 else 'Official excerpt', **region)
 
 
-def ats_jobs(session:requests.Session, sources:list[dict], discovered: list[dict] | None=None, on_source=None,
-             *, workers: int | None = None) -> tuple[list[dict],list[dict]]:
-    """Read every known public ATS board (manual, previously discovered, discovered this run)."""
+def configured_ats_boards(discovered: list[dict] | None = None) -> list[dict]:
+    """The exact validated ATS worklist used for both planning and collection."""
     from .ats import FETCHERS
     manually = get_json(DATA / 'ats.json', [])
     known = get_json(DATA / 'ats_discovered.json', [])
     entries = (manually if isinstance(manually,list) else []) + (known if isinstance(known,list) else []) + (discovered or [])
     unique = {}
     for board in entries:
-        if isinstance(board, dict) and board.get('provider') and board.get('board_token'):
+        if isinstance(board, dict) and isinstance(board.get('provider'), str) and isinstance(board.get('board_token'), str):
             unique[(board.get('provider').lower(), board.get('board_token').lower())] = board
-    boards = [b for b in unique.values()
+    return [b for b in unique.values()
               if b.get('company') and re.fullmatch(r'[A-Za-z0-9_.|-]{2,160}', b.get('board_token', ''))
               and b.get('provider', '').lower() in ('greenhouse', 'lever', 'lever_eu', 'ashby', *FETCHERS)][:250]
+
+
+def _ats_task(board: dict) -> dict:
+    return {'source_id': f"ats:{board['provider'].lower()}:{board['board_token'].lower()}",
+            'name': board['company'], 'sector': 'ATS boards', 'mode': 'ATS API'}
+
+
+def ats_jobs(session:requests.Session, sources:list[dict], discovered: list[dict] | None=None, on_source=None,
+             *, workers: int | None = None) -> tuple[list[dict],list[dict]]:
+    """Read every known public ATS board (manual, previously discovered, discovered this run)."""
+    from .ats import FETCHERS
+    boards = configured_ats_boards(discovered)
     wants = lambda title: _relevance.assess(title).relevant or bool(re.search(r'\bsecurity\b|\bcyber|\brisk\b|\baudit', title or '', re.I))  # noqa: E731
 
     def check(item: dict) -> tuple[dict, list[dict]]:
         provider = item['provider'].lower(); token = item['board_token']; company = item['company']
-        source_id = f'ats:{provider}:{token}'
+        task = _ats_task(item)
+        source_id = task['source_id']
+        source_started(on_source, task)
         try:
             coverage_limited=False;coverage_notes=[]
             if provider in FETCHERS:
@@ -1718,6 +1732,8 @@ def coverage_round(sources:list[dict], fetcher:CompliantFetcher, limit:int, deta
     lock=threading.Lock()
 
     def run_one(src,source_budget):
+        source_started(on_source, {'source_id': src.get('id') or src['name'], 'name': src['name'],
+                                  'sector': src['sector'], 'mode': 'Official employer'})
         try:
             return _check_employer(src, sources, fetcher, source_budget)
         except Exception as exc:  # one malformed site must not abort the scan
@@ -1949,10 +1965,7 @@ def selected_employers(sources: list[dict], limit: int) -> list[dict]:
 
 
 def configured_ats_count() -> int:
-    boards=get_json(DATA/'ats.json',[]) + get_json(DATA/'ats_discovered.json',[])
-    from .ats import PROVIDERS as ATS_PROVIDERS
-    return len({(str(b.get('provider')).lower(),str(b.get('board_token')).lower()) for b in boards if isinstance(b,dict)
-                and str(b.get('provider')).lower() in ATS_PROVIDERS and b.get('board_token') and b.get('company')})
+    return len(configured_ats_boards())
 
 
 def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
@@ -2011,9 +2024,26 @@ def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
     previous_keys={similarity_key(j) for j in previous_jobs}
     store=IncrementalJobStore(DATA/'jobs.json', persist=not dry_run)
     store.jobs=previous_jobs
-    extra_total=int(email_alerts.configured())+search_apis.configured_count()
-    monitor=CollectionTelemetry(DATA,total=len(PROVIDERS)+len(selected_employers(sources,max(0,min(max_career_pages,250))))
-                                +configured_ats_count()+extra_total,status_callback=on_progress,persist=not dry_run,schedule=schedule)
+    employer_targets=selected_employers(sources,max(0,min(max_career_pages,250)))
+    feeds_cfg=get_json(DATA/'custom_feeds.json',[])
+    feeds_cfg=[feed for feed in feeds_cfg if isinstance(feed,dict) and feed.get('enabled',True)
+               and valid_url(feed.get('url',''))] if isinstance(feeds_cfg,list) else []
+    planned=[{'source_id':'feed:'+name,'name':name,'sector':'Remote job feed','mode':'Free publisher feed'}
+             for name in PROVIDERS]
+    planned.extend({'source_id':src.get('id') or src['name'],'name':src['name'],
+                    'sector':src['sector'],'mode':'Official employer'} for src in employer_targets)
+    planned.extend(_ats_task(board) for board in configured_ats_boards())
+    if email_alerts.configured():
+        planned.append({'source_id':'email:alerts','name':'Job-alert mailbox','sector':'Job alerts','mode':'IMAP (subscribed alerts)'})
+    for key,task in (('BRAVE_API_KEY',{'source_id':'api:brave','name':'Brave Search API','sector':'Search API','mode':'Licensed search index'}),
+                     ('JOOBLE_API_KEY',{'source_id':'api:jooble','name':'Jooble API','sector':'Aggregator API','mode':'Aggregator API (regional key)'})):
+        if os.environ.get(key,'').strip():planned.append(task)
+    planned.extend({'source_id':('custom:'+feed['url'])[:200],
+                    'name':feed.get('name') or urlparse(feed['url']).hostname,
+                    'sector':'Custom feed','mode':'User RSS/Atom feed'} for feed in feeds_cfg)
+    planned=list({task['source_id']:task for task in planned}.values())
+    monitor=CollectionTelemetry(DATA,total=len(planned),status_callback=on_progress,persist=not dry_run,schedule=schedule)
+    monitor.plan_sources(planned)
     prior_completion=monitor.progress.get('last_completed_at')
     prior_success=monitor.progress.get('last_successful_at')
     state=get_json(DATA/'feed_state.json',{})
@@ -2037,6 +2067,14 @@ def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
                               'listing_pages','collection_complete','recovery_hint','rejected_count','raw_jobs_found',
                               'requests','coverage_limited') if key in outcome})
 
+    def started(outcome: dict) -> None:
+        monitor.started(source_id=outcome.get('source_id') or outcome.get('name','unknown'),
+                        name=outcome.get('name','unknown'),sector=outcome.get('sector','Other'),
+                        mode=outcome.get('mode','unknown'),message=outcome.get('message',''))
+    # Keep the existing result-callback signature compatible with custom
+    # adapters; upgraded adapters can announce work through this optional hook.
+    received.started=started
+
     try:
         monitor.phase('feeds','Checking public publisher feeds')
         remote,remote_health,feed_state=collect_public_feeds(
@@ -2046,31 +2084,24 @@ def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
         if email_alerts.configured():
             monitor.phase('alerts','Reading subscribed LinkedIn / Bdjobs job-alert emails')
             alerts,alert_health=email_alerts.collect_email_alerts(sources,on_source=received,state=feed_state)
-        if search_apis.configured_count():
+        if any(task['source_id'] in ('api:brave','api:jooble') for task in planned):
             monitor.phase('search','Querying licensed search / aggregator APIs')
             b_jobs,b_health,feed_state=search_apis.brave_search(session,feed_state,sources,
                 per_run=int(os.environ.get('BRAVE_QUERIES_PER_RUN','2') or 2),on_source=received)
             j_jobs,j_health,feed_state=search_apis.jooble_search(session,feed_state,sources,
                 per_run=int(os.environ.get('JOOBLE_QUERIES_PER_RUN','3') or 3),on_source=received)
             keyed=b_jobs+j_jobs; keyed_health=b_health+j_health
-        feeds_cfg=get_json(DATA/'custom_feeds.json',[])
-        if isinstance(feeds_cfg,list) and feeds_cfg:
+        if feeds_cfg:
             monitor.phase('custom','Checking your custom RSS / Google Alerts feeds')
-            due=[f for f in feeds_cfg if isinstance(f,dict) and f.get('enabled',True)
-                 and time.time()>=float((feed_state.get('custom:'+str(f.get('url')),{}) or {}).get('next_check',0))]
-            monitor.extend_total(len(due))
             custom,custom_health,feed_state=custom_feeds.collect_custom_feeds(session,feeds_cfg,feed_state,sources,on_source=received)
         monitor.phase('employers','Checking Bangladesh bank, telecom and employer career pages')
         official,employer_health=coverage_round(
             sources,fetcher,max(0,min(max_career_pages,250)),
             detail_budget=max(0,min(max_detail_pages,600)), on_source=received)
         monitor.phase('ats','Checking employer-linked public recruitment APIs')
-        # New ATS boards discovered in this scan expand the source count.
-        manual=get_json(DATA/'ats.json',[])
-        old=get_json(DATA/'ats_discovered.json',[])
-        known={(x.get('provider'),x.get('board_token')) for x in manual+old if isinstance(x,dict)}
-        discovered={(x.get('provider'),x.get('board_token')) for x in fetcher.discovered_ats}
-        monitor.extend_total(len(discovered-known))
+        # Plan only boards the ATS collector will actually process. Existing
+        # rows keep their identity; newly discovered tasks expand the total.
+        monitor.plan_sources([_ats_task(board) for board in configured_ats_boards(fetcher.discovered_ats)])
         ats,ats_health=ats_jobs(session,sources,fetcher.discovered_ats,on_source=received)
         health=remote_health+alert_health+keyed_health+custom_health+ats_health+employer_health
         new_candidates=validated(remote+alerts+keyed+custom+ats+official)
@@ -2136,7 +2167,7 @@ def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
                 'detection':{'version':'5.2','prior_records_checked':prior_count,
                     'prior_records_quarantined':previous_removed,'unique_records_rejected':len(rejected),
                     'note':'Rejected historical candidates are retained for local review, up to 1,000 records.'},
-                'progress_summary':dict(monitor.progress),
+                'progress_summary':monitor.snapshot(),
                 'collection_policy':'Hourly: employer pages (robots.txt honoured), public ATS APIs, free publisher feeds, your subscribed job-alert emails and optional licensed search/aggregator APIs. Restricted portals are never scraped directly.'}
         if not dry_run:
             write_json(DATA/'status.json',status)
@@ -2152,7 +2183,7 @@ def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
                      'last_successful_at':monitor.progress.get('last_successful_at'),
                      'collection_started_at':monitor.progress.get('started_at'),
                      'collection_finished_at':monitor.progress.get('finished_at'),
-                     'progress_summary':dict(monitor.progress),
+                     'progress_summary':monitor.snapshot(),
                      'last_attempt_error':f'{type(exc).__name__}: collection interrupted'}
             write_json(DATA/'status.json',failure)
         raise

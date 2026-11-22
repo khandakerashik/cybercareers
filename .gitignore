@@ -1,0 +1,19 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+_site/
+
+# Vault master key — NEVER commit. Keep it as the CC_MASTER_KEY Actions secret + a private backup.
+.vault/
+
+# Collected data is published only encrypted (encrypted/). Plaintext stays local.
+data/jobs.json
+data/status.json
+data/source_health.json
+data/progress.json
+data/feed_state.json
+data/ats_discovered.json
+data/rejected_jobs.json
+data/*.tmp
