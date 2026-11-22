@@ -50,10 +50,12 @@ def test_static_site_and_local_api(local_server):
     assert b'CyberCareers' in html
     assert b'refreshJobsButton' in html
     assert headers['X-Content-Type-Options'] == 'nosniff'
-    for filename in ('/styles.css', '/app.js', '/assets/favicon.svg',
+    for filename in ('/styles.css', '/app.js', '/applications.js', '/assets/favicon.svg',
                      '/data/jobs.json', '/data/sources.json', '/data/status.json'):
-        code, _, data = request(port, 'GET', filename + '?v=123')
+        code, asset_headers, data = request(port, 'GET', filename + '?v=123')
         assert code == 200 and data
+        if filename.endswith('.js'):
+            assert asset_headers['Content-Type'].startswith('text/javascript')
     code, _, data = request(port, 'GET', '/api/health')
     assert code == 200
     health = json.loads(data)
@@ -76,6 +78,21 @@ def test_private_files_and_traversal_are_blocked(local_server):
     assert code == 403
     assert public_path('/collector/collect.py') is None
     assert public_path('/data/jobs.json') is not None
+
+
+def test_application_backups_are_private_even_if_present_on_disk(local_server,tmp_path,monkeypatch):
+    from server import app
+    monkeypatch.setattr(app,'ROOT',tmp_path)
+    private_paths=('applications.json','data/applications.json','assets/applications.csv',
+                   'encrypted/application-notes.txt','config/applications.json')
+    for name in private_paths:
+        path=tmp_path/name
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_text('private application notes')
+    port,_=local_server
+    for name in private_paths:
+        code,_,_=request(port,'GET','/'+name)
+        assert code==404
 
 
 def test_refresh_requires_same_origin_browser_intent(local_server):

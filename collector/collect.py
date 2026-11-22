@@ -31,12 +31,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from bs4 import BeautifulSoup
 
 from . import relevance as _relevance
+from .vacancy import assess_vacancy, assess_record, source_kind_for_record, has_role_title, is_job_detail_url
 from . import textmine
 from .robots import ALLOW_ALL, RobotsPolicy
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data'
-UA = 'CyberCareersBD/5.0 (+personal public vacancy watch; honours robots.txt)'
+UA = 'CyberCareersBD/5.2 (+personal public vacancy watch; honours robots.txt)'
 BANGLADESH = timezone(timedelta(hours=6))
 # Search portal URLs are kept in the source directory; no paid API is used.
 HTTP_TIMEOUT = 12
@@ -144,6 +145,8 @@ def valid_url(value: str) -> bool:
     try:
         u = urlparse(value)
         if u.scheme not in ('http', 'https') or not u.hostname:
+            return False
+        if u.port is not None and not 1 <= u.port <= 65535:
             return False
         host = u.hostname.strip('.').lower()
         if host in ('localhost',) or host.endswith(('.local', '.internal', '.test')):
@@ -278,6 +281,38 @@ def iso_date(raw: Any) -> str:
     return textmine.parse_date(text[:60])
 
 
+def deadline_date(raw: Any) -> str:
+    """A valid application-deadline day in Bangladesh, or '' when unknown.
+
+    Date-only circulars keep their stated calendar day.  Timestamp deadlines
+    are first converted to BDT; the dashboard then treats that day as open
+    through its end.  This intentionally leaves publication-date semantics
+    in ``iso_date`` unchanged and does not claim exact closing-hour accuracy.
+    """
+    if not raw or isinstance(raw, (bool, dict, list, tuple, set)):
+        return ''
+    text = str(raw).strip()
+    if re.fullmatch(r'\d{10,13}(?:\.\d+)?', text):
+        try:
+            seconds = float(text)
+            if seconds > 1e11:
+                seconds /= 1000
+            return datetime.fromtimestamp(seconds, BANGLADESH).date().isoformat()
+        except (ValueError, OverflowError, OSError):
+            return ''
+    try:
+        parsed = datetime.fromisoformat(text.replace('Z', '+00:00'))
+        if parsed.tzinfo is not None:
+            parsed = parsed.astimezone(BANGLADESH)
+        return parsed.date().isoformat()
+    except ValueError:
+        # A broken ISO timestamp must not fall through to a parser that finds
+        # just its plausible date prefix and silently discards the bad time.
+        if re.match(r'^\d{4}-\d{2}-\d{2}[Tt ]', text):
+            return ''
+    return iso_date(raw)
+
+
 def years_from_text(text: str) -> int | None:
     return textmine.years_required(text)
 
@@ -291,19 +326,28 @@ def stable_id(company: str, title: str, url: str) -> str:
     # with identical job titles. Keep both instead of collapsing by title.
     canonical = canonical_job_url(url) if valid_url(url) else ''
     seed = canonical or (norm(company) + '|' + norm(title))
+    if canonical and urlparse(canonical).path.lower().endswith('.pdf'):
+        seed += '|' + _norm_title(title)
     return hashlib.sha256(seed.encode()).hexdigest()[:18]
 
 
 def canonical_job_url(url: str) -> str:
     if not valid_url(url):
         return ''
+    from .email_alerts import canonical_portal_job
+    portal = canonical_portal_job(url)
+    if portal:
+        return portal[1].rstrip('/')
     u = urlparse(url)
     query = parse_qs(u.query, keep_blank_values=False)
     # Keep job identifiers; strip common link click tracking only.
     query = {k: v for k, v in query.items() if not k.lower().startswith(('utm_', 'fbclid', 'gclid'))
-             and k.lower() not in ('ref', 'referrer', 'source', 'trk', 'tracking')}
-    return urlunparse((u.scheme.lower(), (u.hostname or '').lower(),
-        u.path.rstrip('/').lower() or '/', '', urlencode(sorted((k, val) for k, values in query.items() for val in values)), ''))
+             and k.lower() not in ('referrer', 'trk', 'tracking')}
+    host = (u.hostname or '').lower()
+    if u.port and u.port not in (80, 443):
+        host += ':' + str(u.port)
+    return urlunparse((u.scheme.lower(), host,
+        u.path.rstrip('/') or '/', '', urlencode(sorted((k, val) for k, values in query.items() for val in values)), ''))
 
 
 def derive_sector(company: str, sources: list[dict]) -> str:
@@ -348,7 +392,7 @@ def new_job(*, title: str, company: str, url: str, source: str, sources: list[di
     title=clean_text(title,200)
     company=clean_text(company,150)
     # Many circulars only state the deadline/posted date in body text (incl. Bangla).
-    if not iso_date(deadline):
+    if not deadline_date(deadline):
         deadline=textmine.find_deadline(description)
     if not iso_date(posted):
         posted=textmine.find_posted(description[:4000])
@@ -356,14 +400,20 @@ def new_job(*, title: str, company: str, url: str, source: str, sources: list[di
         city=textmine.bd_city(title+' '+description[:1500]) if kwargs.get('region','Bangladesh')=='Bangladesh' else ''
         if city:kwargs['location']=f'{city}, Bangladesh'
     assessed=_relevance.assess(title,description)
+    evidence=assess_vacancy(title,description,url,source_kind=source_kind_for_record(
+        {'source':source,'verification_level':kwargs.get('verification_level','')}))
+    identifier=stable_id(company,title,url)
+    if kwargs.get('posting_identifier') or kwargs.get('shared_listing_url') or source.startswith('Official PDF'):
+        discriminator=str(kwargs.get('posting_identifier') or _norm_title(title))
+        identifier=hashlib.sha256((identifier+'|'+discriminator).encode()).hexdigest()[:18]
     return {
-        'id':stable_id(company,title,url)+('-intl' if kwargs.get('region')=='International' else ''), 'title':title, 'company':company or 'Employer not identified',
+        'id':identifier+('-intl' if kwargs.get('region')=='International' else ''), 'title':title, 'company':company or 'Employer not identified',
         'company_sector':kwargs.get('company_sector') or derive_sector(company,sources),
         'location':kwargs.get('location') or 'Bangladesh (verify location)',
         'workplace':kwargs.get('workplace') or 'Not specified',
         'employment_type':kwargs.get('employment_type') or 'Not specified',
         'seniority':kwargs.get('seniority') or 'Not specified', 'category':categorize(title),
-        'posted_at':iso_date(posted), 'deadline':iso_date(deadline),
+        'posted_at':iso_date(posted), 'deadline':deadline_date(deadline),
         'min_years':kwargs.get('min_years',years_from_text(description)), 'max_years':None,
         'salary':kwargs.get('salary') or 'Not disclosed',
         'skills':skills if skills is not None else find_skills(title+' '+description),
@@ -380,8 +430,17 @@ def new_job(*, title: str, company: str, url: str, source: str, sources: list[di
         'eligibility_confidence': kwargs.get('eligibility_confidence') or ('unconfirmed' if kwargs.get('region')=='International' else 'local'),
         'vacancy_status': kwargs.get('vacancy_status') or 'unverified',
         'relevance_score': assessed.score, 'matched_terms': assessed.terms[:12],
+        'relevance_reason': assessed.reason,
+        'vacancy_score': evidence.score, 'vacancy_reason': evidence.reason,
+        'vacancy_evidence': evidence.signals, 'detection_version': '5.2',
+        'alert_received_at': kwargs.get('alert_received_at') or '',
+        'provider_updated_at': kwargs.get('provider_updated_at') or '',
+        'source_updated_at': kwargs.get('source_updated_at') or '',
+        'posting_identifier': kwargs.get('posting_identifier') or '',
+        'shared_listing_url': bool(kwargs.get('shared_listing_url')),
         'also_listed_on': kwargs.get('also_listed_on') or [],
-        'collected_at':today_iso(), 'last_seen_at':today_iso()
+        'collected_at':today_iso(), 'last_seen_at':today_iso(),
+        'last_observed_at':now_bd().isoformat(timespec='seconds')
     }
 
 
@@ -482,23 +541,36 @@ def scrape_official_job(htmltext: str, page_url: str, sources: list[dict], compa
     for node in get_ld(soup):
         title=clean_text(node.get('title'),200)
         desc=clean_text(node.get('description'),11000)
-        if not is_relevant(title,desc): continue
+        if not is_relevant(title,desc) or not assess_vacancy(title,desc,page_url,source_kind='jobposting').vacancy: continue
         employer=node.get('hiringOrganization',{})
         company=value_of(employer) or company_hint
-        job_location=node.get('jobLocation',{})
-        if isinstance(job_location,list): job_location=job_location[0] if job_location else {}
-        place=''
-        if isinstance(job_location,dict):
-            addr=job_location.get('address',{})
-            if isinstance(addr,dict): place=', '.join(str(addr[k]) for k in ('addressLocality','addressRegion','addressCountry') if addr.get(k))
-            else: place=value_of(addr)
-        if not place: place=value_of(job_location)
+        def location_text(item):
+            if isinstance(item, list):
+                return '; '.join(filter(None, (location_text(x) for x in item)))
+            if isinstance(item, dict):
+                addr=item.get('address', item)
+                if isinstance(addr, dict):
+                    parts=[value_of(addr[k]) for k in ('addressLocality','addressRegion','addressCountry') if addr.get(k)]
+                    return ', '.join(filter(None,parts)) or value_of(item)
+                return value_of(addr)
+            return value_of(item)
+        places=[location_text(x) for x in (node.get('jobLocation') if isinstance(node.get('jobLocation'),list)
+                                          else [node.get('jobLocation',{})])]
+        places=[x for x in places if x]
+        place=next((x for x in places if bangladesh_relevance(x)), '; '.join(places))
         is_remote='TELECOMMUTE' in str(node.get('jobLocationType','')).upper()
-        region_info={'region':'Bangladesh','location':place or 'Bangladesh (verify location)'}
-        if place and not bangladesh_relevance(place,desc):
-            remote_scope=value_of(node.get('applicantLocationRequirements')) or place
-            region_info=classify_region(remote_scope,desc,remote=is_remote)
-            if not region_info or region_info['region']!='International':continue
+        remote_scope=location_text(node.get('applicantLocationRequirements'))
+        if is_remote and remote_scope:
+            region_info=classify_region(remote_scope,desc,remote=True)
+        elif place:
+            region_info=classify_region(place,desc,remote=is_remote)
+        elif is_remote:
+            region_info=classify_region('Remote',desc,remote=True)
+        else:
+            # These pages are discovered from the Bangladesh employer registry;
+            # retain missing-location leads explicitly as unverified.
+            region_info={'region':'Bangladesh','location':'Bangladesh (verify location)'}
+        if not region_info:continue
         place=region_info.pop('location')
         remote = 'Remote' if is_remote else 'Not specified'
         reqparts=[clean_text(node.get(k,''),2400) for k in ('qualifications','experienceRequirements','educationRequirements')]
@@ -509,7 +581,12 @@ def scrape_official_job(htmltext: str, page_url: str, sources: list[dict], compa
         app=node.get('directApply')  # Boolean is *not* an application URL.
         _=app
         url=node.get('url') or page_url
+        if isinstance(url,str): url=urljoin(page_url,url)
         if not isinstance(url,str) or not valid_url(url): url=page_url
+        identifier=node.get('identifier')
+        if isinstance(identifier,dict): identifier=identifier.get('value') or identifier.get('name')
+        identifier=clean_text(identifier,150)
+        shared_listing=not node.get('url') and not is_job_detail_url(page_url)
         logo = employer.get('logo','') if isinstance(employer,dict) else ''
         if isinstance(logo,dict): logo=logo.get('url','')
         image = node.get('image')
@@ -517,10 +594,11 @@ def scrape_official_job(htmltext: str, page_url: str, sources: list[dict], compa
         if isinstance(image,list): image=image[0] if image else ''
         companylogo = logo if isinstance(logo,str) and valid_url(logo) else ''
         poster = image if isinstance(image,str) and valid_url(image) else ''
-        jobs.append(new_job(title=title,company=company,url=page_url,source='Official employer',sources=sources,
+        jobs.append(new_job(title=title,company=company,url=url,source='Official employer',sources=sources,
             description=desc,posted=node.get('datePosted',''),deadline=node.get('validThrough',''),
             location=place,workplace=region_info.pop('workplace',remote),employment_type=value_of(node.get('employmentType')),
             salary=_salary_from_ld(node.get('baseSalary')),
+            posting_identifier=identifier,shared_listing_url=shared_listing,
             requirements=reqs,responsibilities=responsibilities,
             apply_url=url,company_logo_url=companylogo,poster_url=poster,
             verification_level='Official structured data',description_status='Full description' if len(desc)>200 else 'Official excerpt',
@@ -530,7 +608,7 @@ def scrape_official_job(htmltext: str, page_url: str, sources: list[dict], compa
     path=urlparse(page_url).path.lower()
     if not re.search(r'/((?:job|position|vacanc|opening|opportunity|career|recruitment)[^/]*/|[^/]+-\d{5,})',path): return []
     h1=soup.find('h1')
-    if not h1 or not is_relevant(h1.get_text(' ',strip=True)): return []
+    if not h1: return []
     title=clean_text(h1.get_text(' ',strip=True),200)
     main=soup.find('main') or soup.find('article') or soup.body
     if not main: return []
@@ -538,6 +616,7 @@ def scrape_official_job(htmltext: str, page_url: str, sources: list[dict], compa
     requirements,responsibilities=extract_role_sections(main)
     description=clean_text(main.get_text(' ',strip=True),11000)
     if len(description)<100 or SUSPICIOUS_CONTENT.search(description[:350]): return []
+    if not is_relevant(title,description) or not assess_vacancy(title,description,page_url,source_kind='html').vacancy: return []
     og=soup.select_one('meta[property="og:image"]')
     maybe_img=og.get('content','') if og else ''
     if not valid_url(maybe_img): maybe_img=''
@@ -565,6 +644,8 @@ class CompliantFetcher:
         self.crawl_delay: dict[str,float]={}
         self.discovered_ats: list[dict] = []
         self.ats_redirects: dict[str,str] = {}
+        self.resolved_urls: dict[str,str] = {}
+        self.robots_sitemaps: dict[str,list[str]] = {}
         self.failures: dict[str,str] = {}
         self._lock = threading.RLock()
         self._host_locks: dict[str,threading.Lock] = {}
@@ -620,7 +701,13 @@ class CompliantFetcher:
                     # RFC 9309 §2.3.1.3: robots.txt "unavailable" -> no crawl restrictions.
                     return ALLOW_ALL
                 if response.ok and len(response.content) <= 512 * 1024:
+                    if re.search(r'<title[^>]*>[^<]*(?:just a moment|access denied|captcha|verify you are human|request blocked)', response.text[:5000], re.I):
+                        self.failures[url] = 'robots.txt returned an access challenge; crawl policy unavailable'
+                        return None
                     policy = RobotsPolicy(response.text)
+                    self.robots_sitemaps[key] = [u.strip() for u in re.findall(
+                        r'^\s*Sitemap\s*:\s*(https?://\S+)', response.text, re.I | re.M)
+                        if valid_url(u.strip()) and self.is_official_allowed(u.strip())][:10]
                     delay = policy.crawl_delay(UA)
                     if delay:
                         self.crawl_delay[urlparse(key).netloc] = min(MAX_CRAWL_DELAY, delay)
@@ -671,6 +758,8 @@ class CompliantFetcher:
                         body = self.fetch(target, xml=xml, depth=depth + 1)
                         if body is None:
                             self.failures[url] = self.failures.get(target,'Redirect target unavailable')
+                        else:
+                            self.resolved_urls[url] = self.resolved_urls.get(target, target)
                         return body
                     self.failures[url] = 'Page redirects outside approved employer hosts'
                     return None
@@ -706,8 +795,15 @@ class CompliantFetcher:
                     if re.search(r'\b(just a moment|access denied|captcha|verify you are human|robot check|bot detection|request blocked|attention required)\b',page_title):
                         self.failures[url] = 'Access challenge or blocking page received'
                         return None
+                    if re.search(r'\b(?:404|page\s+not\s+found|page\s+does\s+not\s+exist|page\s+unavailable)\b',page_title):
+                        self.failures[url] = 'Soft 404: missing page returned HTTP 200'
+                        return None
                 self.failures.pop(url,None)
+                self.resolved_urls[url] = url
                 return body
+            except requests.exceptions.SSLError:
+                self.failures[url]='TLS certificate validation failed'
+                return None
             except requests.Timeout:
                 if attempt == 0:
                     time.sleep(0.6)
@@ -731,7 +827,10 @@ class CompliantFetcher:
         host = urlparse(url).netloc
         with self._host_lock(host):
             self._polite_wait(host)
-            return render_page(url, UA)
+            body = render_page(url, UA, allow_navigation=lambda u: self.is_official_allowed(u) and self.robots_allow(u))
+            if body is None:
+                self.failures[url] = 'JavaScript rendering unavailable or failed; install Chromium and check rendering logs'
+            return body
 
     def fetch_pdf(self, url: str) -> bytes | None:
         """Read only small official, public PDF vacancy circulars.
@@ -739,7 +838,7 @@ class CompliantFetcher:
         This does not defeat access controls, parse CAPTCHA pages, or fetch
         unapproved hosts. Size and page-count limits protect the collector.
         """
-        if not valid_url(url) or not urlparse(url).path.lower().endswith('.pdf'):
+        if not is_pdf_url(url):
             return None
         if not self.is_official_allowed(url) or not self.robots_allow(url):
             return None
@@ -764,12 +863,20 @@ class CompliantFetcher:
             return None
 
 
+def is_pdf_url(url: str) -> bool:
+    """Recognise published PDF URLs, including Liferay and download.php links."""
+    if not valid_url(url):return False
+    parts=urlparse(url)
+    if re.search(r'\.pdf(?:/|$)',parts.path,re.I):return True
+    return any(re.search(r'\.pdf$',value,re.I) for values in parse_qs(parts.query).values() for value in values)
+
+
 def circular_pdf_links(htmltext: str, base_url: str, *, limit: int = 3) -> list[str]:
     soup = BeautifulSoup(htmltext,'lxml')
     links = []
     for link in soup.select('a[href]'):
         url = urljoin(base_url, link.get('href',''))
-        if not valid_url(url) or not urlparse(url).path.lower().endswith('.pdf'):
+        if not is_pdf_url(url):
             continue
         text = clean_text(link.get_text(' ', strip=True),140)
         path = urlparse(url).path.lower()
@@ -800,13 +907,14 @@ def parse_pdf_circular(content: bytes, url: str, company: str, sources: list[dic
     matches = []
     for rawline in full.splitlines():
         line = clean_text(rawline,160)
-        if len(line)<12 or len(line)>125:
+        if len(line)<4 or len(line)>125:
             continue
         if not is_relevant(line):continue
-        if not re.search(r'\b(officer|analyst|engineer|specialist|manager|auditor|lead|head|architect|consultant|ciso|expert|executive|associate)\b|'+BANGLA_SECURITY_OFFICE,line,re.I):
+        if not has_role_title(line):
             continue
         if re.search(r'^(?:experience|knowledge|minimum|qualification|skill|department|reporting|about|contact|address|phone|eligibility)\b',line,re.I):
             continue
+        if not assess_vacancy(line,full,url,source_kind='pdf').vacancy:continue
         if line not in matches:matches.append(line)
         if len(matches)>=8:break
     return [new_job(title=t,company=company,url=url,apply_url=url,source='Official PDF circular',sources=sources,
@@ -849,6 +957,7 @@ def parse_job_rss(xmltext: str, source_url: str, company: str, sources: list[dic
             link=link_el.get('href','') if link_el is not None else ''
         link=urljoin(source_url,link)
         if not valid_url(link) or not same_host_or_subdomain(urlparse(link).hostname or '',urlparse(source_url).hostname or ''):continue
+        if not assess_vacancy(title,desc,link,source_kind='official_rss').vacancy:continue
         jobs.append(new_job(title=title,company=company,url=link,apply_url=link,source='Official employer RSS',sources=sources,
             description=desc,posted=fields.get('pubdate') or fields.get('published') or '',
             verification_level='Official page parsed',description_status='Official RSS excerpt',
@@ -858,7 +967,7 @@ def parse_job_rss(xmltext: str, source_url: str, company: str, sources: list[dic
 
 def candidate_links(page_html: str, base_url: str, budget=8) -> list[str]:
     soup=BeautifulSoup(page_html,'lxml')
-    links=[]
+    candidates={}
     for a in soup.select('a[href]'):
         label=clean_text(a.get_text(' ',strip=True),240)
         href=urljoin(base_url,a.get('href',''))
@@ -866,9 +975,26 @@ def candidate_links(page_html: str, base_url: str, budget=8) -> list[str]:
         # Same site only, unless the official career page links to a known ATS.
         path=urlparse(href).path.lower()
         joblike = bool(re.search(r'(?:/job[s]?/|/position[s]?/|/openings?/|/vacanc(?:y|ies)/|/recruitment/|/jobsearch|/job-details/|/careers/.+|/job-\d+|/vacancy-\d+)',path))
-        if (is_relevant(label) or (joblike and re.search(r'(?:cyber|security|risk|audit|it[-_]?governance|soc|infosec|সাইবার|নিরাপত্তা|নিরীক্ষা)', path, re.I))) and href not in links:links.append(href)
-        if len(links)>=budget:break
-    return links
+        score=3 if is_relevant(label) else 0
+        if joblike and re.search(r'(?:cyber|security|risk|audit|it[-_]?governance|soc|infosec|সাইবার|নিরাপত্তা|নিরীক্ষা)', path, re.I):
+            score=max(score,2)
+        # Job cards often put the title in a sibling heading and give the link
+        # only a label such as "View details". Inspect the nearest small card,
+        # never the entire listing where unrelated roles would share context.
+        if joblike or re.fullmatch(r'(?:view|read)\s+(?:job\s+)?details|apply(?:\s+now)?|বিস্তারিত',label,re.I):
+            node=a.parent
+            for _ in range(3):
+                if node is None:break
+                card=clean_text(node.get_text(' ',strip=True),1600)
+                if len(card)>1400:break
+                headings=node.select('h1,h2,h3,h4,h5,h6')
+                if len(headings)==1 and is_relevant(headings[0].get_text(' ',strip=True),card):
+                    score=max(score,2);break
+                node=node.parent
+        if joblike and re.search(r'\b(?:principal\s+officer|(?:it|ict|technology)\s+(?:officer|manager|engineer)|(?:network|system)\s+engineer)\b',label,re.I):
+            score=max(score,1)
+        if score:candidates[href]=max(candidates.get(href,0),score)
+    return [url for url,_ in sorted(candidates.items(),key=lambda x:-x[1])[:max(0,budget)]]
 
 
 
@@ -881,12 +1007,16 @@ def discover_career_links(page_html: str, base_url: str, limit: int = 5) -> list
     for link in soup.select('a[href]'):
         text=clean_text(link.get_text(' ',strip=True),100).lower()
         url=urljoin(base_url,link.get('href',''))
+        # In-page #vacancies navigation does not load a second listing. Keep
+        # actual SPA hash routes for the renderer, but skip ordinary anchors.
+        if urlparse(url).fragment and not urlparse(url).fragment.startswith(('/', '!/')):
+            url=url.split('#',1)[0]
         if not valid_url(url):continue
         if not same_host_or_subdomain(urlparse(url).hostname or '',root_host):continue
         path=(urlparse(url).path+' '+urlparse(url).query).lower()
-        if not (re.search(r'\b(career|vacanc|recruit|work with us|join us|job openings|available jobs|employment opportunities|job circular)',text+' '+path) or re.search(BANGLA_JOB_WORDS, text+' '+path)):
+        if not (re.search(r'\b(career|vacanc|recruit|work with us|join us|job openings|available jobs|employment opportunities|job circular)|\b(?:open|current|view|available)\s+(?:roles|positions|openings|vacancies|jobs)',text+' '+path) or re.search(BANGLA_JOB_WORDS, text+' '+path)):
             # In a slug career links are often 'careers' and lack word boundary at the end.
-            if not re.search(r'career|vacanc|recruit|/jobs|join-us|apply-jobs|চাকরি|নিয়োগ|নিয়োগ',path):continue
+            if not re.search(r'career|vacanc|recruit|(?:/|-)jobs|job-list|join-us|apply-jobs|চাকরি|নিয়োগ|নিয়োগ',path):continue
         if any(t in path for t in ('login','signin','privacy','sitemap','internship-course')):continue
         if url not in candidates and url.rstrip('/')!=base_url.rstrip('/'):candidates.append(url)
         if len(candidates)>=limit:break
@@ -904,7 +1034,7 @@ def _sitemap_locs(data: str) -> tuple[list[str], bool]:
 JOB_PATH = re.compile(r'(?:cyber|infosec|information-security|security-|security_|job[s]?/|vacanc|career[s]?/|recruitment/|opening|position|circular|নিয়োগ|চাকরি)', re.I)
 
 
-def sitemap_candidates(fetcher: CompliantFetcher, base_url: str, *, limit: int = 12) -> list[str]:
+def sitemap_candidates(fetcher: CompliantFetcher, base_url: str, *, limit: int = 12, budget=None) -> list[str]:
     """Targeted sitemap fallback for jobs not linked on landing pages.
 
     Reads /sitemap.xml (plus Sitemap: lines from robots.txt). For a sitemap
@@ -913,16 +1043,27 @@ def sitemap_candidates(fetcher: CompliantFetcher, base_url: str, *, limit: int =
     """
     parts=urlparse(base_url)
     if not parts.hostname: return []
-    roots=[f'{parts.scheme}://{parts.netloc}/sitemap.xml']
+    origin=f'{parts.scheme}://{parts.netloc}'
+    roots=list(dict.fromkeys([*(getattr(fetcher, 'robots_sitemaps', {}).get(origin, [])), origin+'/sitemap.xml']))
     found=[]; opened=0
     queue=list(roots)
+    seen=set()
     while queue and opened<4 and len(found)<limit:
-        sm=queue.pop(0); opened+=1
+        sm=queue.pop(0)
+        if sm in seen:continue
+        seen.add(sm)
+        if budget is not None and not budget.take():break
+        opened+=1
         data=fetcher.fetch(sm,xml=True)
         if not data or len(data)>2_000_000:continue
         locs,is_index=_sitemap_locs(data)
         if is_index:
             children=[u for u in locs if re.search(r'job|career|vacanc|recruit|position|opening',u,re.I)]
+            # WordPress commonly puts recruitment pages in page-sitemap.xml.
+            # Try that published index entry when no recruiting sitemap exists.
+            if not children:
+                children=[u for u in locs if re.search(r'(?:page[-_]?sitemap|sitemap[-_]?pages?)',u,re.I)]
+            children=[u for u in children if valid_url(u) and fetcher.is_official_allowed(u)]
             queue.extend(children[:3])
             continue
         for url in locs:
@@ -953,13 +1094,12 @@ def title_from_result(result: dict) -> tuple[str,str]:
 
 def provider_of(url: str) -> str:
     h=(urlparse(url).hostname or '').lower()
-    if 'linkedin.com' in h: return 'LinkedIn index'
-    if 'bdjobs.com' in h: return 'Bdjobs index'
-    if 'indeed.com' in h: return 'Indeed index'
-    if 'glassdoor.com' in h: return 'Glassdoor index'
-    if 'joblagbe.online' in h: return 'Job Lagbe index'
-    if 'dohaj.com' in h: return 'Dohaj index'
-    if 'lever.co' in h or 'greenhouse.io' in h:return 'ATS index'
+    for domain, label in (('linkedin.com', 'LinkedIn'), ('bdjobs.com', 'Bdjobs'),
+                          ('indeed.com', 'Indeed'), ('glassdoor.com', 'Glassdoor'),
+                          ('joblagbe.online', 'Job Lagbe'), ('dohaj.com', 'Dohaj')):
+        if same_host_or_subdomain(h, domain):
+            return label + ' index'
+    if any(same_host_or_subdomain(h,d) for d in ('lever.co','greenhouse.io','ashbyhq.com')):return 'ATS index'
     return 'Search discovery'
 
 
@@ -991,10 +1131,16 @@ def classify_region(location: str, description: str = '', *, remote: bool = Fals
     """
     from .free_feeds import confidence, text_location_eligibility
     loc = clean_text(location, 300)
+    if location_excludes_bangladesh(loc, description):
+        return None
     if bangladesh_relevance(loc, description):
         return {'region': 'Bangladesh', 'location': loc or 'Bangladesh (verify location)'}
     if remote or re.search(r'\b(remote|anywhere|worldwide|world wide|global|home[- ]based|work from home|distributed)\b', loc, re.I):
         eligibility = text_location_eligibility(loc, allow_unknown=False)
+        if not eligibility and (not loc or re.fullmatch(r'remote|work from home|distributed',loc,re.I)):
+            scope = re.search(r'\b(?:work\s+from|remote\s*[:—–-]?|hiring\s+(?:in|from)|applicants?\s+(?:in|from))\s*'
+                              r'(worldwide|anywhere\s+in\s+the\s+world|anywhere|globally|apac|asia[- ]pacific|south\s+asia)\b',description,re.I)
+            if scope: eligibility = text_location_eligibility(scope.group(1), allow_unknown=False)
         if eligibility:
             return {'region': 'International', 'location': loc or 'Remote', 'workplace': 'Remote',
                     'eligibility': eligibility, 'eligibility_confidence': confidence(eligibility),
@@ -1002,18 +1148,45 @@ def classify_region(location: str, description: str = '', *, remote: bool = Fals
     return None
 
 
-BD_LOCATION_PATTERN = re.compile(r'\b(bangladesh|bd|dhaka|chattogram|chittagong|sylhet|rajshahi|khulna|rangpur|barishal|barisal|mymensingh|gazipur|narayanganj|cumilla|comilla|bogura|bogra|uttara|gulshan|mirpur|banani|motijheel|cox.s bazar)\b', re.I)
+BD_LOCATION_PATTERN = re.compile(r'\b(bangladesh|bd|dhaka|chattogram|chittagong|sylhet|rajshahi|khulna|rangpur|barishal|barisal|mymensingh|gazipur|narayanganj|cumilla|comilla|bogura|bogra|uttara|gulshan|mirpur|banani|motijheel|cox.s bazar)\b|বাংলাদেশ|ঢাকা|চট্টগ্রাম|সিলেট', re.I)
+FOREIGN_LOCATION_PATTERN = re.compile(r'\b(?:United States|USA|U\.S\.(?:A\.)?|US|United Kingdom|UK|UAE|United Arab Emirates|'
+    r'Canada|Australia|New Zealand|Germany|France|Ireland|Netherlands|Belgium|Spain|Portugal|Italy|Poland|Sweden|Norway|Denmark|Finland|'
+    r'Switzerland|Austria|Czechia|Czech Republic|Romania|Europe|European Union|European Economic Area|EU|EEA|'
+    r'India|Singapore|Pakistan|Sri Lanka|Nepal|Japan|China|Hong Kong|Taiwan|South Korea|Indonesia|Malaysia|Philippines|Thailand|Vietnam|'
+    r'Saudi Arabia|Qatar|Kuwait|Bahrain|Oman|Israel|South Africa|Nigeria|Kenya|Brazil|Mexico|Argentina|Chile|Colombia|'
+    r'London|New York|San Francisco|Bengaluru|Bangalore|Mumbai|Hyderabad|Chennai|Delhi|Dubai|Abu Dhabi|Dublin)\b',re.I)
+_BD_EXCLUSION = re.compile(r'\b(?:except|excluding|not\s+(?:available|eligible|open)\s+(?:in|to|for))\s+(?:applicants?\s+from\s+)?(?:Bangladesh|BD)\b',re.I)
+
+
+def location_excludes_bangladesh(location: str, description: str = '') -> bool:
+    """Explicit role/candidate restrictions outrank incidental company geography."""
+    loc=clean_text(location,500)
+    desc=clean_text(description,12000)
+    if _BD_EXCLUSION.search(loc+' '+desc):return True
+    for text in (loc,desc):
+        for restriction in re.finditer(r'\b(?:only\s+(?:in|for|from)\s+[^.;\n]{1,80}|'
+                                      r'[^.;\n]{1,70}\b(?:residents?\s+only|citizens?\s+only)|'
+                                      r'\b(?:us|usa|uk|uae|europe|eu|india|canada|australia)\s+only|'
+                                      r'(?:must\s+(?:be\s+based|reside|live)|candidates?\s+must\s+be\s+(?:based|located))\s+in\s+[^.;\n]{1,80})',text,re.I):
+            scope=restriction.group(0)
+            if FOREIGN_LOCATION_PATTERN.search(scope) and not BD_LOCATION_PATTERN.search(scope):return True
+    return bool(FOREIGN_LOCATION_PATTERN.search(loc) and not BD_LOCATION_PATTERN.search(loc)
+                and not re.search(r'\b(worldwide|world wide|anywhere in the world|global|apac|south asia|asia.pacific)\b',loc,re.I))
 
 
 def bangladesh_relevance(location: str, description: str = '', *, search_index: bool=False, url: str='') -> bool:
     """Require positive Bangladesh evidence. Never assume all remote roles are BD-eligible."""
     location=clean_text(location, 300)
     description=clean_text(description, 2200)
+    if location_excludes_bangladesh(location, description): return False
     if BD_LOCATION_PATTERN.search(location): return True
     # A description mentioning Bangladesh is adequate when no known foreign location contradicts it.
-    if re.search(r'\b(United States|USA|Canada|Australia|Germany|United Kingdom|London|New York|Bengaluru|Bangalore|Mumbai|India|Singapore|Pakistan)\b', location, re.I):
+    if FOREIGN_LOCATION_PATTERN.search(location):
         return False
-    if BD_LOCATION_PATTERN.search(description): return True
+    if re.search(r'\b(?:worldwide|apac|asia.pacific|anywhere|global)\b',location,re.I):return False
+    if BD_LOCATION_PATTERN.search(description) and not re.fullmatch(r'remote|work from home|distributed',location,re.I): return True
+    if re.search(r'\b(?:based|located|work|hiring|position|job\s+location|location|remote)\s*(?:in|from|within|:)?\s*(?:dhaka|bangladesh)\b|'
+                 r'\b(?:dhaka|bangladesh)[ -]+based\b',description,re.I):return True
     # Native Bangladeshi jobs-board URLs without explicit location are still Bangladesh-focused.
     host=(urlparse(url).hostname or '').lower()
     return bool(search_index and any(same_host_or_subdomain(host,d) for d in ('bdjobs.com','jobs.com.bd','job.com.bd','dohaj.com')))
@@ -1021,16 +1194,39 @@ def bangladesh_relevance(location: str, description: str = '', *, search_index: 
 def indexed_result_to_job(result: dict, sources: list[dict]) -> dict | None:
     url=result.get('url')
     if not isinstance(url,str) or not valid_url(url):return None
+    from .email_alerts import canonical_portal_job
+    portal = canonical_portal_job(url)
+    if provider_of(url) in ('LinkedIn index','Bdjobs index','Indeed index','Glassdoor index') and not portal:
+        return None  # Search/category/company pages are not individual vacancies.
+    if portal:
+        url = portal[1]
     title,company=title_from_result(result)
-    excerpt=clean_text(result.get('description') or result.get('extra_snippets') or '',1800)
+    snippets = result.get('extra_snippets') or []
+    if isinstance(snippets, str): snippets = [snippets]
+    excerpt=clean_text(' '.join(str(x) for x in [result.get('description') or '', *snippets] if x),3000)
     if not is_relevant(title,excerpt):return None
-    if not bangladesh_relevance(title,excerpt,search_index=True,url=url):return None
+    if not assess_vacancy(title,excerpt,url,source_kind='index').vacancy:return None
+    raw_title = clean_text(result.get('title'), 400)
+    location = clean_text(result.get('location'), 200)
+    # LinkedIn search titles carry the location after the role; retain it even
+    # when title_from_result removed it from the display title.
+    place = re.search(r'\s+in\s+([^|]{2,130}?)(?:\s*[|]\s*LinkedIn)?$', raw_title, re.I)
+    if not location and place:
+        location = clean_text(place.group(1), 200)
+    if not location:
+        place = re.search(r'\b(?:job\s+)?location\s*:\s*([^.;|]{2,100})', excerpt, re.I)
+        if place: location = clean_text(place.group(1), 200)
+    if bangladesh_relevance(location or raw_title, excerpt, search_index=True, url=url):
+        region = {'region':'Bangladesh', 'location': location or 'Bangladesh (verify location)'}
+    else:
+        region = classify_region(location or raw_title, excerpt)
+        if not region: return None
     if re.search(r'\b(no longer accepting applications|job expired|applications are closed|position filled)\b',excerpt,re.I):return None
     if not company: company=infer_company_from_snippet(excerpt)
     if not company:company='Employer not identified'
     return new_job(title=title,company=company,url=url,source=provider_of(url),sources=sources,
         description=excerpt,verification_level='Search indexed (unverified)',description_status='Search excerpt',
-        location='Bangladesh (verify location)')
+        **region)
 
 
 def _epoch_iso(value: Any) -> str:
@@ -1148,19 +1344,28 @@ def ats_jobs(session:requests.Session, sources:list[dict], discovered: list[dict
         provider = item['provider'].lower(); token = item['board_token']; company = item['company']
         source_id = f'ats:{provider}:{token}'
         try:
+            coverage_limited=False;coverage_notes=[]
             if provider in FETCHERS:
                 from .ats import fetch_board
                 raw = fetch_board(session, provider, token, UA, wants)
                 new = [j for j in (ats_posting_to_job(r, company=company, provider=provider, sources=sources) for r in raw) if j]
+                coverage_limited=bool(getattr(raw,'coverage_limited',False))
+                coverage_notes=getattr(raw,'coverage_notes',[])
             else:
                 r = session.get(_board_api(provider, token), timeout=HTTP_TIMEOUT, headers={'User-Agent': UA, 'Accept': 'application/json'})
                 r.raise_for_status()
                 data = r.json()
+                if provider in ('lever','lever_eu'):
+                    if not isinstance(data,list):raise ValueError('ATS response did not contain a postings array')
+                elif not isinstance(data,dict) or not isinstance(data.get('jobs'),list):
+                    raise ValueError('ATS response did not contain a jobs array')
                 new = (list_greenhouse(data, company, sources) if provider == 'greenhouse'
                        else list_lever(data, company, sources) if provider in ('lever', 'lever_eu')
                        else list_ashby(data, company, sources))
-            return ({'name': company, 'source_id': source_id, 'sector': 'ATS boards', 'state': 'ok',
-                     'jobs_found': len(new), 'mode': 'ATS API', 'message': f'{provider} board {token}'}, new)
+            return ({'name': company, 'source_id': source_id, 'sector': 'ATS boards', 'state': 'partial' if coverage_limited else 'ok',
+                     'jobs_found': len(new), 'mode': 'ATS API', 'coverage_limited':coverage_limited,
+                     'collection_complete':not coverage_limited,'reason_code':'incomplete_scan' if coverage_limited else 'ats_complete',
+                     'message': f'{provider} board {token}'+('; '+'; '.join(coverage_notes) if coverage_notes else '')}, new)
         except PermissionError as e:
             return ({'name': company, 'source_id': source_id, 'sector': 'ATS boards', 'state': 'error',
                      'jobs_found': 0, 'mode': 'ATS API', 'message': str(e)}, [])
@@ -1237,6 +1442,66 @@ class _Budget:
             return True
 
 
+class _FairBudgetPool:
+    """Reserve two follow-ups per employer before sharing the extra budget.
+
+    Fast/big websites must not consume every detail request before slower
+    employers can follow even their first careers link. Unused reservations
+    are returned when an employer finishes.
+    """
+    def __init__(self,total: int,count: int):
+        total=max(0,total)
+        reserved=min(2,total//max(1,count))
+        self.reserved=[reserved]*count
+        self.shared=total-reserved*count
+        self.lock=threading.Lock()
+
+    def source(self,index: int):
+        pool=self
+        class Share:
+            @property
+            def left(self):
+                with pool.lock:return pool.reserved[index]+pool.shared
+
+            def take(self):
+                with pool.lock:
+                    if pool.reserved[index]>0:
+                        pool.reserved[index]-=1;return True
+                    if pool.shared>0:
+                        pool.shared-=1;return True
+                    return False
+
+            def release(self):
+                with pool.lock:
+                    pool.shared+=pool.reserved[index]
+                    pool.reserved[index]=0
+        return Share()
+
+
+def source_failure_reason(message: str) -> tuple[str, str]:
+    """Classify a measured failure without treating policy blocks as outages."""
+    msg=message.lower()
+    if 'robots.txt disallows' in msg:
+        return 'robots_disallowed','Use a published feed, subscribed job alerts, or review the employer page manually.'
+    if 'robots' in msg:
+        return 'robots_unavailable','The crawl policy could not be read; the next hourly run will retry.'
+    if '429' in msg:
+        return 'rate_limited','Wait for the publisher rate-limit window; the next scheduled run will retry.'
+    if 'tls' in msg:
+        return 'tls_error','Check the site certificate or a current employer-published URL; TLS checks remain enabled.'
+    if '403' in msg or 'challenge' in msg or 'access denied' in msg:
+        return 'access_blocked','Use an authorized feed or subscribed alert; this site blocks automated requests.'
+    if '404' in msg or '410' in msg:
+        return 'page_missing','Review the employer careers URL and its published alternatives.'
+    if 'redirects outside' in msg:
+        return 'unapproved_redirect','Verify the employer-published destination before adding it to career_alternates.'
+    if 'not an approved' in msg:
+        return 'restricted_source','Use the supported alert/search import routes for restricted portals.'
+    if 'network' in msg or 'dns' in msg or 'timed out' in msg:
+        return 'network_error','Retry from the deployment environment; reachability may vary by network.'
+    return 'unavailable','Check the recorded HTTP/parser result and the employer current careers page.'
+
+
 def _check_employer(src: dict, sources: list[dict], fetcher, budget: _Budget) -> tuple[dict, list[dict]]:
     """Check one employer: career page(s), detail links, PDFs, RSS, ATS hand-offs."""
     from . import render as _render
@@ -1246,6 +1511,26 @@ def _check_employer(src: dict, sources: list[dict], fetcher, budget: _Budget) ->
         discovered = []
     ats_redirects = getattr(fetcher, 'ats_redirects', {}) or {}
     can_render = _render.enabled() and hasattr(fetcher, 'render')
+    resolved_urls = getattr(fetcher, 'resolved_urls', {})
+    checked_urls=[]
+    limited=[]
+    needs_render=False
+
+    def get_page(url: str, **kwargs):
+        if url not in checked_urls:checked_urls.append(url)
+        return fetcher.fetch(url, **kwargs)
+
+    def readable_page(url: str, content: str) -> tuple[str, bool]:
+        nonlocal needs_render
+        shell=_render.looks_js_rendered(content)
+        if shell or src.get('render'):
+            if can_render:
+                rendered_page=fetcher.render(url)
+                if rendered_page and not _render.looks_js_rendered(rendered_page):
+                    return rendered_page, True
+            if shell:
+                needs_render=True
+        return content, False
 
     def note_boards(content: str, url: str) -> None:
         for board in discover_ats_links(content, url, src['name']):
@@ -1258,50 +1543,85 @@ def _check_employer(src: dict, sources: list[dict], fetcher, budget: _Budget) ->
     candidates=[]
     for candidate in [src.get('careers_url'),*(src.get('career_alternates') or []),src.get('website')]:
         if candidate and candidate not in candidates and valid_url(candidate):candidates.append(candidate)
-    landing='';html=None;attempted=[];ats_handoff=False
+    landing='';html=None;attempted=[];ats_handoff=False;rendered=False
     for candidate in candidates:
-        page=fetcher.fetch(candidate)
+        page=get_page(candidate)
         if page is not None:
-            landing,html=candidate,page
-            break
+            final_url=resolved_urls.get(candidate,candidate)
+            page,did_render=readable_page(final_url,page)
+            if not _render.looks_js_rendered(page):
+                landing,html=final_url,page
+                rendered=did_render
+                break
+            # Keep the shell for ATS embed discovery, but try a published
+            # alternative before treating a JS landing page as usable.
+            note_boards(page,final_url)
+            attempted.append(f'{urlparse(candidate).netloc}: JavaScript shell; vacancies not extracted')
+            continue
         if candidate in ats_redirects:
             note_boards(ats_redirects[candidate], candidate)
             ats_handoff=True
         attempted.append(f'{urlparse(candidate).netloc}: {fetcher.failures.get(candidate,"Unavailable")}')
     if html is None:
         if ats_handoff:
-            return ({'name':src['name'],'source_id':src.get('id',src['name']),'sector':src['sector'],'state':'ok','jobs_found':0,
+            return ({'name':src['name'],'source_id':src.get('id',src['name']),'sector':src['sector'],'state':'partial','jobs_found':0,
                      'mode':'Official employer','message':'Career page hands off to a public ATS board (checked in ATS phase)',
-                     'checked_urls':len(attempted)}, [])
+                     'reason_code':'ats_handoff','checked_urls':len(checked_urls),
+                     'collection_complete':False,'coverage_limited':True}, [])
+        if needs_render:
+            return ({'name':src['name'],'source_id':src.get('id',src['name']),'sector':src['sector'],'state':'partial','jobs_found':0,
+                     'mode':'Official employer','message':'JavaScript career page could not be read. Enable RENDER_JS and install Chromium; see ATS checks if a board was discovered.',
+                     'reason_code':'javascript_required','checked_urls':len(checked_urls),
+                     'collection_complete':False,'coverage_limited':True}, [])
         failure=' | '.join(attempted)[:420] or 'No valid employer website available'
+        reason,hint=source_failure_reason(failure)
         return ({'name':src['name'],'source_id':src.get('id',src['name']),'sector':src['sector'],
                  'state':'blocked-or-unavailable','jobs_found':0,'mode':'Official employer',
-                 'message':failure,'checked_urls':len(attempted)}, [])
-    rendered=False
-    career_verified=landing in ([src.get('careers_url')]+(src.get('career_alternates') or []))
-    if career_verified and can_render and (src.get('render') or _render.looks_js_rendered(html)):
-        page=fetcher.render(landing)
-        if page:
-            html=page; rendered=True
+                 'message':failure,'reason_code':reason,'recovery_hint':hint,'checked_urls':len(checked_urls),
+                 'collection_complete':False,'coverage_limited':True}, [])
+    career_urls=[src.get('careers_url')]+(src.get('career_alternates') or [])
+    career_verified=landing in career_urls or any(resolved_urls.get(u)==landing for u in career_urls if u)
     index_urls=[(landing,html)]
-    # If this is a corporate homepage, look for the actual recruiting page.
-    if not career_verified:
-        for url in discover_career_links(html,landing,limit=5):
-            if not budget.take():break
-            career_page=fetcher.fetch(url)
-            if career_page:
-                if can_render and _render.looks_js_rendered(career_page):
-                    career_page=fetcher.render(url) or career_page
-                index_urls.append((url,career_page))
+    # A reachable career landing page may only link to the actual job list.
+    # Follow published recruiting navigation on both homepages and landing pages.
+    for url in discover_career_links(html,landing,limit=5):
+        if not budget.take():
+            limited.append('recruitment navigation');break
+        career_page=get_page(url)
+        if career_page:
+            final_url=resolved_urls.get(url,url)
+            career_page,did_render=readable_page(final_url,career_page)
+            rendered=rendered or did_render
+            if not _render.looks_js_rendered(career_page):
+                index_urls.append((final_url,career_page))
                 career_verified=True
-            elif url in ats_redirects:
-                note_boards(ats_redirects[url], url); career_verified=True
-    # Follow listing pagination on career pages (bounded).
-    for url, content in list(index_urls[:2]):
+            else:
+                limited.append('JavaScript vacancy list')
+        elif url in ats_redirects:
+            note_boards(ats_redirects[url], url); ats_handoff=True
+        else:
+            limited.append('unavailable recruitment page')
+    # Follow next links repeatedly, not just the first next link. Bounds protect
+    # against calendar loops and portals with unbounded result pages.
+    pagination_seen={u for u,_ in index_urls}
+    cursor=0
+    try:max_listing_pages=max(1,min(20,int(os.getenv('MAX_LISTING_PAGES','8') or 8)))
+    except ValueError:max_listing_pages=8
+    while cursor<len(index_urls) and cursor<max_listing_pages:
+        url,content=index_urls[cursor];cursor+=1
         for nxt in next_page_links(content, url, limit=2):
-            if not budget.take():break
-            page=fetcher.fetch(nxt)
-            if page:index_urls.append((nxt,page))
+            if nxt in pagination_seen:continue
+            pagination_seen.add(nxt)
+            if len(index_urls)>=max_listing_pages or not budget.take():
+                limited.append('listing pagination');break
+            page=get_page(nxt)
+            if page:
+                final_url=resolved_urls.get(nxt,nxt)
+                page,did_render=readable_page(final_url,page)
+                rendered=rendered or did_render
+                if not _render.looks_js_rendered(page):index_urls.append((final_url,page))
+                else:limited.append('JavaScript next page')
+            else:limited.append('unavailable next page')
     links=[];pdfs=[];feeds=[];n=0
     for index_url, content in index_urls:
         note_boards(content,index_url)
@@ -1315,41 +1635,75 @@ def _check_employer(src: dict, sources: list[dict], fetcher, budget: _Budget) ->
         for link in candidate_links(content,index_url,budget=20):
             if link not in links:links.append(link)
     if not links and budget.left>0 and src.get('sector') in ('Banking','Fintech','Telecom','Tech / consulting','Multinational','NBFI / financial services'):
-        links=sitemap_candidates(fetcher,landing,limit=15)
+        links=sitemap_candidates(fetcher,landing,limit=15,budget=budget)
     seen_pages={u for u,_ in index_urls}
     for link in links[:24]:
         if not same_host_or_subdomain(urlparse(link).hostname or '',urlparse(landing).hostname or ''):continue
         if link in seen_pages:continue
-        if not budget.take():break
-        page=fetcher.fetch(link)
+        if not budget.take():
+            limited.append('job detail pages');break
+        page=get_page(link)
         if page:
+            link=resolved_urls.get(link,link)
             note_boards(page,link)
             found=scrape_official_job(page,link,sources,src['name'])
-            if not found and can_render and _render.looks_js_rendered(page):
-                rendered_page=fetcher.render(link)
-                if rendered_page:found=scrape_official_job(rendered_page,link,sources,src['name'])
+            if not found and _render.looks_js_rendered(page):
+                rendered_page,did_render=readable_page(link,page)
+                if did_render:found=scrape_official_job(rendered_page,link,sources,src['name'])
+                else:limited.append('JavaScript job detail page')
             jobs.extend(found);n+=len(found)
+        else:
+            limited.append('unavailable job detail page')
     for pdf in pdfs[:3]:
-        if not budget.take():break
+        if not budget.take():
+            limited.append('PDF circulars');break
+        if pdf not in checked_urls:checked_urls.append(pdf)
         content=fetcher.fetch_pdf(pdf) if hasattr(fetcher,'fetch_pdf') else None
         if content:
             new=parse_pdf_circular(content,pdf,src['name'],sources)
             jobs.extend(new);n+=len(new)
+        else:limited.append('unavailable PDF circular')
     for feed in feeds[:1]:
-        if not budget.take():break
-        content=fetcher.fetch(feed,xml=True)
+        if not budget.take():
+            limited.append('job RSS feeds');break
+        content=get_page(feed,xml=True)
         if content:
             new=parse_job_rss(content,feed,src['name'],sources)
             jobs.extend(new);n+=len(new)
-    state='ok' if career_verified or n else 'partial'
+        else:limited.append('unavailable job RSS feed')
+    readable_listing=bool(n or links or pdfs or feeds)
+    if not readable_listing:
+        for _,content in index_urls:
+            soup=BeautifulSoup(content,'lxml')
+            text=clean_text(soup.get_text(' ',strip=True),16000)
+            if get_ld(soup) or re.search(r'\bno\s+(?:(?:new|open|currently?|available|suitable)\s+){0,3}(?:roles?|jobs?|positions?|vacanc(?:y|ies)|openings?)\b|\bno\s+(?:positions?|vacancies)\s+(?:are\s+)?available\b|কোন[োও]?\s+শূন্যপদ\s+নেই',text,re.I):
+                readable_listing=True;break
+            if any(re.search(r'/(?:jobs?|positions?|openings?|vacancies|vacancy-preview|vacancy-details)/[^/?#]+|jobdetails|job-details',urlparse(urljoin(landing,a.get('href',''))).path,re.I)
+                   for a in soup.select('a[href]')):
+                readable_listing=True;break
+    state='ok' if (career_verified and readable_listing or n) and not limited and not needs_render else 'partial'
     message=('Public career page reachable' if state=='ok' else
              'Company homepage reachable; recruitment page not verified')
+    reason='readable_career_page' if state=='ok' else 'homepage_only'
+    if career_verified and not readable_listing:
+        reason='listing_not_found'
+        message='Career landing page reachable, but no vacancy list or explicit no-openings message was found'
+    if limited:
+        reason='incomplete_scan'
+        message='Some source pages were not checked: '+', '.join(dict.fromkeys(limited))
+    elif needs_render:
+        reason='javascript_required'
+        message='Readable fallback found, but a JavaScript vacancy list remains unread; enable RENDER_JS and install Chromium'
+    elif ats_handoff and not n:
+        state='partial';reason='ats_handoff'
+        message='Employer links to an ATS; see the separate ATS result for collection status'
     if rendered:
         message += ' (JavaScript rendered)'
     if attempted:
         message += ' (fallback used; ' + '; '.join(attempted)[:170] + ')'
     return ({'name':src['name'],'source_id':src.get('id',src['name']),'sector':src['sector'],'state':state,'jobs_found':n,
-             'mode':'Official employer','message':message,'checked_urls':1+len(attempted),
+             'mode':'Official employer','message':message,'checked_urls':len(checked_urls),'reason_code':reason,
+             'listing_pages':len(index_urls),'collection_complete':state=='ok','coverage_limited':state!='ok',
              'resolved_url':landing,'pdf_candidates':len(pdfs),'rss_candidates':len(feeds)}, jobs)
 
 
@@ -1358,23 +1712,25 @@ def coverage_round(sources:list[dict], fetcher:CompliantFetcher, limit:int, deta
     """Check official employer sites in parallel (polite per host); results keep source order."""
     targets=selected_employers(sources,limit)
     if not targets:return [],[]
-    budget=_Budget(detail_budget)
+    budget_pool=_FairBudgetPool(detail_budget,len(targets))
     n = workers or int(os.environ.get('COLLECT_WORKERS', '6') or 6)
     jobs=[]; health=[]
     lock=threading.Lock()
 
-    def run_one(src):
+    def run_one(src,source_budget):
         try:
-            return _check_employer(src, sources, fetcher, budget)
+            return _check_employer(src, sources, fetcher, source_budget)
         except Exception as exc:  # one malformed site must not abort the scan
             logging.getLogger(__name__).warning('Employer check failed for %s: %s', src.get('name'), exc)
             return ({'name':src['name'],'source_id':src.get('id',src['name']),'sector':src['sector'],
                      'state':'error','jobs_found':0,'mode':'Official employer',
                      'message':f'Parser error ({type(exc).__name__})'}, [])
+        finally:
+            source_budget.release()
 
     results: dict[int, tuple[dict, list[dict]]] = {}
     with ThreadPoolExecutor(max_workers=max(1, min(n, 16))) as pool:
-        futures = {pool.submit(run_one, t): i for i, t in enumerate(targets)}
+        futures = {pool.submit(run_one, t, budget_pool.source(i)): i for i, t in enumerate(targets)}
         for fut in as_completed(futures):
             outcome, found = fut.result()
             with lock:  # callbacks (incremental store + progress) run one at a time
@@ -1389,6 +1745,12 @@ def similarity_key(job: dict) -> str:
     region = job.get('region', 'Bangladesh')
     url = canonical_job_url(job.get('source_url') or job.get('apply_url') or '')
     if url:
+        if job.get('posting_identifier'):
+            return region + ':' + url + ':req:' + str(job['posting_identifier'])
+        if job.get('shared_listing_url'):
+            return region + ':' + url + ':role:' + _norm_title(job.get('title',''))
+        if urlparse(url).path.lower().endswith('.pdf') or str(job.get('source','')).startswith('Official PDF'):
+            return region + ':' + url + ':' + _norm_title(job.get('title', ''))
         return region + ':' + url
     # Legacy/manual seed records without a URL still dedupe semantically.
     company = re.sub(r'[^a-z0-9]+', '', job.get('company', '').lower().replace('limited','').replace('ltd','').replace('plc',''))
@@ -1402,7 +1764,8 @@ def deduplicate(jobs: list[dict]) -> list[dict]:
               'Aggregator API':2,'Email alert (subscribed)':2,'User feed (unverified)':1,
               'Search indexed (unverified)':1}
     def rank(j):
-        return (priority.get(j.get('verification_level',''),2),len(j.get('description','')),
+        observed=j.get('last_observed_at') or j.get('last_seen_at') or j.get('collected_at') or ''
+        return (priority.get(j.get('verification_level',''),2),str(observed),len(j.get('description','')),
                 int(bool(j.get('deadline'))))
     unique = {}
     for job in jobs:
@@ -1416,11 +1779,17 @@ def deduplicate(jobs: list[dict]) -> list[dict]:
         result = winner.copy()
         for attr in ('deadline', 'company_logo_url', 'poster_url', 'salary', 'requirements',
                      'responsibilities', 'eligibility', 'eligibility_confidence',
-                     'source_name', 'source_domain'):
+                     'source_name', 'source_domain', 'posted_at', 'alert_received_at',
+                     'provider_updated_at', 'source_updated_at', 'vacancy_evidence', 'vacancy_reason'):
             if not result.get(attr) or result.get(attr) in ('Not disclosed','Not specified','unconfirmed'):
                 if other.get(attr):result[attr]=other[attr]
         result['collected_at'] = min(filter(None,[current.get('collected_at',''),job.get('collected_at','')]),default=today_iso())
         result['last_seen_at'] = max(current.get('last_seen_at',''),job.get('last_seen_at',''))
+        for attr in ('last_observed_at','alert_received_at','source_updated_at','provider_updated_at'):
+            result[attr] = max(current.get(attr) or '',job.get(attr) or '')
+        result['also_listed_on'] = list({entry.get('url'): entry for entry in
+            (current.get('also_listed_on') or []) + (job.get('also_listed_on') or [])
+            if isinstance(entry, dict) and entry.get('url')}.values())[:12]
         unique[key] = result
     return fold_cross_source(list(unique.values()), rank)
 
@@ -1464,11 +1833,41 @@ def fold_cross_source(jobs: list[dict], rank=None) -> list[dict]:
         high = [i for i in idx if i not in low]
         if not low:
             continue
-        target = max(high, key=lambda i: rank(jobs[i])) if high else max(low, key=lambda i: rank(jobs[i]))
+        # A shared employer/title is not a requisition ID. Several LinkedIn
+        # vacancies can have the same title; several official openings can too.
+        # Fold only a one-to-one low-trust copy into an unambiguous official one.
+        if len(high) != 1:
+            continue
+        target = high[0]
+        publisher_counts: dict[str, int] = {}
+        for i in low:
+            host = (urlparse(jobs[i].get('source_url') or '').hostname or '').lower().removeprefix('www.')
+            if host.endswith('.linkedin.com'): host = 'linkedin.com'
+            publisher_counts[host] = publisher_counts.get(host, 0) + 1
         for i in low:
             if i == target:
                 continue
             keep, other = jobs[target], jobs[i]
+            low_deadline=deadline_date(other.get('deadline'))
+            high_deadline=deadline_date(keep.get('deadline'))
+            if other.get('vacancy_status') in ('expired','closed') or (low_deadline and low_deadline < today_iso()):
+                continue
+            if low_deadline and high_deadline and low_deadline != high_deadline:
+                continue
+            low_observed=iso_date(other.get('last_seen_at') or other.get('alert_received_at'))
+            high_observed=iso_date(keep.get('last_seen_at') or keep.get('collected_at'))
+            if low_observed and high_observed and (datetime.fromisoformat(high_observed)-datetime.fromisoformat(low_observed)).days > 21:
+                continue
+            host = (urlparse(other.get('source_url') or '').hostname or '').lower().removeprefix('www.')
+            if host.endswith('.linkedin.com'): host = 'linkedin.com'
+            if publisher_counts.get(host, 0) > 1:
+                continue
+            a_city, b_city = textmine.bd_city(keep.get('location', '')), textmine.bd_city(other.get('location', ''))
+            if a_city and b_city and a_city != b_city:
+                continue
+            a_date, b_date = iso_date(keep.get('posted_at')), iso_date(other.get('posted_at'))
+            if a_date and b_date and abs((datetime.fromisoformat(a_date) - datetime.fromisoformat(b_date)).days) > 21:
+                continue
             listed = keep.setdefault('also_listed_on', [])
             entry = {'source_name': other.get('source_name') or other.get('source'), 'url': other.get('source_url')}
             if entry['url'] and entry['url'] != keep.get('source_url') and entry not in listed and len(listed) < 8:
@@ -1490,13 +1889,26 @@ def annotate_freshness(jobs: list[dict], age_limit: int = 45) -> list[dict]:
     Silent deletion on day 46 previously caused the apparent loss of postings.
     Never call an unverified posting 'confirmed open'.
     """
-    today = now_bd().date()
+    today = now_bd().astimezone(BANGLADESH).date()
     for job in jobs:
-        deadline = iso_date(job.get('deadline'))
+        deadline = deadline_date(job.get('deadline'))
         last = iso_date(job.get('last_seen_at') or job.get('collected_at'))
         posted = iso_date(job.get('posted_at'))
-        if deadline and deadline < today.isoformat():
+        previous_status = str(job.get('vacancy_status') or '').strip().lower()
+        if deadline:
+            job['deadline'] = deadline
+        job['archive_reason'] = ''
+        if previous_status == 'closed':
+            # A known closure remains closed until a fresh source observation
+            # supersedes that record; a future date alone does not reopen it.
+            job['vacancy_status'] = 'closed'
+            job['archive_reason'] = 'source_closed'
+        elif deadline and deadline < today.isoformat():
             job['vacancy_status'] = 'expired'
+            job['archive_reason'] = 'deadline_passed'
+        elif previous_status == 'expired' and not deadline:
+            job['vacancy_status'] = 'expired'
+            job['archive_reason'] = 'source_expired'
         elif last and last < (today - timedelta(days=age_limit)).isoformat():
             job['vacancy_status'] = 'older_unverified'
         elif not last and posted and posted < (today - timedelta(days=age_limit)).isoformat():
@@ -1511,17 +1923,13 @@ def annotate_freshness(jobs: list[dict], age_limit: int = 45) -> list[dict]:
 
 
 def live_filter(jobs:list[dict], age_limit:int)->list[dict]:
-    today=now_bd().date()
-    out=[]
-    for j in jobs:
-        deadline=iso_date(j.get('deadline'))
-        if deadline and deadline<today.isoformat():continue
-        posted=iso_date(j.get('posted_at'))
-        if posted and posted < (today - timedelta(days=age_limit)).isoformat():continue
-        last=iso_date(j.get('last_seen_at') or j.get('collected_at'))
-        if last and last < (today-timedelta(days=max(age_limit,40))).isoformat():continue
-        out.append(j)
-    return out
+    """Keep non-archived leads; age alone means 'verify', never 'expired'.
+
+    This compatibility helper follows the same archive policy as the main
+    collector and does not mutate records owned by its caller.
+    """
+    marked = annotate_freshness([dict(job) for job in jobs], age_limit)
+    return [job for job in marked if job.get('vacancy_status') not in ('expired', 'closed')]
 
 
 def selected_employers(sources: list[dict], limit: int) -> list[dict]:
@@ -1547,8 +1955,8 @@ def configured_ats_count() -> int:
                 and str(b.get('provider')).lower() in ATS_PROVIDERS and b.get('board_token') and b.get('company')})
 
 
-def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
-        dry_run:bool=False, *, force_feeds:bool=False, on_progress=None)->dict:
+def run(max_queries:int=6,max_career_pages:int=250,max_detail_pages:int=450,
+        dry_run:bool=False, *, force_feeds:bool=False, on_progress=None, schedule:dict|None=None)->dict:
     """Run scheduled collection; persist jobs, progress and 10-check health atomically.
 
     Each source publishes job discoveries as soon as its check completes.
@@ -1561,15 +1969,53 @@ def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
     sources=get_json(DATA/'sources.json',[])
     sources=[x for x in sources if x.get('name','').strip().casefold() != 'bangladesh bank'
              and x.get('name','').strip().casefold() != 'bangladesh bank e-recruitment']
+    previous_status=get_json(DATA/'status.json',{})
+    previous_status=previous_status if isinstance(previous_status,dict) else {}
     existing=get_json(DATA/'jobs.json',{'jobs':[]})
-    previous_jobs=[j for j in existing.get('jobs',[])
+    existing=existing if isinstance(existing,dict) else {'jobs':[]}
+    previous_jobs=[j for j in existing.get('jobs',[]) if isinstance(j,dict)
                    if j.get('company','').strip().casefold()!='bangladesh bank']
+    prior_count=len(previous_jobs)
+    rejected: dict[str,dict] = {}
+    def persist_rejections() -> None:
+        if dry_run or not rejected:return
+        old=get_json(DATA/'rejected_jobs.json',{'records':[]})
+        records={similarity_key(x['job']):x for x in old.get('records',[])
+                 if isinstance(x,dict) and isinstance(x.get('job'),dict)} if isinstance(old,dict) else {}
+        records.update(rejected)
+        write_json(DATA/'rejected_jobs.json',{'version':'5.2','records':list(records.values())[-1000:]})
+    def validated(batch: list[dict], *, previous: bool=False) -> list[dict]:
+        accepted=[]
+        for item in batch:
+            if not isinstance(item,dict) or item.get('company','').strip().casefold()=='bangladesh bank':
+                continue
+            evidence=assess_record(item)
+            geo_excluded=location_excludes_bangladesh(item.get('location',''), item.get('description',''))
+            if not evidence.vacancy or geo_excluded:
+                key=similarity_key(item)
+                rejected.setdefault(key,{'job':dict(item),'reason':'explicit location excludes Bangladesh applicants' if geo_excluded else evidence.reason,
+                    'detected_at':now_bd().isoformat(timespec='seconds'), 'previously_published':previous,
+                    'detection_version':'5.2'})
+                continue
+            job=dict(item)
+            relevance=_relevance.assess(job.get('title',''),job.get('description',''))
+            job.update(relevance_score=relevance.score,relevance_reason=relevance.reason,
+                       matched_terms=relevance.terms[:12],vacancy_score=evidence.score,
+                       vacancy_reason=evidence.reason,vacancy_evidence=evidence.signals,detection_version='5.2')
+            accepted.append(job)
+        return accepted
+    previous_jobs=validated(previous_jobs,previous=True)
+    previous_removed=prior_count-len(previous_jobs)
+    # Protect the removed historical rows before any incremental job write.
+    persist_rejections()
     previous_keys={similarity_key(j) for j in previous_jobs}
     store=IncrementalJobStore(DATA/'jobs.json', persist=not dry_run)
     store.jobs=previous_jobs
     extra_total=int(email_alerts.configured())+search_apis.configured_count()
     monitor=CollectionTelemetry(DATA,total=len(PROVIDERS)+len(selected_employers(sources,max(0,min(max_career_pages,250))))
-                                +configured_ats_count()+extra_total,status_callback=on_progress,persist=not dry_run)
+                                +configured_ats_count()+extra_total,status_callback=on_progress,persist=not dry_run,schedule=schedule)
+    prior_completion=monitor.progress.get('last_completed_at')
+    prior_success=monitor.progress.get('last_successful_at')
     state=get_json(DATA/'feed_state.json',{})
     session=requests.Session()
     session.headers.update({'User-Agent':UA, 'Accept':'text/html,application/json;q=0.8'})
@@ -1577,13 +2023,19 @@ def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
     errors=[]; health=[]; new_candidates=[]
 
     def received(outcome: dict, batch: list[dict]) -> None:
-        confirmed=[job for job in batch if job.get('company','').strip().casefold() != 'bangladesh bank']
+        confirmed=validated(batch)
+        outcome['raw_jobs_found']=outcome.get('jobs_found',len(batch))
+        outcome['rejected_count']=len(batch)-len(confirmed)
+        outcome['jobs_found']=len(confirmed)
         added=store.merge_batch(confirmed)
         monitor.completed(source_id=outcome.get('source_id') or outcome.get('name','unknown'),
                           name=outcome.get('name','unknown'),sector=outcome.get('sector','Other'),
                           mode=outcome.get('mode','unknown'), state=outcome.get('state','error'),
                           jobs=outcome.get('jobs_found',len(confirmed)),new_jobs=added,
-                          message=outcome.get('message',''))
+                          message=outcome.get('message',''),
+                          **{key:outcome[key] for key in ('reason_code','resolved_url','checked_url','checked_urls',
+                              'listing_pages','collection_complete','recovery_hint','rejected_count','raw_jobs_found',
+                              'requests','coverage_limited') if key in outcome})
 
     try:
         monitor.phase('feeds','Checking public publisher feeds')
@@ -1593,7 +2045,7 @@ def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
         alerts=[];alert_health=[];custom=[];custom_health=[];keyed=[];keyed_health=[]
         if email_alerts.configured():
             monitor.phase('alerts','Reading subscribed LinkedIn / Bdjobs job-alert emails')
-            alerts,alert_health=email_alerts.collect_email_alerts(sources,on_source=received)
+            alerts,alert_health=email_alerts.collect_email_alerts(sources,on_source=received,state=feed_state)
         if search_apis.configured_count():
             monitor.phase('search','Querying licensed search / aggregator APIs')
             b_jobs,b_health,feed_state=search_apis.brave_search(session,feed_state,sources,
@@ -1621,7 +2073,7 @@ def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
         monitor.extend_total(len(discovered-known))
         ats,ats_health=ats_jobs(session,sources,fetcher.discovered_ats,on_source=received)
         health=remote_health+alert_health+keyed_health+custom_health+ats_health+employer_health
-        new_candidates=remote+alerts+keyed+custom+ats+official
+        new_candidates=validated(remote+alerts+keyed+custom+ats+official)
         # Preserve compatibility with batch-only collectors and guarantee
         # details even when optional callbacks aren't available.
         store.merge_batch(new_candidates)
@@ -1630,10 +2082,40 @@ def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
         merged.sort(key=lambda j:(j.get('posted_at') or '0000-00-00',
                                   j.get('deadline') or '9999-99-99'),reverse=True)
         store.finish(merged)
-        now=now_bd().isoformat(timespec='seconds')
+        errors=[{'source':h.get('name','Unknown'),'state':h.get('state'),
+                 'reason':h.get('reason_code') or h.get('message') or 'Unavailable'}
+                for h in health if h.get('state') in ('error','failed','partial','limited','degraded')]
+        if not dry_run:
+            write_json(DATA/'feed_state.json',feed_state)
+            persist_rejections()
+            if fetcher.discovered_ats:
+                seen={(x['provider'],x['board_token']):x for x in get_json(DATA/'ats_discovered.json',[])
+                      if isinstance(x,dict) and x.get('provider') and x.get('board_token')}
+                for board in fetcher.discovered_ats:seen[(board['provider'],board['board_token'])]=board
+                write_json(DATA/'ats_discovered.json',list(seen.values()))
+        monitor.finish()
+        now=monitor.progress['finished_at']
+        linkedin_jobs=[j for j in merged if 'linkedin' in (j.get('source','')+' '+j.get('source_url','')).lower()
+                       or any('linkedin.com' in str(a.get('url','')) for a in j.get('also_listed_on',[]) if isinstance(a,dict))]
+        capabilities={
+            'directory_sources':len(sources),
+            'eligible_employers':len(selected_employers(sources,250)),
+            'scheduled_employers':len(selected_employers(sources,max(0,min(max_career_pages,250)))),
+            'link_only_sources':sum(x.get('mode') in ('restricted','index','directory','link-only') or
+                                    x.get('sector') in ('Job portal','Social media') for x in sources),
+            'alert_mailbox_configured':email_alerts.configured(),
+            'search_index_configured':bool(os.environ.get('BRAVE_API_KEY','').strip()),
+            'aggregator_configured':bool(os.environ.get('JOOBLE_API_KEY','').strip()),
+        }
         status={'updated_at':now,
-                'engine':'Job Intelligence v5.0: weighted bilingual relevance, RFC 9309 robots, 10 ATS providers, alert emails, parallel scan',
-                'refresh_interval_minutes':60,'no_paid_api':True,
+                'engine':'Job Intelligence v5.2: vacancy evidence, source diagnostics, paginated discovery and durable completion times',
+                'collection_started_at':monitor.progress['started_at'], 'collection_finished_at':now,
+                'last_completed_at':monitor.progress['last_completed_at'],
+                'last_successful_at':monitor.progress['last_successful_at'],
+                'completion_status':monitor.progress['completion_status'],
+                'duration_seconds':monitor.progress['duration_seconds'],
+                'schedule':monitor.progress['schedule'],
+                'refresh_interval_minutes':monitor.progress['schedule'].get('interval_minutes'),'no_paid_api':True,
                 'queries_run':sum(int(x.get('requests',0)) for x in remote_health),
                 'jobs_count':len(merged),
                 'archived_expired':sum(j.get('vacancy_status')=='expired' for j in merged),
@@ -1646,27 +2128,44 @@ def run(max_queries:int=6,max_career_pages:int=190,max_detail_pages:int=250,
                 'official_career_targets_checked':len(employer_health),
                 'official_career_targets_reachable':sum(x['state']=='ok' for x in employer_health),
                 'active_ats_boards':len(ats_health),'source_health':health,'errors':errors,
+                'source_coverage':capabilities,
+                'linkedin_coverage':{'listings_retained':len(linkedin_jobs),'complete':False,
+                    'alerts_configured':capabilities['alert_mailbox_configured'],
+                    'search_configured':capabilities['search_index_configured'],
+                    'notice':'Coverage depends on subscribed job alerts and search indexing. LinkedIn alerts are daily or weekly; an hourly collector cannot guarantee all LinkedIn vacancies.'},
+                'detection':{'version':'5.2','prior_records_checked':prior_count,
+                    'prior_records_quarantined':previous_removed,'unique_records_rejected':len(rejected),
+                    'note':'Rejected historical candidates are retained for local review, up to 1,000 records.'},
                 'progress_summary':dict(monitor.progress),
                 'collection_policy':'Hourly: employer pages (robots.txt honoured), public ATS APIs, free publisher feeds, your subscribed job-alert emails and optional licensed search/aggregator APIs. Restricted portals are never scraped directly.'}
         if not dry_run:
             write_json(DATA/'status.json',status)
-            write_json(DATA/'feed_state.json',feed_state)
-            if fetcher.discovered_ats:
-                seen={(x['provider'],x['board_token']):x for x in get_json(DATA/'ats_discovered.json',[])
-                      if isinstance(x,dict) and x.get('provider') and x.get('board_token')}
-                for board in fetcher.discovered_ats:seen[(board['provider'],board['board_token'])]=board
-                write_json(DATA/'ats_discovered.json',list(seen.values()))
-        monitor.finish()
-        status['progress_summary']=dict(monitor.progress)
-        if not dry_run:
-            write_json(DATA/'status.json',status)
         return status
     except Exception as exc:
+        monitor.progress['last_completed_at']=prior_completion
+        monitor.progress['last_successful_at']=prior_success
         monitor.finish(error=f'{type(exc).__name__}: collection interrupted')
+        if not dry_run:
+            failure={**previous_status, 'completion_status':'failed',
+                     'jobs_count':len(store.jobs),
+                     'last_completed_at':monitor.progress.get('last_completed_at'),
+                     'last_successful_at':monitor.progress.get('last_successful_at'),
+                     'collection_started_at':monitor.progress.get('started_at'),
+                     'collection_finished_at':monitor.progress.get('finished_at'),
+                     'progress_summary':dict(monitor.progress),
+                     'last_attempt_error':f'{type(exc).__name__}: collection interrupted'}
+            write_json(DATA/'status.json',failure)
         raise
+    finally:
+        try:
+            persist_rejections()
+        finally:
+            session.close()
 
 
 if __name__=='__main__':
+    from server.app import load_local_env
+    load_local_env()
     parser=argparse.ArgumentParser(description='Refresh CyberCareers BD without any paid API')
     parser.add_argument('--max-search-queries',type=int,default=int(os.getenv('MAX_FEED_SEARCHES','6')))
     parser.add_argument('--max-career-pages',type=int,default=int(os.getenv('MAX_CAREER_PAGES','250')))

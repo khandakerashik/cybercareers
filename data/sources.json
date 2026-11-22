@@ -203,11 +203,13 @@
     "id": "banking-023",
     "name": "Rupali Bank",
     "sector": "Banking",
-    "website": "https://www.rupalibank.org",
-    "careers_url": "",
-    "domain": "rupalibank.org",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "website": "https://www.rupalibank.com.bd/",
+    "careers_url": "https://www.rupalibank.com.bd/notice_jquery.php?type=20",
+    "domain": "rupalibank.com.bd",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.rupalibank.com.bd/"
   },
   {
     "id": "banking-024",
@@ -326,7 +328,12 @@
     "careers_url": "https://bracbank.taleo.net/careersection/external/jobsearch.ftl?lang=en",
     "domain": "bracbank.taleo.net",
     "mode": "career",
-    "notes": "Official website; tracked for relevant security hiring."
+    "notes": "Official website; tracked for relevant security hiring.",
+    "career_alternates": [
+      "https://www.bracbank.com/en/career"
+    ],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.bracbank.com/en/career"
   },
   {
     "id": "banking-035",
@@ -343,10 +350,13 @@
     "name": "Dutch-Bangla Bank",
     "sector": "Banking",
     "website": "https://www.dutchbanglabank.com",
-    "careers_url": "",
+    "careers_url": "https://app.dutchbanglabank.com/Online_Job/currentJob",
     "domain": "dutchbanglabank.com",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.dutchbanglabank.com/help-desk/sitemap.html"
   },
   {
     "id": "banking-037",
@@ -372,11 +382,13 @@
     "id": "banking-039",
     "name": "First Security Islami Bank",
     "sector": "Banking",
-    "website": "https://www.fsiblbd.com",
-    "careers_url": "",
-    "domain": "fsiblbd.com",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "website": "https://fsibplc.com/",
+    "careers_url": "https://erecruitment.fsiblbd.com/test_erc/fsibl_site.php",
+    "domain": "fsibplc.com",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://fsibplc.com/"
   },
   {
     "id": "banking-040",
@@ -393,10 +405,15 @@
     "name": "IFIC Bank",
     "sector": "Banking",
     "website": "https://www.ificbank.com.bd",
-    "careers_url": "https://ificbank.com.bd/career",
+    "careers_url": "https://career.ificbankbd.com/",
     "domain": "ificbank.com.bd",
     "mode": "career",
-    "notes": "Official career page; fetched only when robots and site terms permit."
+    "notes": "Official career page; fetched only when robots and site terms permit.",
+    "career_alternates": [
+      "https://ificbank.com.bd/career"
+    ],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://ificbank.com.bd/career"
   },
   {
     "id": "banking-042",
@@ -423,10 +440,13 @@
     "name": "Meghna Bank",
     "sector": "Banking",
     "website": "https://www.meghnabank.com.bd",
-    "careers_url": "",
+    "careers_url": "https://career.meghnabank.com.bd/",
     "domain": "meghnabank.com.bd",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.meghnabank.com.bd/page/sitemap/retail"
   },
   {
     "id": "banking-045",
@@ -453,10 +473,13 @@
     "name": "Mutual Trust Bank",
     "sector": "Banking",
     "website": "https://www.mutualtrustbank.com",
-    "careers_url": "",
+    "careers_url": "https://www.mutualtrustbank.com/about-us/career/",
     "domain": "mutualtrustbank.com",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring. Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately.",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.mutualtrustbank.com/about-us/career/"
   },
   {
     "id": "banking-048",
@@ -493,10 +516,15 @@
     "name": "NRBC Bank",
     "sector": "Banking",
     "website": "https://www.nrbcommercialbank.com",
-    "careers_url": "",
+    "careers_url": "https://career.nrbcommercialbank.com/",
     "domain": "nrbcommercialbank.com",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "career_alternates": [
+      "https://www.nrbcommercialbank.com/career"
+    ],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.nrbcommercialbank.com/career"
   },
   {
     "id": "banking-052",
@@ -593,10 +621,15 @@
     "name": "City Bank",
     "sector": "Banking",
     "website": "https://www.citybankplc.com",
-    "careers_url": "https://www.citybankplc.com/p/careers",
+    "careers_url": "https://www.citybankplc.com/life-at-city-evp/job-list",
     "domain": "citybankplc.com",
     "mode": "career",
-    "notes": "Official website; tracked for relevant security hiring."
+    "notes": "Official website; tracked for relevant security hiring. Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately.",
+    "career_alternates": [
+      "https://www.citybankplc.com/p/careers"
+    ],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.citybankplc.com/life-at-city-evp/job-list"
   },
   {
     "id": "banking-062",
@@ -702,11 +735,13 @@
     "id": "banking-072",
     "name": "State Bank of India Bangladesh",
     "sector": "Banking",
-    "website": "https://www.sbi.co.in",
-    "careers_url": "",
-    "domain": "sbi.co.in",
-    "mode": "search",
-    "notes": "Official website; tracked for relevant security hiring."
+    "website": "https://bd.statebank/",
+    "careers_url": "https://bd.statebank/career",
+    "domain": "bd.statebank",
+    "mode": "career",
+    "notes": "Official website; tracked for relevant security hiring.",
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://bd.statebank/career"
   },
   {
     "id": "banking-073",
@@ -863,10 +898,15 @@
     "name": "SSL Wireless",
     "sector": "Fintech",
     "website": "https://www.sslwireless.com",
-    "careers_url": "",
+    "careers_url": "https://sslwireless.com/all-jobs",
     "domain": "sslwireless.com",
-    "mode": "search",
-    "notes": ""
+    "mode": "career",
+    "notes": " Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately.",
+    "career_alternates": [
+      "https://www.sslwireless.com/careers"
+    ],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://sslwireless.com/all-jobs"
   },
   {
     "id": "fintech-089",
@@ -1139,20 +1179,28 @@
     "name": "BRAC",
     "sector": "Other",
     "website": "https://www.brac.net",
-    "careers_url": "",
+    "careers_url": "https://careers.brac.net/jobs",
     "domain": "brac.net",
-    "mode": "search",
-    "notes": ""
+    "mode": "career",
+    "notes": " Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately.",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://careers.brac.net/jobs"
   },
   {
     "id": "other-116",
     "name": "icddr,b",
     "sector": "Other",
     "website": "https://www.icddrb.org",
-    "careers_url": "",
+    "careers_url": "https://career.icddrb.org/",
     "domain": "icddrb.org",
-    "mode": "search",
-    "notes": ""
+    "mode": "career",
+    "notes": " Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately.",
+    "career_alternates": [
+      "https://www.icddrb.org/work-with-us"
+    ],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://www.icddrb.org/work-with-us"
   },
   {
     "id": "other-117",
@@ -1235,10 +1283,13 @@
     "name": "Brain Station 23",
     "sector": "Tech / consulting",
     "website": "https://brainstation-23.com",
-    "careers_url": "",
+    "careers_url": "https://brainstation-23.easy.jobs/",
     "domain": "brainstation-23.com",
-    "mode": "search",
-    "notes": ""
+    "mode": "career",
+    "notes": " Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately. Easy.jobs is reached only through this employer-published URL; JavaScript rendering may be required.",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://brainstation-23.com/"
   },
   {
     "id": "tech / consulting-125",
@@ -1295,20 +1346,26 @@
     "name": "Cefalo",
     "sector": "Tech / consulting",
     "website": "https://www.cefalo.com",
-    "careers_url": "",
+    "careers_url": "https://career.cefalo.com/",
     "domain": "cefalo.com",
-    "mode": "search",
-    "notes": ""
+    "mode": "career",
+    "notes": "",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://career.cefalo.com/"
   },
   {
     "id": "tech / consulting-131",
     "name": "Vivasoft",
     "sector": "Tech / consulting",
     "website": "https://vivasoftltd.com",
-    "careers_url": "",
+    "careers_url": "https://vivasoftltd.com/career/",
     "domain": "vivasoftltd.com",
-    "mode": "search",
-    "notes": ""
+    "mode": "career",
+    "notes": " Published recruitment URL reviewed 22 Nov 2026; runtime status reports access/extraction separately.",
+    "career_alternates": [],
+    "url_reviewed_at": "2026-11-22",
+    "url_evidence": "https://vivasoftltd.com/career/"
   },
   {
     "id": "tech / consulting-132",

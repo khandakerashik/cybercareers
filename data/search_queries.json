@@ -299,5 +299,131 @@
     "search_url": "https://www.google.com/search?q=%22SOC%20analyst%22%20%22APAC%22%20remote",
     "mode": "manual_search_link",
     "note": "Click to search publicly. It does not bypass job board access policies."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "information security — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=information+security&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "cyber security — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=cyber+security&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "cybersecurity — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=cybersecurity&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "SOC analyst — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=SOC+analyst&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "security engineer — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=security+engineer&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "penetration testing — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=penetration+testing&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "application security — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=application+security&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "network security — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=network+security&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "IT audit — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=IT+audit&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "GRC — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=GRC&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "DevSecOps — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=DevSecOps&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "cloud security — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=cloud+security&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "CISO — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=CISO&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "threat intelligence — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=threat+intelligence&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "identity access management — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=identity+access+management&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "AI security — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=AI+security&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "IT risk — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=IT+risk&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
+  },
+  {
+    "group": "LinkedIn alerts — Bangladesh",
+    "query": "security compliance — Bangladesh",
+    "search_url": "https://www.linkedin.com/jobs/search/?keywords=security+compliance&location=Bangladesh&sortBy=DD",
+    "mode": "manual_search_link",
+    "note": "Open LinkedIn, review this search and enable daily email alerts. Connect your subscribed mailbox to import delivered postings; this is not a full LinkedIn feed."
   }
 ]

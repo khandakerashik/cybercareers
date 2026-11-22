@@ -14,6 +14,8 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
+from .vacancy import non_vacancy_title_reason
+
 # --------------------------------------------------------------------------
 # Strong title signals: any one of these in a title makes the role relevant.
 # --------------------------------------------------------------------------
@@ -37,7 +39,7 @@ _STRONG_EN = [
     r'security\s+(?:engineer|analyst|architect|researcher|specialist|consultant|administrator|admin|developer|tester|auditor|automation|assurance|governance|compliance|risk|testing|assessment|monitoring|champion|program|programme|expert|operations|controls?|data\s+engineer)',
     r'iam', r'identity\s+(?:and|&)\s+access', r'identity\s+(?:security|governance|engineer)', r'privileged\s+access', r'pam\s+(?:engineer|admin\w*|specialist|analyst)',
     r'grc', r'isms', r'iso\s*/?\s*-?27001', r'pci\s*-?\s*dss', r'swift\s+(?:security|csp|cscf)',
-    r'(?:cloud|network|infrastructure|endpoint|data(?:base)?|email|ot|ics|scada|iot|wireless|perimeter|enterprise|identity|ai|llm|ml|model|blockchain|smart\s+contract)\s+security',
+    r'(?:cloud|network|infrastructure|endpoint|data(?:base)?|email|ot|ics|scada|iot|wireless|perimeter|enterprise|identity|ai|llm|ml|model|blockchain|smart\s+contract|hardware|firmware)\s+security',
     r'network\s+(?:&|and)\s+security', r'firewall', r'waf', r'ids\s*/\s*ips', r'zero\s+trust', r'sase',
     r'(?:it|ict|technology|cyber|information|operational\s+technology)\s+risk', r'technology\s+(?:audit\w*|controls?)',
     r'(?:it|ict)\s+(?:audit\w*|governance|compliance)', r'information\s+systems?\s+(?:audit\w*|control)',
@@ -74,6 +76,30 @@ _NEGATIVE_TITLE = re.compile(
     r'anti[\s-]?money\s+laundering|aml\s+(?:analyst|officer|specialist)|credit\s+(?:audit|risk|analyst)|'
     r'shariah|shari\'?ah|market\s+risk|tax\s+compliance|securities\s+(?:sales|trader|dealer|broker))\b', re.I)
 _NEGATIVE_BN = re.compile(r'নিরাপত্তা\s*(?:প্রহরী|রক্ষী|কর্মী)|সিকিউরিটি\s*গার্ড|দারোয়ান|দারোয়ান|প্রহরী|আনসার')
+_HARDWARE_TITLE = re.compile(r'\b(?:asic|vlsi|rtl|fpga|semiconductor|silicon|chip|soc\s+(?:design|verification|validation))\b|system[ -]on[ -](?:a[ -])?chip', re.I)
+_PHYSICAL_DESCRIPTION = re.compile(
+    r'\b(?:guard\s+(?:force|duties|patrol)|patrol(?:ling)?\s+(?:the\s+)?(?:premises|site|property)|'
+    r'physical\s+security|cctv\s+(?:monitoring|surveillance|operation)|crowd\s+control|'
+    r'gate\s+duties|visitor\s+(?:screening|checks)|armed\s+guards?|fire\s+safety)\b|'
+    r'গার্ড|প্রহরী|টহল', re.I)
+_CYBER_DESCRIPTION = re.compile(
+    r'\b(?:cyber[ -]?security|information\s+security|network\s+security|application\s+security|'
+    r'siem|soar|edr|xdr|firewall|malware|penetration\s+test|vulnerability|intrusion\s+detection|'
+    r'digital\s+forensics|iso\s*27001)\b|সাইবার|তথ্য\s*নিরাপত্তা', re.I)
+_UNRELATED_ROLE = re.compile(
+    r'\b(?:account(?:s)?\s+(?:manager|executive)|accountant|sales\s+(?:executive|manager|representative)|'
+    r'business\s+development|marketing|recruiter|human\s+resources|talent\s+acquisition|'
+    r'customer\s+(?:success|service)|payroll|procurement|administrative\s+assistant)\b', re.I)
+_COLLABORATION = re.compile(
+    r'\b(?:work(?:ing)?|collaborat\w*|partner\w*|coordinat\w*|liais\w*)\s+(?:closely\s+)?'
+    r'(?:with|alongside)\b.{0,100}\b(?:information|cyber|it|ict)\s+security\b', re.I)
+_SECURITY_DUTIES = re.compile(
+    r'\b(?:monitor|triage|investigate|respond|manage|operate|implement|maintain|conduct|'
+    r'perform|assess|design|develop|build|lead|own|audit|review|detect|hunt)\w*\b'
+    r'[^.!?]{0,100}\b(?:siem|soc|soar|edr|xdr|penetration\s+test\w*|vulnerability|'
+    r'threat\s+(?:hunt\w*|intel\w*|detect\w*)|incident\s+respon\w*|'
+    r'(?:information|application|network|cloud|cyber)\s*security|iso\s*27001|isms)\b', re.I)
+_UNRELATED_GRC = re.compile(r'\b(?:glass[ -]?(?:fiber|fibre)|reinforced\s+concrete|civil\s+engineer|construction|mould|mold|cladding)\b', re.I)
 
 _GENERIC_ROLE_EN = re.compile(
     r'\b(engineer|analyst|manager|specialist|advisor|adviser|consultant|auditor|lead|officer|executive|associate|'
@@ -85,8 +111,8 @@ _DEPARTMENT = re.compile(
     r'তথ্য\s*নিরাপত্তা\s*(?:বিভাগ|ইউনিট|শাখা)|সাইবার\s*নিরাপত্তা\s*(?:বিভাগ|ইউনিট|শাখা)|আইসিটি\s*নিরাপত্তা\s*বিভাগ', re.I)
 
 _STRONG_EN_RX = [re.compile(r'(?<![a-z0-9])(?:' + p + r')(?![a-z0-9])', re.I) for p in _STRONG_EN]
-# Bare 'cyber' must be its own word or prefix (cybersecurity, cyber-security).
-_STRONG_EN_RX[0] = re.compile(r'(?<![a-z0-9])cyber', re.I)
+# Keep the complete cyber-word boundary.  Bare prefix matching mistakenly made
+# company names such as CyberArk or CyberSource evidence of a security role.
 
 
 def _norm(text: str) -> str:
@@ -125,6 +151,15 @@ def assess(title: str, description: str = '') -> Relevance:
     desc = _norm(description)[:12000]
     if not title:
         return Relevance(False, 0, 'empty title')
+    negative_content = non_vacancy_title_reason(title)
+    if negative_content:
+        return Relevance(False, 0, negative_content)
+    # SoC also means system-on-chip.  A silicon verification engineer is not a
+    # SOC analyst; hardware *security* engineers remain in scope.
+    if _HARDWARE_TITLE.search(title) and not re.search(r'\bsecurity\b|\bcyber', title, re.I):
+        return Relevance(False, 0, 'hardware SoC role without security responsibility')
+    if re.search(r'\bgrc\b', title, re.I) and _UNRELATED_GRC.search(title + ' ' + desc) and not _CYBER_DESCRIPTION.search(title + ' ' + desc):
+        return Relevance(False, 0, 'construction GRC role without cybersecurity evidence')
     if _NEGATIVE_TITLE.search(title) or _NEGATIVE_BN.search(title):
         # A negative only wins when the title has no explicit cyber signal
         # ("Credit Risk & Cyber Risk Analyst" is still relevant).
@@ -133,6 +168,22 @@ def assess(title: str, description: str = '') -> Relevance:
             return Relevance(False, 0, 'excluded title (physical security / finance look-alike)')
     title_terms = strong_terms(title)
     desc_terms = strong_terms(desc) if desc else []
+    explicit_title = bool(re.search(
+        r'\b(?:cyber(?:security)?|information\s+security|it\s+security|ict\s+security|'
+        r'infosec|network\s+security|cloud\s+security|application\s+security|devsecops|'
+        r'penetration\s+test|digital\s+forensic|malware|vulnerability)\b|'
+        r'সাইবার|তথ্য\s*নিরাপত্তা|আইটি\s*সিকিউরিটি', title, re.I))
+    if _PHYSICAL_DESCRIPTION.search(desc) and not explicit_title and not _CYBER_DESCRIPTION.search(desc):
+        return Relevance(False, 0, 'physical-security duties without cybersecurity evidence')
+    # Leadership/officer titles that say only "Security" are ambiguous.  Check
+    # this before generic strong phrases such as "Head of Security" can win.
+    ambiguous_leadership = bool(re.search(
+        r'\b(?:head|chief|director|manager|officer|supervisor|in-?charge)\b', title, re.I))
+    if _AMBIGUOUS_SECURITY.search(title) and ambiguous_leadership:
+        qualified_terms = [t for t in title_terms
+                           if not re.fullmatch(r'(?:head of security|chief security|security operations?)', t)]
+        if not qualified_terms and not _IT_CONTEXT.search(title) and not _CYBER_DESCRIPTION.search(desc):
+            return Relevance(False, 15, 'ambiguous security title without IT context')
     if title_terms:
         score = min(98, 72 + 6 * (len(title_terms) - 1) + min(20, 2 * len(desc_terms)))
         return Relevance(True, score, 'security role title', title_terms + [t for t in desc_terms if t not in title_terms][:10])
@@ -144,12 +195,16 @@ def assess(title: str, description: str = '') -> Relevance:
         return Relevance(True, min(85, 55 + 4 * len(desc_terms)), 'security title, cyber description', ['security'] + desc_terms[:10])
     generic = _GENERIC_ROLE_EN.search(title) or _GENERIC_ROLE_BN.search(title)
     if generic and desc:
-        if _DEPARTMENT.search(desc) and desc_terms:
+        # Corporate boilerplate and a security vendor's product list do not
+        # turn its accountant, recruiter or account manager into a cyber role.
+        if _UNRELATED_ROLE.search(title):
+            return Relevance(False, 10, 'non-security function; description mentions are insufficient', desc_terms[:6])
+        if _DEPARTMENT.search(desc) and desc_terms and not _COLLABORATION.search(desc):
             return Relevance(True, min(80, 50 + 4 * len(desc_terms)), 'generic title, security department', desc_terms[:12])
         if _GENERIC_ROLE_BN.search(title) and any(t in desc for t in _STRONG_BN):
             return Relevance(True, 55, 'Bangla role with Bangla security description', desc_terms[:12])
         core = [t for t in desc_terms if re.search(r'cyber|information security|penetration|soc|siem|incident|threat|vapt|appsec|application security|iso|isms|security (?:engineer|analyst|operations)', t)]
-        if len(set(core)) >= 3:
+        if len(set(core)) >= 3 and _SECURITY_DUTIES.search(desc):
             return Relevance(True, min(70, 40 + 4 * len(desc_terms)), 'generic title, strong cyber description', desc_terms[:12])
     return Relevance(False, 5 * len(desc_terms), 'no cybersecurity role signal', desc_terms[:6])
 

@@ -13,6 +13,7 @@ const dec = new TextDecoder();
 let keyring = null;
 let dataKey = null;
 let identity = null;
+let loginPromise = null;
 
 export const vaultMode = () => CONFIG.mode === 'vault';
 export const currentUser = () => identity;
@@ -124,6 +125,7 @@ async function gunzip(bytes) {
 export async function loadJSON(name) {
   if (!dataKey) throw new Error('Locked');
   const ring = await fetchKeyring();
+  const decryptKey = dataKey;
   const info = ring.files && ring.files[name];
   if (!info) throw new Error(`${name} is not in the encrypted dataset`);
   const r = await fetch(VAULT + info.path + '?v=' + encodeURIComponent(ring.sealed_at || Date.now()), { cache: 'no-store' });
@@ -131,25 +133,56 @@ export async function loadJSON(name) {
   const blob = new Uint8Array(await r.arrayBuffer());
   if (dec.decode(blob.slice(0, 4)) !== 'CCV1') throw new Error(`${name}: unexpected file format`);
   const plain = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: blob.slice(4, 16), additionalData: enc.encode('cc-file:' + name) }, dataKey, blob.slice(16));
+    { name: 'AES-GCM', iv: blob.slice(4, 16), additionalData: enc.encode('cc-file:' + name) }, decryptKey, blob.slice(16));
   return JSON.parse(dec.decode(await gunzip(new Uint8Array(plain))));
 }
 
 export function sealedAt() { return keyring && keyring.sealed_at; }
 
+/** Refresh the hourly published snapshot without requiring a browser reload.
+ * Install ring + key together, so a failed refresh cannot corrupt an open view.
+ */
+export async function refreshPublishedSession() {
+  if (!vaultMode() || !dataKey) return { changed: false };
+  const response = await fetch(VAULT + 'keyring.json?v=' + Date.now(), { cache: 'no-store' });
+  if (!response.ok) throw new Error('Published snapshot is temporarily unavailable.');
+  const ring = await response.json();
+  const session = readSession();
+  if (!session) { logout(false); return { reauthenticate: true }; }
+  if (ring.sealed_at === keyring?.sealed_at && JSON.stringify(ring.fingerprints) === JSON.stringify(keyring?.fingerprints)
+      && ring.users?.[session.uid]?.ct === keyring?.users?.[session.uid]?.ct) return { changed: false };
+  const entry = ring.users && ring.users[session.uid];
+  if (!entry) { logout(false); return { reauthenticate: true }; }
+  try {
+    const raw = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: b64.decode(entry.iv), additionalData: enc.encode('cc-dek:' + session.uid) },
+      await aesKey(b64.decode(session.k)), b64.decode(entry.ct));
+    const nextKey = await aesKey(raw);
+    keyring = ring; dataKey = nextKey;
+    return { changed: true };
+  } catch {
+    logout(false); return { reauthenticate: true };
+  }
+}
+
 /** Show the login gate and resolve once the vault is unlocked. */
 export function requireLogin() {
+  if (loginPromise) return loginPromise;
   const gate = document.getElementById('authGate');
   const form = document.getElementById('authForm');
   const error = document.getElementById('authError');
   const button = document.getElementById('authSubmit');
   const label = button.querySelector('.auth-submit-label');
   let failures = 0;
+  gate.classList.remove('auth-gate-leave');
   gate.hidden = false;
+  button.disabled = false;
+  label.textContent = 'Unlock dashboard';
+  error.textContent = '';
   document.documentElement.classList.add('cc-locked');
   setTimeout(() => document.getElementById('authUser').focus(), 30);
-  return new Promise(resolve => {
-    form.addEventListener('submit', async event => {
+  loginPromise = new Promise(resolve => {
+    const handleSubmit = async event => {
       event.preventDefault();
       const user = form.username.value, pass = form.password.value, remember = form.remember.checked;
       if (!user.trim() || !pass) { error.textContent = 'Enter your username and password.'; return; }
@@ -160,6 +193,8 @@ export function requireLogin() {
         gate.classList.add('auth-gate-leave');
         document.documentElement.classList.remove('cc-locked');
         setTimeout(() => { gate.hidden = true; }, 260);
+        form.removeEventListener('submit', handleSubmit);
+        loginPromise = null;
         resolve(identity);
       } catch (e) {
         failures += 1;
@@ -172,6 +207,8 @@ export function requireLogin() {
       } finally {
         button.disabled = false; label.textContent = 'Unlock dashboard';
       }
-    });
+    };
+    form.addEventListener('submit', handleSubmit);
   });
+  return loginPromise;
 }

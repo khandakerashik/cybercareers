@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import html as _html
 import logging
+import os
 import re
 import threading
 import time
@@ -43,6 +44,23 @@ _RESERVED = {'embed', 'api', 'v0', 'v1', 'jobs', 'job', 'j', 'www', 'apply', 'ca
 PROVIDERS = ('greenhouse', 'lever', 'lever_eu', 'ashby', 'workable', 'smartrecruiters', 'recruitee',
              'bamboohr', 'personio', 'breezy', 'workday')
 TOKEN_RX = re.compile(r'[A-Za-z0-9_.|-]{2,160}')
+
+
+class PostingBatch(list):
+    """Postings plus honest coverage metadata when a public board is large."""
+    def __init__(self, values=()):
+        super().__init__(values)
+        self.coverage_limited = False
+        self.coverage_notes: list[str] = []
+
+    def limited(self, note: str) -> None:
+        self.coverage_limited = True
+        if note not in self.coverage_notes:self.coverage_notes.append(note)
+
+
+def _limit(name: str, default: int, maximum: int) -> int:
+    try:return max(1,min(maximum,int(os.environ.get(name,str(default)) or default)))
+    except ValueError:return default
 
 
 def discover_boards(page_html: str, page_url: str, company: str) -> list[dict]:
@@ -116,6 +134,8 @@ def _get(session, url, ua, **kw):
 
 def _workable(session, token, ua, wants):
     data = _get(session, f'https://apply.workable.com/api/v1/widget/accounts/{token}?details=true', ua).json()
+    if not isinstance(data,dict) or not isinstance(data.get('jobs'),list):
+        raise ValueError('Workable response did not contain a jobs array')
     out = []
     for j in data.get('jobs', []) if isinstance(data, dict) else []:
         locs = j.get('locations') or []
@@ -132,10 +152,16 @@ def _workable(session, token, ua, wants):
 
 
 def _smartrecruiters(session, token, ua, wants):
-    out = []
-    for offset in (0, 100, 200):
+    out = PostingBatch()
+    max_pages=_limit('ATS_MAX_PAGES',10,50)
+    max_details=_limit('ATS_MAX_DETAILS',100,500)
+    details=0;seen=set()
+    for page in range(max_pages):
+        offset=page*100
         data = _get(session, f'https://api.smartrecruiters.com/v1/companies/{token}/postings',
                     ua, params={'limit': 100, 'offset': offset}).json()
+        if not isinstance(data,dict) or not isinstance(data.get('content'),list):
+            raise ValueError('SmartRecruiters response did not contain a postings array')
         rows = data.get('content', []) if isinstance(data, dict) else []
         for j in rows:
             title = j.get('name') or ''
@@ -143,22 +169,30 @@ def _smartrecruiters(session, token, ua, wants):
                 continue
             loc = j.get('location') or {}
             pid = j.get('id') or j.get('uuid') or ''
+            if not pid or pid in seen:continue
+            seen.add(pid)
             desc = ''
-            try:
-                detail = _get(session, f'https://api.smartrecruiters.com/v1/companies/{token}/postings/{pid}', ua).json()
-                sections = ((detail.get('jobAd') or {}).get('sections') or {})
-                desc = ' '.join((sections.get(k) or {}).get('text', '') for k in
-                                ('jobDescription', 'qualifications', 'additionalInformation', 'companyDescription'))
-            except (requests.RequestException, ValueError):
-                pass
+            if details<max_details:
+                details+=1
+                try:
+                    detail = _get(session, f'https://api.smartrecruiters.com/v1/companies/{token}/postings/{pid}', ua).json()
+                    sections = ((detail.get('jobAd') or {}).get('sections') or {})
+                    desc = ' '.join((sections.get(k) or {}).get('text', '') for k in
+                                    ('jobDescription', 'qualifications', 'additionalInformation', 'companyDescription'))
+                except (requests.RequestException, ValueError):
+                    out.limited('Some posting details could not be retrieved')
+            else:
+                out.limited('ATS_MAX_DETAILS reached; remaining postings retain public listing metadata')
             url = f'https://jobs.smartrecruiters.com/{token}/{pid}'
             out.append({'title': title, 'url': url, 'apply_url': url,
                         'location': loc.get('fullLocation') or ', '.join(str(loc[k]) for k in ('city', 'region', 'country') if loc.get(k)),
                         'description': desc, 'posted': j.get('releasedDate') or '',
                         'employment_type': (j.get('typeOfEmployment') or {}).get('label', ''),
                         'remote': bool(loc.get('remote')), 'department': (j.get('department') or {}).get('label', '')})
-        if len(rows) < 100 or (isinstance(data, dict) and offset + 100 >= int(data.get('totalFound') or 0)):
+        total=data.get('totalFound') if isinstance(data,dict) else None
+        if len(rows) < 100 or (total is not None and offset+len(rows)>=int(total)):
             break
+        if page==max_pages-1:out.limited('ATS_MAX_PAGES reached before the board ended')
     return out
 
 
@@ -167,6 +201,8 @@ def _recruitee(session, token, ua, wants):
     if not robots_ok(session, url, ua):
         raise PermissionError('robots.txt disallows the Recruitee board')
     data = _get(session, url, ua).json()
+    if not isinstance(data,dict) or not isinstance(data.get('offers'),list):
+        raise ValueError('Recruitee response did not contain an offers array')
     out = []
     for j in data.get('offers', []) if isinstance(data, dict) else []:
         out.append({'title': j.get('title'), 'url': j.get('careers_url') or '',
@@ -184,6 +220,8 @@ def _bamboohr(session, token, ua, wants):
     if not robots_ok(session, base + '/list', ua):
         raise PermissionError('robots.txt disallows the BambooHR board')
     data = _get(session, base + '/list', ua).json()
+    if not isinstance(data,dict) or not isinstance(data.get('result'),list):
+        raise ValueError('BambooHR response did not contain a result array')
     out = []
     for j in data.get('result', []) if isinstance(data, dict) else []:
         title = j.get('jobOpeningName') or ''
@@ -234,6 +272,8 @@ def _breezy(session, token, ua, wants):
     if not robots_ok(session, url, ua):
         raise PermissionError('robots.txt disallows the Breezy board')
     data = _get(session, url, ua).json()
+    if not isinstance(data,list):
+        raise ValueError('Breezy response did not contain a postings array')
     out = []
     for j in data if isinstance(data, list) else []:
         loc = j.get('location') or {}
@@ -253,31 +293,41 @@ def _workday(session, token, ua, wants):
     if not robots_ok(session, f'{host}/{site}', ua):
         raise PermissionError('robots.txt disallows the Workday career site')
     seen: dict[str, dict] = {}
+    out=PostingBatch()
+    max_pages=_limit('ATS_MAX_PAGES',10,50)
+    max_details=_limit('ATS_MAX_DETAILS',100,500)
     for text in ('security', 'cyber', 'risk', 'audit'):
-        for offset in (0, 20, 40):
+        for page in range(max_pages):
+            offset=page*20
             r = session.post(api + '/jobs', timeout=TIMEOUT,
                              json={'appliedFacets': {}, 'limit': 20, 'offset': offset, 'searchText': text},
                              headers={'User-Agent': ua, 'Accept': 'application/json', 'Content-Type': 'application/json'})
             r.raise_for_status()
             data = r.json()
+            if not isinstance(data,dict) or not isinstance(data.get('jobPostings'),list):
+                raise ValueError('Workday response did not contain a postings array')
             rows = data.get('jobPostings', []) if isinstance(data, dict) else []
             for j in rows:
                 path = j.get('externalPath') or ''
                 if path and path not in seen and wants(j.get('title') or ''):
                     seen[path] = j
-            if len(rows) < 20:
+            total=data.get('total') if isinstance(data,dict) else None
+            if len(rows) < 20 or (total is not None and offset+len(rows)>=int(total)):
                 break
+            if page==max_pages-1:out.limited('ATS_MAX_PAGES reached for one or more Workday search terms')
             time.sleep(0.3)
-    out = []
-    for path, j in list(seen.items())[:25]:
+    for index,(path, j) in enumerate(seen.items()):
         desc, loc, posted = '', j.get('locationsText') or '', j.get('postedOn') or ''
-        try:
-            info = _get(session, api + path, ua).json().get('jobPostingInfo', {})
-            desc = info.get('jobDescription') or ''
-            loc = ', '.join(x for x in (info.get('location'), (info.get('country') or {}).get('descriptor')) if x) or loc
-            posted = info.get('startDate') or posted
-        except (requests.RequestException, ValueError, AttributeError):
-            pass
+        if index<max_details:
+            try:
+                info = _get(session, api + path, ua).json().get('jobPostingInfo', {})
+                desc = info.get('jobDescription') or ''
+                loc = ', '.join(x for x in (info.get('location'), (info.get('country') or {}).get('descriptor')) if x) or loc
+                posted = info.get('startDate') or posted
+            except (requests.RequestException, ValueError, AttributeError):
+                out.limited('Some posting details could not be retrieved')
+        else:
+            out.limited('ATS_MAX_DETAILS reached; remaining postings retain public listing metadata')
         url = f'{host}/{site}{path}'
         out.append({'title': j.get('title'), 'url': url, 'apply_url': url, 'location': loc, 'description': desc,
                     'posted': posted if re.match(r'\d{4}-\d{2}-\d{2}', str(posted)) else '',

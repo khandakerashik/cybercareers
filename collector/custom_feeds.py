@@ -26,19 +26,26 @@ JOB_SIGNAL = re.compile(r'\b(hiring|vacanc\w*|job|jobs|career|careers|circular|r
 
 def _unwrap_google(link: str) -> str:
     u = urlparse(link)
-    if u.hostname and u.hostname.endswith('google.com') and u.path == '/url':
+    if u.hostname and (u.hostname == 'google.com' or u.hostname.endswith('.google.com')) and u.path == '/url':
         q = parse_qs(u.query)
         return (q.get('url') or q.get('q') or [link])[0]
     return link
 
 
-def parse_feed(xml_text: str | bytes, feed: dict, sources: list[dict]) -> list[dict]:
+def parse_feed(xml_text: str | bytes, feed: dict, sources: list[dict], *, diagnostics: dict | None = None) -> list[dict]:
     from .collect import bangladesh_relevance, classify_region, clean_text, is_relevant, new_job, valid_url
+    from .vacancy import assess_vacancy
+    diagnostics = diagnostics if diagnostics is not None else {}
     try:
         root = ET.fromstring(xml_text)
     except ET.ParseError:
+        diagnostics['invalid_payload'] = True
+        return []
+    if root.tag.split('}')[-1].lower() not in ('rss', 'feed', 'rdf'):
+        diagnostics['invalid_payload'] = True
         return []
     jobs = []
+    seen = set()
     for node in root.iter():
         if node.tag.split('}')[-1].lower() not in ('item', 'entry'):
             continue
@@ -53,7 +60,7 @@ def parse_feed(xml_text: str | bytes, feed: dict, sources: list[dict]) -> list[d
         title = clean_text(fields.get('title'), 220)
         desc = clean_text(fields.get('description') or fields.get('summary') or fields.get('content'), 6000)
         link = _unwrap_google((link or fields.get('guid') or '').strip())
-        if not valid_url(link) or not JOB_SIGNAL.search(title + ' ' + desc[:400]):
+        if not valid_url(link):
             continue
         # Strip " - Site name" suffixes and "Company: Role" prefixes common in feeds.
         role = re.sub(r'\s+[|–-]\s+[^|–-]{2,40}$', '', title)
@@ -61,16 +68,18 @@ def parse_feed(xml_text: str | bytes, feed: dict, sources: list[dict]) -> list[d
         m = re.match(r'(.{2,80}?):\s+(.{4,160})$', role)
         if m and is_relevant(m.group(2)):
             company, role = m.group(1), m.group(2)
-        if not is_relevant(role, desc):
+        if not is_relevant(role, desc) or not assess_vacancy(role, desc, link, source_kind='feed').vacancy:
             continue
         wanted = (feed.get('region') or 'auto').lower()
         region_field = fields.get('region') or fields.get('location') or ''
-        if wanted == 'bangladesh' or (wanted == 'auto' and bangladesh_relevance(region_field or title, desc)):
-            region = {'region': 'Bangladesh', 'location': region_field or 'Bangladesh (verify location)'}
-        else:
-            region = classify_region(region_field or title, desc, remote=True)
-            if not region or (wanted == 'bangladesh'):
-                continue
+        region = classify_region(region_field or title, desc, remote=bool(re.search(r'\bremote\b', title + ' ' + desc, re.I)))
+        if not region or (wanted == 'bangladesh' and region['region'] != 'Bangladesh'):
+            continue
+        if wanted == 'international' and region['region'] != 'International':
+            continue
+        if link in seen:
+            continue
+        seen.add(link)
         jobs.append(new_job(title=role, company=company or 'Employer not identified', url=link, source='Custom feed',
                             sources=sources, description=desc, posted=fields.get('pubdate') or fields.get('published') or fields.get('updated') or '',
                             source_name=feed.get('name') or 'Custom feed', verification_level='User feed (unverified)',
@@ -97,13 +106,16 @@ def collect_custom_feeds(session: requests.Session, feeds: list[dict], state: di
         try:
             r = session.get(feed['url'], timeout=20, headers={'Accept': 'application/rss+xml, application/atom+xml, application/xml;q=0.9'})
             r.raise_for_status()
-            found = parse_feed(r.content, feed, sources)
+            diagnostic = {}
+            found = parse_feed(r.content, feed, sources, diagnostics=diagnostic)
+            if diagnostic.get('invalid_payload'):
+                raise ValueError('Endpoint did not return a valid RSS/Atom feed')
             jobs.extend(found)
             outcome.update(state='ok', jobs_found=len(found), message=f'{len(found)} security vacancies')
         except (requests.RequestException, ValueError) as exc:
             found = []
             code = getattr(getattr(exc, 'response', None), 'status_code', None)
-            outcome.update(state='error', jobs_found=0, message=f'HTTP {code}' if code else type(exc).__name__)
+            outcome.update(state='error', jobs_found=0, message=f'HTTP {code}' if code else ('Invalid RSS/Atom response; check the feed URL' if isinstance(exc, ValueError) else type(exc).__name__))
         state[key] = {'next_check': clock + 60 * max(30, int(feed.get('poll_minutes', 60) or 60)), 'checked_at': clock}
         health.append(outcome)
         if on_source:

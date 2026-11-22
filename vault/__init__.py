@@ -52,8 +52,9 @@ MIN_PASSWORD = 12
 # Files the dashboard loads (sealed for the browser) …
 FRONTEND_FILES = ('jobs.json', 'sources.json', 'status.json', 'source_health.json', 'progress.json', 'search_queries.json')
 # … and collector state that must survive between CI runs (sealed, restored by `unseal`).
-STATE_FILES = ('jobs.json', 'status.json', 'source_health.json', 'progress.json', 'feed_state.json', 'ats_discovered.json')
-SITE_FILES = ('index.html', 'styles.css', 'app.js', 'auth.js', '.nojekyll')
+STATE_FILES = ('jobs.json', 'status.json', 'source_health.json', 'progress.json', 'feed_state.json', 'ats_discovered.json', 'rejected_jobs.json')
+SITE_FILES = ('index.html', 'styles.css', 'app.js', 'auth.js', 'applications.js', '.nojekyll')
+SITE_ASSET_FILES = ('favicon.svg',)
 
 
 class VaultError(RuntimeError):
@@ -299,8 +300,26 @@ def build_site(out: Path, *, vault_dir: Path = OUT) -> Path:
         src = ROOT / name
         if src.is_file():
             shutil.copy2(src, out / name)
-    shutil.copytree(ROOT / 'assets', out / 'assets')
-    shutil.copytree(vault_dir, out / 'encrypted')
+    # Copy only the supported UI assets. A downloaded personal application
+    # export placed beside these files must never become a published asset.
+    (out / 'assets').mkdir()
+    for name in SITE_ASSET_FILES:
+        shutil.copy2(ROOT / 'assets' / name, out / 'assets' / name)
+    # Likewise, publish only ciphertext named by our generated manifest,
+    # rather than arbitrary backups or notes left in the encrypted directory.
+    keyring = _read_keyring(vault_dir)
+    published_data = set(FRONTEND_FILES) | set(STATE_FILES)
+    encrypted_out = out / 'encrypted'
+    encrypted_out.mkdir()
+    for name, info in keyring.get('files', {}).items():
+        filename = f'{name.rsplit(".", 1)[0]}.bin'
+        if name not in published_data or not isinstance(info, dict) or info.get('path') != filename:
+            raise VaultError(f'Refusing to publish an unexpected encrypted file: {name}')
+        blob = vault_dir / filename
+        if not blob.is_file() or blob.read_bytes()[:4] != MAGIC:
+            raise VaultError(f'Missing or invalid ciphertext: {filename}')
+        shutil.copy2(blob, encrypted_out / filename)
+    shutil.copy2(vault_dir / 'keyring.json', encrypted_out / 'keyring.json')
     (out / 'config.js').write_text("window.CC_CONFIG = Object.freeze({ mode: 'vault', vault: 'encrypted/' });\n",
                                    encoding='utf-8')
     (out / 'robots.txt').write_text(ROBOTS_TXT, encoding='utf-8')

@@ -13,14 +13,14 @@ import mimetypes
 import os
 import re
 import threading
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLIC_ROOT_FILES = frozenset({'index.html', 'styles.css', 'app.js', 'auth.js', 'config.js', '.nojekyll'})
+PUBLIC_ROOT_FILES = frozenset({'index.html', 'styles.css', 'app.js', 'auth.js', 'applications.js', 'config.js', '.nojekyll'})
 PUBLIC_DATA_FILES = frozenset({'jobs.json', 'sources.json', 'status.json', 'source_health.json', 'progress.json', 'search_queries.json'})
 PUBLIC_ASSET_FILES = frozenset({'favicon.svg'})
 CONFIG_PATTERN = re.compile(r'^[A-Z][A-Z0-9_]*$')
@@ -39,8 +39,13 @@ def load_local_env(path: Path | None = None) -> None:
     allowed = {
         'MAX_FEED_SEARCHES', 'MAX_CAREER_PAGES', 'MAX_DETAIL_PAGES',
         'MAX_JOB_AGE_DAYS', 'REFRESH_INTERVAL_HOURS', 'COLLECT_WORKERS', 'RENDER_JS',
+        'MAX_LISTING_PAGES', 'ATS_MAX_PAGES', 'ATS_MAX_DETAILS', 'CHROMIUM_EXECUTABLE_PATH',
         'ALERT_IMAP_HOST', 'ALERT_IMAP_USER', 'ALERT_IMAP_PASSWORD', 'ALERT_IMAP_FOLDER', 'ALERT_LOOKBACK_DAYS',
-        'BRAVE_API_KEY', 'BRAVE_QUERIES_PER_RUN', 'JOOBLE_API_KEY', 'JOOBLE_QUERIES_PER_RUN', 'CC_MASTER_KEY',
+        'BRAVE_API_KEY', 'BRAVE_QUERIES_PER_RUN', 'BRAVE_PAGES_PER_QUERY', 'BRAVE_MAX_REQUESTS_PER_RUN',
+        'BRAVE_MONTHLY_REQUEST_LIMIT', 'BRAVE_FRESHNESS',
+        'JOOBLE_API_KEY', 'JOOBLE_API_HOST', 'JOOBLE_QUERIES_PER_RUN', 'JOOBLE_PAGES_PER_QUERY',
+        'JOOBLE_MAX_REQUESTS_PER_RUN', 'JOOBLE_DAILY_REQUEST_LIMIT', 'ALERT_MAX_MESSAGES',
+        'CC_MASTER_KEY',
     }
     for line in path.read_text(encoding='utf-8-sig').splitlines():
         line = line.strip()
@@ -51,8 +56,16 @@ def load_local_env(path: Path | None = None) -> None:
         if not CONFIG_PATTERN.fullmatch(key) or key not in allowed:
             continue
         value = value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
-            value = value[1:-1]
+        if value.startswith(('\"', "'")):
+            quote = value[0]
+            end = value.find(quote, 1)
+            if end < 0:
+                continue
+            value = value[1:end]
+        else:
+            # .env.example documents defaults with inline comments. Those
+            # comments must not become API keys, passwords or integer values.
+            value = re.split(r'(?:^|\s+)#', value, maxsplit=1)[0].rstrip()
         os.environ.setdefault(key, value)
 
 
@@ -83,17 +96,42 @@ def utc_now() -> str:
 class RefreshController:
     """One refresh at a time, in a worker thread; network is never required to boot."""
 
-    def __init__(self, *, max_search_queries: int = 6, max_career_pages: int = 250, max_detail_pages: int = 450):
+    def __init__(self, *, max_search_queries: int = 6, max_career_pages: int = 250, max_detail_pages: int = 450,
+                 refresh_every_hours: float = 1):
         self.max_search_queries = max(0, min(12, max_search_queries))
         self.max_career_pages = max(0, min(250, max_career_pages))
         self.max_detail_pages = max(0, min(600, max_detail_pages))
+        self.refresh_every_hours = max(0, refresh_every_hours)
+        self._schedule_origin = datetime.now(timezone.utc)
         self._lock = threading.Lock()
         self._running = False
         self._started_at: str | None = None
         self._finished_at: str | None = None
         self._last_error: str | None = None
         self._last_result: dict | None = None
-        self._progress: dict = {'running':False,'checked':0,'total':0,'remaining':0, 'phase':'idle'}
+        try:
+            saved = json.loads((ROOT / 'data' / 'progress.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            saved = {}
+        self._progress: dict = saved if isinstance(saved, dict) else {}
+        # A process restart cannot resume a dead worker; preserve its evidence
+        # and last completed run instead of displaying an endless active scan.
+        if self._progress.get('running'):
+            self._progress.update(running=False, phase='error', completion_status='interrupted',
+                                  current_source='Previous process stopped before collection completed')
+        self._progress.setdefault('running', False)
+        self._progress.setdefault('phase', 'idle')
+
+    def schedule(self) -> dict:
+        interval = self.refresh_every_hours * 3600
+        upcoming = None
+        if interval:
+            elapsed = max(0, (datetime.now(timezone.utc) - self._schedule_origin).total_seconds())
+            upcoming = self._schedule_origin + timedelta(seconds=(int(elapsed // interval) + 1) * interval)
+        return {'mode': 'local', 'enabled': bool(interval),
+                'interval_minutes': self.refresh_every_hours * 60 if interval else None,
+                'next_scheduled_at': upcoming.isoformat(timespec='seconds') if upcoming else None,
+                'note': 'Automatic checks run while this local server stays open.' if interval else 'Automatic collection is disabled.'}
 
     def status(self) -> dict:
         with self._lock:
@@ -103,7 +141,7 @@ class RefreshController:
                 'finished_at': self._finished_at,
                 'last_error': self._last_error,
                 'last_result': self._last_result,
-                'progress': dict(self._progress),
+                'progress': {**self._progress, 'schedule': self.schedule()},
                 'no_paid_api': True,
             }
 
@@ -115,7 +153,9 @@ class RefreshController:
             self._started_at = utc_now()
             self._last_error = None
             self._last_result = None
-            self._progress = {'running': True,'checked':0,'total':0,'remaining':0,'phase':'starting','current_source':'Starting scan'}
+            self._progress = {**self._progress, 'running': True,'checked':0,'total':0,'remaining':0,
+                              'started_at': self._started_at, 'finished_at': None,
+                              'completion_status': 'running', 'phase':'starting','current_source':'Starting scan'}
         threading.Thread(target=self._worker, name='cybercareers-refresh', daemon=True).start()
         return True
 
@@ -131,12 +171,13 @@ class RefreshController:
             report = run(max_queries=self.max_search_queries,
                          max_career_pages=self.max_career_pages,
                          max_detail_pages=self.max_detail_pages,
-                         on_progress=self._handle_progress)
+                         on_progress=self._handle_progress, schedule=self.schedule())
             # Do not expose internal request traces or arbitrary exception text to browsers.
             summary = {field: report.get(field) for field in (
                 'updated_at', 'jobs_count', 'new_candidates', 'new_jobs_count', 'queries_run', 'bangladesh_jobs', 'international_jobs',
                 'official_career_targets_checked', 'official_career_targets_reachable',
-                'active_ats_boards', 'errors',
+                'active_ats_boards', 'errors', 'last_completed_at', 'last_successful_at',
+                'completion_status', 'collection_finished_at', 'duration_seconds',
             )}
             with self._lock:
                 self._last_result = summary
@@ -306,7 +347,7 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
     controller = RefreshController(max_search_queries=args.max_feed_searches,
                                    max_career_pages=args.max_career_pages,
-                                   max_detail_pages=args.max_detail_pages)
+                                   max_detail_pages=args.max_detail_pages, refresh_every_hours=args.refresh_every_hours)
     try:
         server = ThreadingHTTPServer((args.host, args.port), make_handler(controller, args.host))
     except OSError as exc:

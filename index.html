@@ -7,12 +7,12 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Cybersecurity job intelligence for Bangladesh and international remote opportunities that accept Bangladesh-based applicants. Hourly checks, public job feeds, application links and skill matching.">
-  <title>CyberCareers BD · Job Intelligence & Source Health</title>
+  <title>CyberCareers BD · Jobs & Application Tracker</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <link rel="stylesheet" href="styles.css">
-  <script src="config.js"></script>
-  <script src="app.js" type="module"></script>
+  <link rel="stylesheet" href="styles.css?v=5.3.0">
+  <script src="config.js?v=5.3.0"></script>
+  <script src="app.js?v=5.3.0" type="module"></script>
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -46,6 +46,8 @@
         <a class="nav-link active" href="#jobs" data-page="jobs"><span class="nav-icon" data-icon="grid"></span>Job Intelligence : Bangladesh<span class="nav-count" id="navJobsCount">—</span></a>
         <a class="nav-link" href="#international" data-page="international"><span class="nav-icon" data-icon="globe"></span>International Jobs<span class="nav-count" id="navInternationalCount">—</span></a>
         <a class="nav-link" href="#saved" data-page="saved"><span class="nav-icon" data-icon="bookmark"></span>Saved Opportunities<span class="nav-count" id="navSavedCount">0</span></a>
+        <a class="nav-link" href="#applied" data-page="applied"><span class="nav-icon" data-icon="check"></span>Applied Jobs<span class="nav-count" id="navAppliedCount">0</span></a>
+        <a class="nav-link" href="#archived" data-page="archived"><span class="nav-icon" data-icon="archive"></span>Archived Jobs<span class="nav-count" id="navArchivedCount">0</span></a>
         <a class="nav-link" href="#sources" data-page="sources"><span class="nav-icon" data-icon="radar"></span>Source Watchlist<span class="nav-count" id="navSourcesCount">—</span></a>
         <a class="nav-link" href="#health" data-page="health"><span class="nav-icon" data-icon="activity"></span>Source Health<span class="nav-count" id="navHealthCount">—</span></a>
         <a class="nav-link" href="#profile" data-page="profile"><span class="nav-icon" data-icon="sliders"></span>Match Profile</a>
@@ -63,7 +65,7 @@
         <div class="sidebar-mini-icon" data-icon="shield"></div>
         <div><strong>Built for security professionals</strong><span>Find the roles your expertise deserves.</span></div>
       </div>
-      <div class="sidebar-footer">© 2026 CYBERCAREERS BD <span>v5.0</span></div>
+      <div class="sidebar-footer">© 2026 CYBERCAREERS BD <span>v5.3.0</span></div>
     </aside>
     <main class="main-content" id="mainContent">
       <header class="topbar">
@@ -74,7 +76,7 @@
       <section id="hourlyProgress" class="refresh-progress" aria-label="Hourly collection progress">
         <div class="refresh-progress-head">
           <div><span class="progress-status-icon" id="progressPulse"></span><strong id="progressTitle">HOURLY SOURCE SCANNER</strong><span id="progressPhase">Waiting for the next scheduled collection</span></div>
-          <strong id="progressPercent">0%</strong>
+          <div class="progress-head-actions"><button class="scan-now-button" id="scanNowButton" type="button" hidden title="Check all permitted sources now (feeds keep their publisher polling limits)"><span data-icon="radar"></span><span class="scan-now-label">Scan now</span></button><strong id="progressPercent">0%</strong></div>
         </div>
         <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Sources checked" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill" class="progress-fill"></div></div>
         <div class="progress-numbers">
@@ -83,8 +85,14 @@
           <span class="progress-success"><b id="progressOk">0</b> successful</span>
           <span class="progress-limited"><b id="progressLimited">0</b> limited</span><span class="progress-failure"><b id="progressBad">0</b> failed</span>
           <span class="progress-new"><b id="progressNewJobs">0</b> new jobs</span>
+          <span><b id="progressSkipped">0</b> cached / deferred</span>
         </div>
-        <div class="progress-current"><span>NOW CHECKING</span><strong id="progressCurrent">Awaiting next scan</strong><a href="#health">View source health →</a></div>
+        <div class="scan-completion" aria-label="Collection completion and schedule">
+          <div class="scan-time-primary"><span>LAST COMPLETED FETCH</span><time id="scanLastCompleted">No completed fetch recorded</time><small id="scanLastCompletedAge">Completion is recorded after all scheduled sources finish.</small></div>
+          <div><span>LAST ATTEMPT</span><strong id="scanResult">Awaiting collection</strong><small id="scanDuration">Duration not recorded</small></div>
+          <div><span>NEXT PLANNED CHECK</span><time id="scanNextExpected">Checking schedule…</time><small id="scanScheduleNote">All times shown in Bangladesh time (BDT).</small></div>
+        </div>
+        <div class="progress-current"><span id="progressCurrentLabel">STATUS</span><strong id="progressCurrent">Awaiting next scan</strong><a href="#health">View source health →</a></div>
       </section>
 
       <section id="page-jobs" class="page active">
@@ -100,7 +108,8 @@
           <div class="hero-topline">CAREER INTELLIGENCE <span>// BANGLADESH</span></div>
         </section>
 
-        <div id="dataBanner" class="data-banner"><span data-icon="info"></span><span>Loading verified vacancies and source collection status…</span></div>
+        <div id="dataBanner" class="data-banner"><span data-icon="info"></span><span>Loading vacancy leads and source collection status…</span></div>
+        <section id="coverageSummary" class="coverage-summary" aria-label="Job collection coverage"></section>
         <div class="metrics-grid" id="metricsGrid" aria-label="Job intelligence statistics">
           <div class="metric"><div class="metric-label">TRACKED JOB LEADS <span data-icon="briefcase"></span></div><div class="metric-value" id="metricTotal">—</div><div class="metric-meta">From the current dataset <span class="metric-tick">↗</span></div></div>
           <div class="metric"><div class="metric-label">HIGH MATCH <span data-icon="target"></span></div><div class="metric-value" id="metricMatch">—</div><div class="metric-meta">70%+ estimated alignment</div></div>
@@ -126,7 +135,7 @@
             <label class="toggle-row"><input type="checkbox" id="recentOnly"><span class="toggle-box"></span><span>Posted in last 7 days</span></label>
             <label class="toggle-row"><input type="checkbox" id="hasDeadline"><span class="toggle-box"></span><span>Has application deadline</span></label>
             <label class="toggle-row"><input type="checkbox" id="hideUnverified"><span class="toggle-box"></span><span>Hide index-only results</span></label>
-            <label class="toggle-row"><input type="checkbox" id="includeExpired"><span class="toggle-box"></span><span>Include expired job archive</span></label>
+            <a class="archive-shortcut" href="#archived"><span data-icon="archive"></span>View past-deadline jobs <span>↗</span></a>
             <div class="filter-help"><span data-icon="info"></span><p>Match scores are estimates from your profile and listed requirements—not employer assessments.</p></div>
           </aside>
           <div class="results-main">
@@ -158,7 +167,7 @@
           <div class="select-wrap intl-control"><select id="intlEligibilitySelect" aria-label="International job eligibility"><option value="all">All worldwide, regional & unconfirmed</option><option value="confirmed">Worldwide / Bangladesh eligible</option><option value="regional">Regional — verify eligibility</option><option value="unconfirmed">Eligibility not specified</option></select><span data-icon="chevron"></span></div>
           <div class="select-wrap intl-control"><select id="intlSortSelect" aria-label="International sort"><option value="match">Best skill match</option><option value="newest">Newest listed</option></select><span data-icon="chevron"></span></div>
         </div>
-        <div class="intl-feed-health-heading"><span>LIVE FEED DIAGNOSTICS</span><span>Each publisher follows its own refresh interval</span></div><div id="intlFeedHealth" class="intl-feed-health"></div><label class="intl-archive-toggle"><input type="checkbox" id="intlIncludeExpired"> Include expired opportunities from the archive (clearly labelled)</label><div id="intlJobsGrid" class="jobs-grid intl-grid"><div class="loading-state"><div class="loading-spinner"></div>Checking global sources…</div></div>
+        <div class="intl-feed-health-heading"><span>LIVE FEED DIAGNOSTICS</span><span>Each publisher follows its own refresh interval</span></div><div id="intlFeedHealth" class="intl-feed-health"></div><a class="archive-shortcut intl-archive-link" href="#archived"><span data-icon="archive"></span>Past-deadline listings are in Archived Jobs <span>↗</span></a><div id="intlJobsGrid" class="jobs-grid intl-grid"><div class="loading-state"><div class="loading-spinner"></div>Checking global sources…</div></div>
         <div id="intlMore" class="intl-more" hidden><button type="button" class="button button-outline" id="intlMoreButton">Load more global opportunities <span data-icon="arrow"></span></button></div>
         <div class="intl-provider-attribution">Public feed attribution: <a href="https://himalayas.app/jobs" rel="noopener noreferrer" target="_blank">Himalayas</a> · <a href="https://remotive.com/remote-jobs" rel="noopener noreferrer" target="_blank">Remotive</a> · <a href="https://remoteok.com" rel="noopener noreferrer" target="_blank">Remote OK</a> · <a href="https://jobicy.com" rel="noopener noreferrer" target="_blank">Jobicy</a>. Availability and eligibility are independently checked by each employer.</div>
       </section>
@@ -169,12 +178,39 @@
         <div id="savedGrid" class="jobs-grid saved-grid"></div>
       </section>
 
+      <section id="page-applied" class="page" hidden>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> YOUR APPLICATIONS / FOLLOW-UP NOTES</div><h1>Applied <em>jobs.</em></h1><p>Keep track of applications you have submitted. Add a short note about a referral, interview or follow-up. Applications stay here when their deadline passes.</p></div>
+        <div class="workspace-notice"><span data-icon="user"></span><p id="applicationStorageInfo">Applications and notes are saved in this browser. Export a copy before clearing site data or changing devices.</p><button class="button button-outline" id="exportApplications" type="button"><span data-icon="download"></span> Export applications</button></div>
+        <p id="applicationStorageError" class="workspace-error" role="alert" hidden></p>
+        <div class="workspace-controls">
+          <div class="search-field"><span data-icon="search"></span><input id="appliedSearch" type="search" placeholder="Search job, company or your notes…" aria-label="Search applied jobs and notes" autocomplete="off"></div>
+          <div class="select-wrap"><select id="appliedStatus" aria-label="Filter applied jobs by listing status"><option value="all">All applications</option><option value="active">Active listings</option><option value="archived">Past deadline / closed</option><option value="unlisted">No longer in current feed</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap"><select id="appliedSort" aria-label="Sort applied jobs"><option value="newest">Recently applied</option><option value="updated">Recently updated notes</option><option value="company">Company A–Z</option></select><span data-icon="chevron"></span></div>
+        </div>
+        <div class="results-toolbar standalone"><div class="result-left"><span class="result-indicator"></span><span id="appliedSummary" aria-live="polite">No applications yet</span></div><a class="ghost-button" href="#jobs">Browse jobs <span data-icon="arrow"></span></a></div>
+        <div id="appliedGrid" class="jobs-grid workspace-grid"></div>
+        <div class="workspace-more" id="appliedMore" hidden><button class="button button-outline" type="button" id="appliedMoreButton">Show more applications</button></div>
+      </section>
+
+      <section id="page-archived" class="page" hidden>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> JOB HISTORY / PAST APPLICATION DEADLINES</div><h1>Archived <em>jobs.</em></h1><p>Jobs move here after their application deadline passes, or when the source explicitly marks them closed. A deadline dated today remains active through the end of the day in Bangladesh time. Older postings without a known deadline remain unverified.</p></div>
+        <div class="workspace-controls">
+          <div class="search-field"><span data-icon="search"></span><input id="archiveSearch" type="search" placeholder="Search archived title, employer or skill…" aria-label="Search archived jobs" autocomplete="off"></div>
+          <div class="select-wrap"><select id="archiveRegion" aria-label="Filter archived jobs by region"><option value="all">All regions</option><option value="Bangladesh">Bangladesh</option><option value="International">International</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap"><select id="archiveSort" aria-label="Sort archived jobs"><option value="deadline">Most recent deadline</option><option value="company">Company A–Z</option><option value="match">Best skill match</option></select><span data-icon="chevron"></span></div>
+        </div>
+        <div class="results-toolbar standalone"><div class="result-left"><span class="result-indicator archived-indicator"></span><span id="archiveSummary" aria-live="polite">No archived jobs</span></div><label class="archive-saved-filter"><input id="archiveSavedOnly" type="checkbox"> Saved jobs only</label></div>
+        <div id="archivedGrid" class="jobs-grid workspace-grid"></div>
+        <div class="workspace-more" id="archiveMore" hidden><button class="button button-outline" type="button" id="archiveMoreButton">Show more archived jobs</button></div>
+        <p class="footnote">This archive contains retained listings from your collected dataset. Some publishers require expired listings to be removed. Your personal applied-job records remain in Applied Jobs.</p>
+      </section>
+
       <section id="page-sources" class="page" hidden>
         <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> INTEGRATION NETWORK / SOURCE INTELLIGENCE</div><h1>Source <em>watchlist.</em></h1><p>Bangladesh employers, bank recruitment pages, technology companies, international publishers and job boards included in the source watchlist. Listed targets do not imply active extraction or available vacancies.</p></div>
         <div class="source-stat-grid"><div><span>TARGETS IN DIRECTORY</span><strong id="sourceTotal">—</strong></div><div><span>BANKING SOURCES</span><strong id="sourceBanking">—</strong></div><div><span>JOB PORTALS</span><strong id="sourcePortals">—</strong></div><div><span>CAREER PAGES CHECKED / LAST RUN</span><strong id="sourceChecked">—</strong></div></div>
         <div class="source-toolbar"><div class="search-field source-search"><span data-icon="search"></span><input id="sourceSearch" type="search" placeholder="Search employer or portal…"></div><div class="select-wrap source-select"><select id="sourceSector"><option value="all">All source categories</option></select><span data-icon="chevron"></span></div></div>
         <div class="source-list-heading"><span>TRACKED WEBSITE / CAREER TARGET</span><span>COLLECTION MODE / STATUS</span><span>WEBSITE</span></div><div id="sourcesList" class="sources-list"></div>
-        <section class="discovery-panel" aria-label="Search intelligence keywords"><div class="discovery-heading"><div><div class="section-kicker">BILINGUAL SEARCH INTELLIGENCE</div><h2>Search beyond the feeds.</h2><p>43 focused English/Bangla queries for banks, telecoms, public job boards, social announcements and international hiring. External searches open in your browser; they are not unauthorized automated scraping.</p></div></div>
+        <section class="discovery-panel" aria-label="Search intelligence keywords"><div class="discovery-heading"><div><div class="section-kicker">BILINGUAL SEARCH INTELLIGENCE</div><h2>Search beyond the feeds.</h2><p>Focused English/Bangla queries for banks, telecoms, public job boards, social announcements and international hiring. External searches open in your browser; they are not unauthorized automated scraping.</p></div></div>
           <div class="discovery-tabs"><button type="button" class="query-tab active" data-query-group="all">All</button><button type="button" class="query-tab" data-query-group="বাংলা — বাংলাদেশ">বাংলা</button><button type="button" class="query-tab" data-query-group="English — Bangladesh">English</button><button type="button" class="query-tab" data-query-group="Banks & telecom careers">Banks & telecom</button><button type="button" class="query-tab" data-query-group="Job portals & social (manual link search)">Portals & social</button><button type="button" class="query-tab" data-query-group="International — eligibility check required">International</button></div>
           <div id="discoveryQueryGrid" class="discovery-grid"></div>
           <div class="discovery-more"><button class="button button-outline" id="moreDiscovery" type="button">Show more queries</button></div>
@@ -183,7 +219,7 @@
       </section>
 
       <section id="page-health" class="page" hidden>
-        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> COLLECTION RELIABILITY / PER-SOURCE HISTORY</div><h1>Source <em>health intelligence.</em></h1><p>Ten most recent attempted fetches for each source. Green means the source responded successfully—even if no cybersecurity positions were found. Amber means only a company homepage was reachable, not a verified recruiting page. Red means a fetch failed. Gray indicates no fetch history; restricted and manually searched portals are link-only.</p></div>
+        <div class="page-heading"><div class="eyebrow"><span class="eyebrow-line"></span> COLLECTION RELIABILITY / PER-SOURCE HISTORY</div><h1>Source <em>health intelligence.</em></h1><p>Ten most recent attempted fetches for each source. Green means usable recruitment content or job API data was checked, even when no matching jobs were found. Amber means coverage was limited: for example, a JavaScript shell, an unreadable listing, or a pagination budget. Red means a fetch failed. Gray indicates no fetch history; restricted and manually searched portals are link-only.</p></div>
         <div class="health-summary">
           <div class="health-metric"><span>MONITORED SOURCES</span><strong id="healthTotal">—</strong><small>Directory + discovered ATS</small></div>
           <div class="health-metric"><span>WITH FETCH HISTORY</span><strong id="healthObserved">—</strong><small>At least one real attempt</small></div>
@@ -193,13 +229,13 @@
         <div class="health-controls">
           <div class="search-field health-query"><span data-icon="search"></span><input id="healthSearch" type="search" autocomplete="off" placeholder="Find a source, bank, telco, domain…"></div>
           <div class="select-wrap health-select"><select id="healthSector" aria-label="Filter source health by industry"><option value="all">Every industry</option></select><span data-icon="chevron"></span></div>
-          <div class="select-wrap health-select"><select id="healthFilter" aria-label="Filter fetch outcome"><option value="all">All fetch states</option><option value="success">Latest: success</option><option value="failed">Latest: failed</option><option value="partial">Latest: homepage only</option><option value="never">Never checked</option><option value="link-only">Link-only / restricted</option></select><span data-icon="chevron"></span></div>
+          <div class="select-wrap health-select"><select id="healthFilter" aria-label="Filter fetch outcome"><option value="all">All fetch states</option><option value="success">Latest: success</option><option value="failed">Latest: failed</option><option value="partial">Latest: limited coverage</option><option value="never">Never checked</option><option value="link-only">Link-only / restricted</option></select><span data-icon="chevron"></span></div>
         </div>
-        <div class="health-legend"><span><i class="health-square good"></i> Successful fetch</span><span><i class="health-square partial"></i> Career unverified</span><span><i class="health-square bad"></i> Failed fetch</span><span><i class="health-square empty"></i> No attempt recorded</span><span>Oldest → newest</span></div>
+        <div class="health-legend"><span><i class="health-square good"></i> Successful fetch</span><span><i class="health-square partial"></i> Limited coverage</span><span><i class="health-square bad"></i> Failed fetch</span><span><i class="health-square empty"></i> No attempt recorded</span><span>Oldest → newest</span></div>
         <div class="health-list-header"><span>SOURCE / INDUSTRY</span><span>LAST 10 CHECKS</span><span>LAST RESULT</span><span>OPEN</span></div>
         <div class="health-list" id="healthRows"></div>
         <div class="health-list-more" id="healthMoreWrap" hidden><button class="button button-outline" id="healthMore" type="button">Show more sources</button></div>
-        <p class="footnote">History persists in <code>data/source_health.json</code>; the current run's progress persists in <code>data/progress.json</code>. Cached and link-only sources do not create fake success/failure results. Some sites may be unavailable, or prohibit automated fetching.</p>
+        <p class="footnote">Only attempted checks enter source history. Cached feeds and sources available through manual links are shown separately. A completed run may include source errors or partial coverage; open an affected source for its current diagnosis.</p>
       </section>
 
       <section id="page-profile" class="page" hidden>
@@ -224,7 +260,7 @@
   </div>
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
   <aside id="jobDrawer" class="job-drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
-    <div class="drawer-head"><span class="drawer-eyebrow"><span class="green-dot"></span> OPPORTUNITY BRIEF / VERIFIED SOURCE</span><button id="closeDrawer" class="icon-button" aria-label="Close details"><span data-icon="close"></span></button></div>
+    <div class="drawer-head"><span class="drawer-eyebrow"><span class="green-dot"></span> OPPORTUNITY BRIEF / SOURCE EVIDENCE</span><button id="closeDrawer" class="icon-button" aria-label="Close details"><span data-icon="close"></span></button></div>
     <div id="drawerBody" class="drawer-body"></div>
     <div class="drawer-footer" id="drawerFooter"></div>
   </aside>

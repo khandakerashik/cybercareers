@@ -1,4 +1,4 @@
-# CyberCareers BD v5 — Private Cybersecurity Job Intelligence
+# CyberCareers BD v5.3.0 — Cybersecurity Jobs & Application Tracker
 
 An hourly job radar for cybersecurity and information security roles in Bangladesh, plus international remote roles open to Bangladesh-based applicants. You can run it locally, or publish it to **GitHub Pages behind a login**: only you and the people you allow can sign in, and the published data is encrypted.
 
@@ -6,7 +6,40 @@ An hourly job radar for cybersecurity and information security roles in Banglade
 
 ---
 
-## What's new in v5
+## v5.3.0 — Archived Jobs and Applied Jobs
+
+**Start here: [v5.3 upgrade and usage guide](docs/UPGRADE_v5.3.md).** Merge the complete package into the existing project, preserving your vault key, users, private configuration and collected data.
+
+| Feature | Behaviour |
+| --- | --- |
+| Archived Jobs | Past-deadline and explicitly closed/expired listings have a dedicated section with search, region, sort and saved-only filters. Active Bangladesh and International pages exclude them. |
+| Deadline handling | Uses Bangladesh calendar dates. A deadline today stays active through that day. An older posting without a known deadline stays unverified; publication age alone does not archive it. A fresh deadline extension can reopen a previously expired role. |
+| Applied Jobs | Choose **Mark as applied** on a job card or details panel. The application date and a compact job reference are retained independently of future collection runs. |
+| Short notes | Add or edit a plain-text note of up to 1,000 characters. Choose **Save note**; unsaved edits survive a dashboard refresh. |
+| Personal history | Applied records remain available after a deadline passes or the listing disappears from the feed. Notes and application records are stored per site and signed-in account in this browser. They do not automatically sync between devices. |
+| Export and removal | Export applications and notes as CSV, or remove an applied mark and its note. Marking/removing a record does not submit or withdraw an application with the employer. |
+
+Application records are saved in browser storage rather than the shared collector dataset. Keep an exported copy before clearing browser data. The new `applications.js` file must be included when updating the site; the local server and Pages builder both support it.
+
+## v5.2.0 repair release
+
+**Start here: [Upgrade instructions](docs/UPGRADE_v5.2.md).** Keep your existing vault key, user configuration and collected data when merging this package into an existing installation.
+
+| Area | Repair |
+| --- | --- |
+| False-positive events | Independent vacancy evidence rejects workshops, courses, news, advice, service pages and multi-job search pages. Cybersecurity relevance is assessed separately. |
+| Existing records | Clear false positives are rechecked and retained with rejection reasons in a recoverable local review file. Plausible historic leads remain unverified rather than disappearing. |
+| Missing vacancies | Preserves distinct LinkedIn requisition IDs, multiple roles in one PDF, multiple structured roles sharing a page, short titles such as SOC Analyst, and generic bank titles supported by security duties. |
+| Source reliability | Repairs 16 employer routes, uses redirect-aware links and declared sitemaps, follows bounded pagination, improves ATS handling, and distinguishes inaccessible/partial/empty recruiting content. |
+| LinkedIn alerts and search | Better HTML/plain-text alert parsing, persistent mail backlog, 26 search families, resumable search pagination, request budgets and exact posting identity. Coverage remains partial and visible. |
+| Fetch status | Full completion time in BDT, run duration, failed/limited/cached counts, scheduler-aware next check, preserved previous completion on failure, and automatic published-snapshot refresh. |
+| Dates and geography | Receipt/update dates stay separate from publication dates; expired alerts cannot expire newer official roles; explicit foreign eligibility takes precedence over company geography. |
+
+**Measured audit:** 151 employer sources were checked, followed by 28 targeted rechecks. Latest per-source observations are 53 readable, 66 limited and 32 blocked/unavailable. These combined observations used HTTP only and do not certify exhaustive job retrieval. See [the audit and its limits](docs/SOURCE_AUDIT.md), [machine-readable observations](docs/source-audit-2026-11-22.json), and [validation](docs/VALIDATION.md).
+
+The catalogue also contains 36 manual-link/restricted/directory entries and six publisher feeds. A catalogue link is not an automatic collector. Mailbox/API credentials must be configured before those optional channels can fetch anything.
+
+## Earlier v5 features
 
 ### Detection
 | Area | v4.2 | v5 |
@@ -17,19 +50,19 @@ An hourly job radar for cybersecurity and information security roles in Banglade
 | Remote roles from ATS boards | Dropped unless located in Bangladesh | Kept on *International* when explicitly worldwide or APAC (e.g. "Home based – Worldwide") |
 | Dates | English formats only | Bangla digits and month names, ordinals and DD-MM-YYYY; deadlines found in body text ("আবেদনের শেষ তারিখ", "Apply before …"); Bangla experience requirements |
 | Structured data | JSON-LD | JSON-LD (tolerant parsing) **+ microdata**, salary from `baseSalary` |
-| Crawl | Sequential; ~100 of 150 employers per hour, rotated | **Parallel** (8 workers in CI, still ≥1.5 s per host). Every employer is checked every hour, with listing pagination, sitemap indexes and more PDF circulars |
+| Crawl | Sequential; ~100 of 150 employers per hour, rotated | **Parallel** (8 workers in CI, still ≥1.5 s per host). Every eligible employer can be scheduled each hour, with bounded listing pagination, sitemap discovery and PDF circulars; actual coverage is reported |
 | JS-only career sites | Missed | Optional rendering (`RENDER_JS=1`) through Playwright, after the robots check |
 | Duplicates | URL only | Same role found through an alert, search or aggregator **and** on the official page is merged, with an "Also listed on" link list |
 
-### New sources
+### Source channels
 * **Free feeds:** We Work Remotely (RSS) and Working Nomads, in addition to Himalayas, Remotive, Remote OK and Jobicy.
 * **LinkedIn / Bdjobs / Indeed / Glassdoor via your own job-alert emails.** See below; this is the biggest gain for Bangladesh.
-* **Optional licensed APIs:** Brave Search (site-scoped LinkedIn/Bdjobs queries) and Jooble (aggregator with Bangladesh coverage).
+* **Optional licensed APIs:** Brave Search (site-scoped LinkedIn/Bdjobs queries) and Jooble (country-specific coverage that must match the configured key).
 * **Your own RSS/Atom feeds** (`data/custom_feeds.json`), e.g. Google Alerts for "সাইবার নিরাপত্তা নিয়োগ".
 * Seeded global remote employers in `data/ats.json`: GitLab, Canonical, Cloudflare, Mozilla and Wikimedia.
 
 ### What it deliberately does not do
-It does not ignore robots.txt, solve CAPTCHAs, spoof browsers or log into portals. LinkedIn and Bdjobs prohibit automated collection, and getting around that risks IP bans and account bans. The alert-email and search-API routes below reach those listings legitimately.
+It does not ignore robots.txt, solve CAPTCHAs, spoof browsers or log into portals. Restricted portals are not fetched directly. The supported alert-email and licensed search-API routes provide partial discovery of those postings.
 
 ---
 
@@ -71,7 +104,7 @@ python -m vault user list
 ```
 Commit `config/users.json` and push; the workflow republishes within minutes. It holds only salts and ciphertext. Usernames are stored encrypted, and the keyring identifies users by a hash.
 
-**Security notes:** whoever has the published keyring can try to guess passwords offline, so use long passphrases (PBKDF2 makes each guess slow, but cannot save a weak password). In a public repository the code, `sources.json` and the Actions logs are visible, but the collected jobs are not. The workflow discards collector output for that reason. A private repository needs a paid plan for Pages, but the vault is designed to be safe either way.
+**Security notes:** whoever has the published keyring can try to guess passwords offline, so use long passphrases (PBKDF2 makes each guess slow, but cannot save a weak password). In a public repository the code, `sources.json` and the Actions logs are visible, but the collected jobs are not. The workflow discards collector output for that reason. Private-repository Pages availability depends on your GitHub plan. The vault protects the published dataset independently of repository visibility.
 
 ### How the workflow handles state
 `.github/workflows/pages.yml` does: restore `encrypted/` (hourly cache) → `vault unseal` (decrypt state inside the runner) → collect → test → `vault seal` (fresh key) → cache → **commit `encrypted/` only when the job list changed** (a durable backup without hourly commits) → `vault build-site` → deploy. Plaintext never touches the repository or Pages.
@@ -86,11 +119,11 @@ Commit `config/users.json` and push; the workflow republishes within minutes. It
 
 The collector reads those emails over IMAP in read-only mode and never marks them as read. It keeps only cybersecurity roles and links to the original posting. The platform pages themselves are never fetched.
 
-## Optional keys (all free tiers)
+## Optional licensed API keys
 | Secret | What it adds |
 | --- | --- |
-| `BRAVE_API_KEY` | Site-scoped search over LinkedIn and Bdjobs postings, plus Bangla circular queries. 2 queries per hour by default (`BRAVE_QUERIES_PER_RUN`), which fits the free monthly quota. |
-| `JOOBLE_API_KEY` | Bangladesh listings aggregated from many boards (`JOOBLE_QUERIES_PER_RUN`, default 3). |
+| `BRAVE_API_KEY` | Site-scoped search over LinkedIn and Bdjobs postings, plus Bangla circular queries. Defaults to two requests per run with a 1,500-request application monthly cap; check your own provider plan. Pagination resumes across runs. |
+| `JOOBLE_API_KEY` | Country-specific aggregator discovery; also requires the provider-issued regional `JOOBLE_API_HOST`. The US endpoint is not a Bangladesh source. |
 | Variable `RENDER_JS=1` | Installs Chromium in CI and renders JavaScript-only career pages. |
 
 ## Google Alerts / custom feeds

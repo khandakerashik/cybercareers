@@ -69,3 +69,44 @@ def test_built_site_contains_only_ciphertext(env, monkeypatch):
     assert not any(n.startswith('data/') for n in names)
     assert "mode: 'vault'" in (site / 'config.js').read_text()
     assert (site / 'robots.txt').read_text().startswith('User-agent: *\nDisallow: /')
+
+
+def test_application_module_ships_but_personal_backups_do_not(env,monkeypatch):
+    root,master,data,out=env
+    private='A private application note that must stay on this computer'
+    (data/'applications.json').write_text(json.dumps({'notes':private}))
+    v.add_user('ashik','correct horse battery staple',master)
+    ring=v.seal(master,data_dir=data,out_dir=out)
+    assert 'applications.json' not in ring['files']
+    assert not (out/'applications.bin').exists()
+    (out/'application-notes.txt').write_text(private)
+    (out/'unused-backup.bin').write_text(private)
+    ui=root/'ui'
+    (ui/'assets').mkdir(parents=True)
+    (ui/'index.html').write_text('<script type="module" src="app.js"></script>')
+    (ui/'app.js').write_text("import './applications.js';")
+    module='export const applicationModuleLoaded = true;'
+    (ui/'applications.js').write_text(module)
+    (ui/'assets'/'favicon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
+    (ui/'assets'/'applications.csv').write_text(private)
+    (ui/'applications.json').write_text(json.dumps({'notes':private}))
+    monkeypatch.setattr(v,'ROOT',ui)
+    site=v.build_site(root/'_site',vault_dir=out)
+    assert (site/'applications.js').read_text()==module
+    assert (site/'assets'/'favicon.svg').is_file()
+    assert (site/'encrypted'/'jobs.bin').is_file()
+    assert (site/'encrypted'/'sources.bin').is_file()
+    assert not (site/'assets'/'applications.csv').exists()
+    assert not (site/'encrypted'/'unused-backup.bin').exists()
+    assert all(private.encode() not in p.read_bytes() for p in site.rglob('*') if p.is_file())
+
+
+def test_site_rejects_an_unexpected_ciphertext_manifest_path(env):
+    root,master,data,out=env
+    v.add_user('ashik','correct horse battery staple',master)
+    v.seal(master,data_dir=data,out_dir=out)
+    ring=json.loads((out/'keyring.json').read_text())
+    ring['files']['jobs.json']['path']='../application-notes.txt'
+    (out/'keyring.json').write_text(json.dumps(ring))
+    with pytest.raises(v.VaultError,match='unexpected encrypted file'):
+        v.build_site(root/'_site',vault_dir=out)
