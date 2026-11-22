@@ -1,4 +1,4 @@
-# CyberCareers BD v5.3.0 — Cybersecurity Jobs & Application Tracker
+# CyberCareers BD v5.3.0
 
 An hourly job radar for cybersecurity and information security roles in Bangladesh, plus international remote roles open to Bangladesh-based applicants. You can run it locally, or publish it to **GitHub Pages behind a login**: only you and the people you allow can sign in, and the published data is encrypted.
 
