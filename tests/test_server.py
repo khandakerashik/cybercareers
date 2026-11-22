@@ -50,7 +50,7 @@ def test_static_site_and_local_api(local_server):
     assert b'CyberCareers' in html
     assert b'refreshJobsButton' in html
     assert headers['X-Content-Type-Options'] == 'nosniff'
-    for filename in ('/styles.css', '/app.js', '/applications.js', '/assets/favicon.svg',
+    for filename in ('/styles.css', '/app.js', '/applications.js', '/github-scan.js', '/assets/favicon.svg',
                      '/data/jobs.json', '/data/sources.json', '/data/status.json'):
         code, asset_headers, data = request(port, 'GET', filename + '?v=123')
         assert code == 200 and data

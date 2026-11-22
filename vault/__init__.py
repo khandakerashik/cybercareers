@@ -30,6 +30,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import secrets
 import shutil
 import unicodedata
@@ -53,7 +54,7 @@ MIN_PASSWORD = 12
 FRONTEND_FILES = ('jobs.json', 'sources.json', 'status.json', 'source_health.json', 'progress.json', 'search_queries.json')
 # … and collector state that must survive between CI runs (sealed, restored by `unseal`).
 STATE_FILES = ('jobs.json', 'status.json', 'source_health.json', 'progress.json', 'feed_state.json', 'ats_discovered.json', 'rejected_jobs.json')
-SITE_FILES = ('index.html', 'styles.css', 'app.js', 'auth.js', 'applications.js', '.nojekyll')
+SITE_FILES = ('index.html', 'styles.css', 'app.js', 'auth.js', 'applications.js', 'github-scan.js', '.nojekyll')
 SITE_ASSET_FILES = ('favicon.svg',)
 
 
@@ -290,6 +291,21 @@ def verify_login(username: str, password: str, *, out_dir: Path = OUT) -> list[s
 ROBOTS_TXT = 'User-agent: *\nDisallow: /\n'
 
 
+def github_site_config(environ=None) -> dict | None:
+    """Public deployment metadata only; never infer a repository or copy secrets."""
+    env = os.environ if environ is None else environ
+    repository = env.get('GITHUB_REPOSITORY', '').strip()
+    branch = env.get('GITHUB_REF_NAME', '').strip() if env.get('GITHUB_REF_TYPE') == 'branch' else ''
+    if not branch and env.get('GITHUB_REF', '').startswith('refs/heads/'):
+        branch = env['GITHUB_REF'][len('refs/heads/'):]
+    branch = branch or env.get('GITHUB_DEFAULT_BRANCH', '').strip()
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,99}/[A-Za-z0-9][A-Za-z0-9_.-]{0,99}', repository):
+        return None
+    if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_./-]{0,199}', branch) or '..' in branch:
+        return None
+    return {'repository': repository, 'workflow': 'pages.yml', 'ref': branch}
+
+
 def build_site(out: Path, *, vault_dir: Path = OUT) -> Path:
     if not (vault_dir / 'keyring.json').is_file():
         raise VaultError('Nothing sealed yet. Run `python -m vault seal` first.')
@@ -320,8 +336,10 @@ def build_site(out: Path, *, vault_dir: Path = OUT) -> Path:
             raise VaultError(f'Missing or invalid ciphertext: {filename}')
         shutil.copy2(blob, encrypted_out / filename)
     shutil.copy2(vault_dir / 'keyring.json', encrypted_out / 'keyring.json')
-    (out / 'config.js').write_text("window.CC_CONFIG = Object.freeze({ mode: 'vault', vault: 'encrypted/' });\n",
-                                   encoding='utf-8')
+    github = github_site_config()
+    metadata = ', github: ' + json.dumps(github, ensure_ascii=True) if github else ''
+    (out / 'config.js').write_text("window.CC_CONFIG = Object.freeze({ mode: 'vault', vault: 'encrypted/'" + metadata + " });\n",
+                                 encoding='utf-8')
     (out / 'robots.txt').write_text(ROBOTS_TXT, encoding='utf-8')
     (out / '.nojekyll').write_text('', encoding='utf-8')
     # Belt and braces: never ship plaintext data or config into the site.

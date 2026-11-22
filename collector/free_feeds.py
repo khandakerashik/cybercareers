@@ -15,6 +15,8 @@ from urllib.parse import urlparse
 
 import requests
 
+from .telemetry import source_started
+
 LOG = logging.getLogger(__name__)
 PROVIDERS = {
     'Himalayas': {'seconds': 24 * 3600, 'url': 'https://himalayas.app/jobs/api/search'},
@@ -384,6 +386,8 @@ def collect_public_feeds(session: requests.Session, sources: list[dict], cache: 
             statuses.append(outcome)
             if on_source: on_source(outcome,[])
             continue
+        source_started(on_source, {'name': name, 'source_id': 'feed:'+name,
+                                  'sector': 'Remote job feed', 'mode': 'Free publisher feed'})
         count = 0
         raw_jobs = 0
         requests_count = 0

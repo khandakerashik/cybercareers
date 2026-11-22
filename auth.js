@@ -14,6 +14,9 @@ let keyring = null;
 let dataKey = null;
 let identity = null;
 let loginPromise = null;
+// Keep the unlocked user's KEK available when browser storage is blocked.
+// It is never used as (or installed over) the published snapshot's data key.
+let liveSession = null;
 
 export const vaultMode = () => CONFIG.mode === 'vault';
 export const currentUser = () => identity;
@@ -89,6 +92,7 @@ export async function restoreSession() {
   try {
     await unwrap(s.uid, b64.decode(s.k));
     identity = { name: s.name, uid: s.uid };
+    liveSession = { uid: s.uid, k: s.k, exp: Number(s.exp) };
     return true;
   } catch (e) {
     if (e.message === 'bad-credentials') logout(false); // revoked, password changed, or key rotated without this user
@@ -106,12 +110,14 @@ export async function login(username, password, remember = false) {
   await unwrap(uid, bits);
   identity = { name: String(username).trim(), uid };
   const ttl = remember ? 7 * 24 * 3600e3 : 12 * 3600e3;
-  saveSession({ uid, name: identity.name, k: b64.encode(bits), exp: Date.now() + ttl }, remember);
+  const session = { uid, name: identity.name, k: b64.encode(bits), exp: Date.now() + ttl };
+  liveSession = { uid, k: session.k, exp: session.exp };
+  saveSession(session, remember);
   return identity;
 }
 
 export function logout(reload = true) {
-  dataKey = null; identity = null;
+  dataKey = null; identity = null; liveSession = null;
   for (const s of [storage(true), storage(false)]) { try { s && s.removeItem(SESSION_KEY); } catch { /* ignore */ } }
   if (reload) location.reload();
 }
@@ -119,6 +125,84 @@ export function logout(reload = true) {
 async function gunzip(bytes) {
   const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+const liveError = (code, message) => Object.assign(new Error(message), { code });
+const liveObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+function liveBytes(value, min, max = min) {
+  if (typeof value !== 'string' || value.length > Math.ceil(max / 3) * 4 || value.length % 4
+      || !/^[A-Za-z0-9+/]*={0,2}$/.test(value)) throw liveError('invalid_progress', 'Invalid encrypted live progress.');
+  let bytes;
+  try { bytes = b64.decode(value); } catch { throw liveError('invalid_progress', 'Invalid encrypted live progress.'); }
+  if (bytes.length < min || bytes.length > max) throw liveError('invalid_progress', 'Invalid encrypted live progress.');
+  return bytes;
+}
+
+async function gunzipLive(bytes) {
+  const reader = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')).getReader();
+  const chunks = []; let size = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > 1024 * 1024) {
+        await reader.cancel();
+        throw liveError('invalid_progress', 'Live progress exceeded the allowed size.');
+      }
+      chunks.push(value);
+    }
+  } finally { reader.releaseLock(); }
+  const plain = new Uint8Array(size); let offset = 0;
+  for (const chunk of chunks) { plain.set(chunk, offset); offset += chunk.length; }
+  return plain;
+}
+
+/** Decrypt an authenticated Checks envelope for exactly the selected run.
+ * This never changes the snapshot key or keyring used by loadJSON().
+ */
+export async function decryptLiveProgress(envelope, { repository, runId, runAttempt } = {}) {
+  const authenticatedIdentity = identity, uid = identity?.uid;
+  if (!dataKey || !uid) throw liveError('locked', 'Unlock the dashboard to read encrypted live progress.');
+  const keys = ['format', 'repository', 'workflow_run_id', 'run_attempt', 'generated_at', 'iv', 'ct', 'users'];
+  if (!liveObject(envelope) || Object.keys(envelope).some(key => !keys.includes(key)) || envelope.format !== 'CCLIVE1'
+      || typeof repository !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}\/[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$/.test(repository)
+      || typeof envelope.repository !== 'string' || envelope.repository.toLowerCase() !== repository.toLowerCase()
+      || !/^[1-9]\d{0,23}$/.test(String(runId ?? '')) || envelope.workflow_run_id !== String(runId)
+      || !Number.isInteger(runAttempt) || runAttempt < 1 || runAttempt > 1000000 || envelope.run_attempt !== runAttempt
+      || typeof envelope.generated_at !== 'string' || envelope.generated_at.length > 40 || !Number.isFinite(Date.parse(envelope.generated_at))
+      || !liveObject(envelope.users)) throw liveError('invalid_progress', 'Live progress does not match this workflow run.');
+  const users = Object.entries(envelope.users);
+  if (users.length < 1 || users.length > 100) throw liveError('invalid_progress', 'Invalid encrypted live progress recipients.');
+  for (const [recipient, wrapper] of users) {
+    if (!/^[a-f\d]{64}$/.test(recipient) || !liveObject(wrapper) || Object.keys(wrapper).some(key => key !== 'iv' && key !== 'ct')) {
+      throw liveError('invalid_progress', 'Invalid encrypted live progress recipients.');
+    }
+    liveBytes(wrapper.iv, 12); liveBytes(wrapper.ct, 48);
+  }
+  const iv = liveBytes(envelope.iv, 12), ciphertext = liveBytes(envelope.ct, 16, 48000);
+  if (JSON.stringify(envelope).length > 48744) throw liveError('invalid_progress', 'Encrypted live progress exceeded the allowed size.');
+  const wrapper = Object.hasOwn(envelope.users, uid) ? envelope.users[uid] : null;
+  if (!wrapper) throw liveError('progress_access', 'This run did not include your dashboard account. Reconnect after the account configuration is updated.');
+  const stored = readSession();
+  const session = stored?.uid === uid ? stored : liveSession?.uid === uid ? liveSession : null;
+  if (!session || Number(session.exp) <= Date.now()) throw liveError('locked', 'Unlock the dashboard again to read encrypted live progress.');
+  const context = envelope.repository + ':' + envelope.workflow_run_id + ':' + envelope.run_attempt;
+  let progress;
+  try {
+    const rawKey = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: liveBytes(wrapper.iv, 12), additionalData: enc.encode('cc-live-key:' + context + ':' + uid) },
+      await aesKey(liveBytes(session.k, 32)), liveBytes(wrapper.ct, 48));
+    const compressed = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv, additionalData: enc.encode('cc-live:' + context) }, await aesKey(rawKey), ciphertext);
+    progress = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await gunzipLive(new Uint8Array(compressed))));
+    if (!liveObject(progress)) throw new Error();
+  } catch (error) {
+    if (error.code === 'invalid_progress') throw error;
+    throw liveError('progress_decryption', 'Live progress could not be decrypted for this account. Its encryption or account credentials may have changed.');
+  }
+  if (identity !== authenticatedIdentity || !dataKey) throw liveError('locked', 'The dashboard account changed while reading live progress.');
+  return progress;
 }
 
 /** Fetch and decrypt one sealed data file, e.g. loadJSON('jobs.json'). */

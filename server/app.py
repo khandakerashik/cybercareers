@@ -7,12 +7,14 @@ available only through a deliberately restricted local refresh endpoint.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import logging
 import mimetypes
 import os
 import re
 import threading
+import uuid
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -20,7 +22,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLIC_ROOT_FILES = frozenset({'index.html', 'styles.css', 'app.js', 'auth.js', 'applications.js', 'config.js', '.nojekyll'})
+PUBLIC_ROOT_FILES = frozenset({'index.html', 'styles.css', 'app.js', 'auth.js', 'applications.js', 'github-scan.js', 'config.js', '.nojekyll'})
 PUBLIC_DATA_FILES = frozenset({'jobs.json', 'sources.json', 'status.json', 'source_health.json', 'progress.json', 'search_queries.json'})
 PUBLIC_ASSET_FILES = frozenset({'favicon.svg'})
 CONFIG_PATTERN = re.compile(r'^[A-Z][A-Z0-9_]*$')
@@ -119,8 +121,15 @@ class RefreshController:
         if self._progress.get('running'):
             self._progress.update(running=False, phase='error', completion_status='interrupted',
                                   current_source='Previous process stopped before collection completed')
+            for row in self._progress.get('sources', []):
+                if isinstance(row, dict) and row.get('state') == 'running':
+                    row.update(state='failed', message='Previous process stopped before this source completed',
+                               finished_at=None, duration_seconds=None)
+            self._progress['active_sources'] = []
         self._progress.setdefault('running', False)
         self._progress.setdefault('phase', 'idle')
+        self._progress.setdefault('sources', [])
+        self._progress.setdefault('active_sources', [])
 
     def schedule(self) -> dict:
         interval = self.refresh_every_hours * 3600
@@ -135,7 +144,7 @@ class RefreshController:
 
     def status(self) -> dict:
         with self._lock:
-            return {
+            return copy.deepcopy({
                 'running': self._running,
                 'started_at': self._started_at,
                 'finished_at': self._finished_at,
@@ -143,7 +152,7 @@ class RefreshController:
                 'last_result': self._last_result,
                 'progress': {**self._progress, 'schedule': self.schedule()},
                 'no_paid_api': True,
-            }
+            })
 
     def start(self) -> bool:
         with self._lock:
@@ -151,17 +160,27 @@ class RefreshController:
                 return False
             self._running = True
             self._started_at = utc_now()
+            self._finished_at = None
             self._last_error = None
             self._last_result = None
-            self._progress = {**self._progress, 'running': True,'checked':0,'total':0,'remaining':0,
+            previous = self._progress
+            self._progress = {'run_id':uuid.uuid4().hex, 'running': True,'checked':0,'total':0,'remaining':0,
                               'started_at': self._started_at, 'finished_at': None,
+                              'updated_at':self._started_at,'duration_seconds':None,
+                              'succeeded':0,'failed':0,'partial':0,'skipped':0,
+                              'jobs_found_this_run':0,'new_jobs':0,'sources':[],'active_sources':[],
+                              'last_checked':None,'errors':[],
+                              'previous_errors':copy.deepcopy(previous.get('errors') or []),
+                              'last_completed_at':previous.get('last_completed_at'),
+                              'last_successful_at':previous.get('last_successful_at'),
+                              'schedule':self.schedule(),
                               'completion_status': 'running', 'phase':'starting','current_source':'Starting scan'}
         threading.Thread(target=self._worker, name='cybercareers-refresh', daemon=True).start()
         return True
 
     def _handle_progress(self, update: dict) -> None:
         with self._lock:
-            self._progress = dict(update)
+            self._progress = copy.deepcopy(update)
 
     def _worker(self) -> None:
         try:
@@ -180,19 +199,35 @@ class RefreshController:
                 'completion_status', 'collection_finished_at', 'duration_seconds',
             )}
             with self._lock:
-                self._last_result = summary
+                self._last_result = copy.deepcopy(summary)
+                if isinstance(report.get('progress_summary'), dict):
+                    self._progress = copy.deepcopy(report['progress_summary'])
             LOG.info('Job collection complete: %s jobs, %s candidates',
                      report.get('jobs_count', 0), report.get('new_candidates', 0))
         except Exception:
             LOG.exception('Refresh failed; previous job data remains available')
             with self._lock:
                 self._last_error = 'Job collection failed. See the local terminal for details.'
-                self._progress.update({'running':False,'phase':'error','current_source':'Collection interrupted'})
+                self._progress.update({'running':False,'phase':'error','completion_status':'failed',
+                                       'current_source':'Collection interrupted'})
+                self._progress.setdefault('errors', [])
+                if not self._progress['errors']:
+                    self._progress['errors'].append(self._last_error)
         finally:
             with self._lock:
                 self._finished_at = utc_now()
                 self._running = False
                 self._progress['running'] = False
+                self._progress['finished_at'] = self._progress.get('finished_at') or self._finished_at
+                self._progress['updated_at'] = self._finished_at
+                for row in self._progress.get('sources', []):
+                    if isinstance(row, dict) and row.get('state') == 'running':
+                        row.update(state='failed', finished_at=self._finished_at,
+                                   message='Collection ended before a source result was received')
+                self._progress['active_sources'] = []
+                if self._progress.get('completion_status') == 'running':
+                    self._progress.update(completion_status='incomplete',phase='incomplete',
+                                          current_source='Collection ended without complete progress details')
 
 
 def make_handler(controller: RefreshController, bind_host: str = '127.0.0.1'):

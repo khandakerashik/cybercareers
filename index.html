@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080d0c">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.github.com; base-uri 'self'; form-action 'none'; object-src 'none'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Cybersecurity job intelligence for Bangladesh and international remote opportunities that accept Bangladesh-based applicants. Hourly checks, public job feeds, application links and skill matching.">
   <title>CyberCareers BD · Jobs & Application Tracker</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <link rel="stylesheet" href="styles.css?v=5.3.0">
-  <script src="config.js?v=5.3.0"></script>
-  <script src="app.js?v=5.3.0" type="module"></script>
+  <link rel="stylesheet" href="styles.css?v=5.4.2">
+  <script src="config.js?v=5.4.2"></script>
+  <script src="app.js?v=5.4.2" type="module"></script>
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -65,7 +65,7 @@
         <div class="sidebar-mini-icon" data-icon="shield"></div>
         <div><strong>Built for security professionals</strong><span>Find the roles your expertise deserves.</span></div>
       </div>
-      <div class="sidebar-footer">© 2026 CYBERCAREERS BD <span>v5.3.0</span></div>
+      <div class="sidebar-footer">© 2026 CYBERCAREERS BD <span>v5.4.2</span></div>
     </aside>
     <main class="main-content" id="mainContent">
       <header class="topbar">
@@ -73,14 +73,14 @@
         <div class="topbar-right"><span class="data-status"><span class="green-dot"></span><span id="topStatusText">Dataset ready</span></span><span class="topbar-rule"></span><button class="ghost-button local-refresh" id="refreshJobsButton" type="button" hidden title="Check permitted sources for new jobs"><span data-icon="radar"></span> Refresh jobs</button><button class="ghost-button" data-page-button="profile"><span data-icon="user"></span> My profile</button><span class="topbar-rule vault-only" hidden></span><span class="session-chip vault-only" id="sessionChip" hidden><span data-icon="lock"></span><span id="sessionUser">—</span></span><button class="ghost-button vault-only" id="logoutButton" type="button" hidden>Sign out</button></div>
       </header>
 
-      <section id="hourlyProgress" class="refresh-progress" aria-label="Hourly collection progress">
+      <section id="hourlyProgress" class="refresh-progress" aria-label="Collection progress and manual scan">
         <div class="refresh-progress-head">
           <div><span class="progress-status-icon" id="progressPulse"></span><strong id="progressTitle">HOURLY SOURCE SCANNER</strong><span id="progressPhase">Waiting for the next scheduled collection</span></div>
-          <div class="progress-head-actions"><button class="scan-now-button" id="scanNowButton" type="button" hidden title="Check all permitted sources now (feeds keep their publisher polling limits)"><span data-icon="radar"></span><span class="scan-now-label">Scan now</span></button><strong id="progressPercent">0%</strong></div>
+          <div class="progress-head-actions"><button class="scan-now-button" id="scanNowButton" type="button" title="Start a manual source scan"><span data-icon="radar"></span><span class="scan-now-label">Scan now</span></button><strong id="progressPercent">0%</strong></div>
         </div>
         <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Sources checked" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill" class="progress-fill"></div></div>
         <div class="progress-numbers">
-          <span><b id="progressChecked">0</b> checked <span class="progress-divide">/</span> <b id="progressTotal">0</b> scheduled</span>
+          <span><b id="progressChecked">0</b> processed <span class="progress-divide">/</span> <b id="progressTotal">0</b> scheduled</span>
           <span><b id="progressRemaining">0</b> remaining</span>
           <span class="progress-success"><b id="progressOk">0</b> successful</span>
           <span class="progress-limited"><b id="progressLimited">0</b> limited</span><span class="progress-failure"><b id="progressBad">0</b> failed</span>
@@ -93,6 +93,13 @@
           <div><span>NEXT PLANNED CHECK</span><time id="scanNextExpected">Checking schedule…</time><small id="scanScheduleNote">All times shown in Bangladesh time (BDT).</small></div>
         </div>
         <div class="progress-current"><span id="progressCurrentLabel">STATUS</span><strong id="progressCurrent">Awaiting next scan</strong><a href="#health">View source health →</a></div>
+        <div class="scan-control-status"><span id="scanConnectionState">Checking scan connection…</span><span id="scanRunMessage" role="status" aria-live="polite"></span><a id="scanRunLink" class="scan-run-link" href="#" target="_blank" rel="noopener noreferrer" hidden>View GitHub run ↗</a><button class="ghost-button" id="scanConnectionButton" type="button">Scan connection</button></div>
+        <details id="sourceProgressPanel" class="source-progress-panel">
+          <summary><span class="source-progress-title"><span data-icon="activity"></span>Source-by-source progress <span id="sourceProgressCount" class="source-progress-count">0 sources</span></span><span id="sourceProgressUpdated">No scan recorded</span></summary>
+          <div class="source-progress-controls"><div class="search-field"><span data-icon="search"></span><input id="sourceProgressSearch" type="search" aria-label="Search source progress" placeholder="Find an employer, feed or source…" autocomplete="off"></div><div class="select-wrap"><select id="sourceProgressFilter" aria-label="Filter source progress"><option value="all">All sources</option><option value="running">Checking now</option><option value="queued">Queued</option><option value="issues">Failed / limited</option><option value="done">Completed / deferred</option></select><span data-icon="chevron"></span></div></div>
+          <div class="source-progress-table" role="table" aria-label="Per-source collection status"><div class="source-progress-table-head" role="row"><span role="columnheader">SOURCE</span><span role="columnheader">STATE</span><span role="columnheader">JOBS / NEW</span><span role="columnheader">DURATION</span></div><div id="sourceProgressList" class="source-progress-list" role="rowgroup"><p class="source-progress-empty">Source activity will appear when the collector reports it.</p></div></div>
+          <p id="sourceProgressNote" class="source-progress-note">A source is marked complete only after its collection attempt finishes. Cached and deferred checks are labelled separately.</p>
+        </details>
       </section>
 
       <section id="page-jobs" class="page active">
@@ -264,6 +271,19 @@
     <div id="drawerBody" class="drawer-body"></div>
     <div class="drawer-footer" id="drawerFooter"></div>
   </aside>
+  <dialog id="scanConnectionDialog" class="scan-connection-dialog" aria-labelledby="scanDialogTitle">
+    <div class="scan-dialog-heading"><div><span class="eyebrow">MANUAL COLLECTION / GITHUB ACTIONS</span><h2 id="scanDialogTitle">Connect your scanner.</h2></div><button id="closeScanConnection" class="icon-button" type="button" aria-label="Close scan connection"><span data-icon="close"></span></button></div>
+    <p id="scanDialogIntro">Use your repository's GitHub Actions workflow to collect jobs on demand and follow live source progress here.</p>
+    <form id="scanConnectionForm" autocomplete="off">
+      <label for="scanRepository">Repository</label><input id="scanRepository" type="text" placeholder="owner/repository" maxlength="200" autocomplete="off" spellcheck="false" required>
+      <label for="scanBranch">Branch</label><input id="scanBranch" type="text" placeholder="Uses the repository default branch when empty" maxlength="200" autocomplete="off" spellcheck="false">
+      <label for="scanToken">GitHub access token</label><input id="scanToken" type="password" placeholder="Token authorized for this repository" maxlength="500" autocomplete="off" spellcheck="false" aria-describedby="scanTokenHelp" required>
+      <p id="scanTokenHelp">Starting scans requires <strong>Actions write access</strong>. Live source details also require <strong>Checks read access</strong>; private repositories need a compatible GitHub App token or classic token with repository access. A fine-grained personal token can start scans even when it cannot read Checks. Your token is held only in this tab's memory and sent directly to GitHub. It is cleared on disconnect, sign-out or page reload.</p>
+      <p id="scanConnectionError" class="workspace-error" role="alert" hidden></p>
+      <div class="scan-dialog-actions"><button class="button button-green" id="connectScanButton" type="submit">Connect scanner <span data-icon="arrow"></span></button><button class="button button-muted" id="disconnectScanButton" type="button" hidden>Disconnect</button><a id="scanWorkflowLink" class="button button-outline" href="#" target="_blank" rel="noopener noreferrer" hidden>Open GitHub Actions <span data-icon="external"></span></a></div>
+    </form>
+    <p class="scan-dialog-footnote">You can also start the workflow from GitHub's <strong>Run workflow</strong> menu. Collection respects each source's polling limits. Disconnecting stops monitoring here; a scan already running on GitHub continues.</p>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

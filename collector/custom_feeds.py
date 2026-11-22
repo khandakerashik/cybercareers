@@ -90,6 +90,7 @@ def parse_feed(xml_text: str | bytes, feed: dict, sources: list[dict], *, diagno
 def collect_custom_feeds(session: requests.Session, feeds: list[dict], state: dict, sources: list[dict], *,
                          clock: float | None = None, on_source=None) -> tuple[list[dict], list[dict], dict]:
     from .collect import valid_url
+    from .telemetry import source_started
     clock = time.time() if clock is None else clock
     state = dict(state or {})
     jobs: list[dict] = []
@@ -99,10 +100,15 @@ def collect_custom_feeds(session: requests.Session, feeds: list[dict], state: di
             continue
         key = 'custom:' + feed['url']
         prev = state.get(key, {})
-        if clock < float(prev.get('next_check', 0)):
-            continue
         outcome = {'name': feed.get('name') or urlparse(feed['url']).hostname, 'source_id': key[:200],
                    'sector': 'Custom feed', 'mode': 'User RSS/Atom feed'}
+        if clock < float(prev.get('next_check', 0)):
+            outcome.update(state='cached', jobs_found=0, message='Not due; cached feed data retained')
+            health.append(outcome)
+            if on_source:
+                on_source(outcome, [])
+            continue
+        source_started(on_source, outcome)
         try:
             r = session.get(feed['url'], timeout=20, headers={'Accept': 'application/rss+xml, application/atom+xml, application/xml;q=0.9'})
             r.raise_for_status()
