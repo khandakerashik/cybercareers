@@ -1,12 +1,12 @@
 {
  "version": 1,
- "sealed_at": "2026-11-22T23:06:44+00:00",
+ "sealed_at": "2026-11-23T00:07:13+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
   "ats_discovered.json": {
    "path": "ats_discovered.bin",
-   "bytes": 308
+   "bytes": 307
   },
   "feed_state.json": {
    "path": "feed_state.bin",
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 160023
+   "bytes": 160002
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8434
+   "bytes": 8384
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26587
+   "bytes": 26632
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15602
+   "bytes": 15528
   }
  },
  "fingerprints": {
-  "ats_discovered.json": "0bd8e13600235f097904ded59362025f",
-  "feed_state.json": "d527d15b5aa68362b57583be49a53799",
-  "jobs.json": "6d705f30c2b75104c8aee0d56daa9f0b",
-  "progress.json": "a12d6e7278743af5fa83c8e6c995271a",
+  "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
+  "feed_state.json": "2cb0fc73a0658a62d36de9a9643569c8",
+  "jobs.json": "c5a541e32a98aeae64578a543417b689",
+  "progress.json": "d5c08a28abe806357907c3e81b91746f",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "636dcbb3addeb08d0f7e332d2420764d",
+  "source_health.json": "32c6678defcf7b35e1b832995c47b731",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "ce728d74a5051b69e4f6d41bff0a718a"
+  "status.json": "4ed4105b0ffacf30951ce850237b8b05"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "rLsJu5HTCQeWnB9O",
-   "ct": "JXb12HQeyaCYdQclXjISRiyI9aWqmP4jkBB3tvSUGFstOnwpVT2TKC/rMSM33srs"
+   "iv": "qAO9Xi9Q5WvOOhWJ",
+   "ct": "6Sch6RHPOEcw5+4bridHYRzh8FCJ9SXVHR/odFnZA0fdtDzuOKHywiGdrfdqdrru"
   }
  },
  "ci": {
-  "iv": "PQcGx4CMT2/xbv3k",
-  "ct": "tnVnnE81PxDhmkKLZohsdk2fJaQiDrSpeZ+Hcub0aDeRQJHPm20YtuueYQhD8yhw"
+  "iv": "l+6c7LrGcKKIIz/e",
+  "ct": "UXtZlSVbH0DBtq/cId/4dlyXhC1JMLukE+I2mlCumy/O2A4v1rhQ8XZDFa3gYyVK"
  }
 }
