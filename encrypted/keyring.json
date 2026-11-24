@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-24T10:07:01+00:00",
+ "sealed_at": "2026-11-24T11:06:19+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 177086
+   "bytes": 177089
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8536
+   "bytes": 8411
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 27449
+   "bytes": 27416
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15784
+   "bytes": 15549
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "93765deb5fb91797ea79a105f65ad426",
-  "jobs.json": "2aaeb4ba8b64140ca7f0833ab8e117a7",
-  "progress.json": "29069c6a62f2aa6988117562ec61de95",
+  "jobs.json": "92b9db56056085767e1ecc716bef2abb",
+  "progress.json": "e8e087f30f380603fa99478b86a02867",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "783ed369b01c9ac7e2fa0315f5e69d1d",
+  "source_health.json": "24885f000ebb33f3c70b9f23a5410215",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "a159f0335990059eb259e294d3fa6f9f"
+  "status.json": "89ce40e94ad25f81853e9d5861b3429f"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "of1gaFJQQOEj5a/8",
-   "ct": "HNlwiwwTlnIY+wjuVn7iqQJkzlcAD8/kV+9zZAzC14khgfcW/Fg6lgwAsLlKGOkq"
+   "iv": "/GoVoD59mxyUoxvN",
+   "ct": "oiO5DKcABXScjN3HokTpheD/W1E0rI8/ieXHpVsdCWAJcLaA1J5ZD2PHLx54PSFz"
   }
  },
  "ci": {
-  "iv": "+4PQnZ3BEqY9slbJ",
-  "ct": "NHfT9hjJTt05umHsJPWG7TniiBejJ9B09orQxwrei31kx2jMM/1ogeH04lu5EAib"
+  "iv": "2Ge4KR2ozSBxLvUF",
+  "ct": "mpU55F3ZD85Jij/65dTGA9UYmU8jkPa96h5LIAb3r+No9Z2abge8+TTNoyAoxAMW"
  }
 }
