@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-23T23:06:48+00:00",
+ "sealed_at": "2026-11-24T00:06:51+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,15 +10,15 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 349
+   "bytes": 362
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 174934
+   "bytes": 174928
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8471
+   "bytes": 8445
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15657
+   "bytes": 15589
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "983c69138a614de7e340abb3a45c7346",
-  "jobs.json": "cd9279090280468c232f1b3f56278dee",
-  "progress.json": "afa49b86e587db3cc94a3bbf68cc3f2f",
+  "feed_state.json": "e46b46caff7a4cb038169da477b5b17c",
+  "jobs.json": "65d72fc4c74a5cd038838ee2bb0b192c",
+  "progress.json": "bb7ec831608d8a027c14a7ce3a780c7f",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "64ece1ee1a87154242e0780115fa70a9",
+  "source_health.json": "7126d177b4445438b2fb7dcf35b372e6",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "8756c001705f4e8a68e8c24da0460b67"
+  "status.json": "12108f6a3a83cf498182e25024325818"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "dS1psgL0L1spaY8M",
-   "ct": "yztWccfWKiYRsMyRezWd3xY9Q/kiUUAIiLnoo4GEByWxZqkQ6BfWgYWhAIBx1Wb3"
+   "iv": "nSE96obdTWb8lr1f",
+   "ct": "Jhl6gLr/z9YGt8qQfXRnROO93MftKKg4j0y5r+/nWNGW8JV3P/ZLuewXq4kwM9qr"
   }
  },
  "ci": {
-  "iv": "JQqWLv8QwiUgktnV",
-  "ct": "ve/VgybgUuPKdIpkyMTPfQYGJTqhfI9fboO+1lpUVg8DR1MNufVhjRcVf8o7N/KD"
+  "iv": "m3MHtXBPV5J4Obx+",
+  "ct": "INMek2V3XLWNrxrqhoy7uKsnzRWM3JrYBPxw8FuRznI+MWYnaezf0EVtS4WbZDWd"
  }
 }
