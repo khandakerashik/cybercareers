@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-24T02:06:18+00:00",
+ "sealed_at": "2026-11-24T03:06:33+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 174910
+   "bytes": 174922
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8520
+   "bytes": 8341
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 27279
+   "bytes": 27234
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15556
+   "bytes": 15458
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "49dd40fa20d46d9dcf59c9e6da882bff",
-  "jobs.json": "28c9e97943346e73fc7aaef70aa5fdf1",
-  "progress.json": "8e0e46b7b333654d7ded66fe4ffdc825",
+  "jobs.json": "a376f95b7850d022ab30c60e26d41c2e",
+  "progress.json": "c6cf85d2bab37e522ca334cba822f92d",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "485ad94c07135b1ba0b8f74c6cce0411",
+  "source_health.json": "f7ea0f097488f5f71cfd7c945c6a336c",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "5400630c091700677b3b4f7240bbaf50"
+  "status.json": "54cad4f506c1e6ccc71a13290a653599"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "arMYU57UDCjxepYM",
-   "ct": "ZvPFFLhAaaCnnHpyzXCMN+jHRZNNgak3upPuFvuXLYqWBwXh6zH8O8FiyZIpRpfG"
+   "iv": "T6Gw4DGM5tPiGkmA",
+   "ct": "eCVxjR9i+3WH224VXCGP2YeEyNCzjaLuwfpf2v8NRmZhZbC3SWBnacRbrKH1Cj0l"
   }
  },
  "ci": {
-  "iv": "cHLPtm6HSmBnlhGW",
-  "ct": "rwf7++JWhjdlVqcAzhudY8Kerz6WYOoP0qxcs573wJWOm+2f2lR3A7662O8LwckW"
+  "iv": "+Aa1lr5PLMcU4les",
+  "ct": "Pa+T45Ji1x7RmhcoDKURpH5MyJJ4GJyQuYQOV8JZ1MONbYNY8yZVUKaqMDLvL4hY"
  }
 }
