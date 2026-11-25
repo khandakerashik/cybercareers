@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-25T12:07:08+00:00",
+ "sealed_at": "2026-11-25T12:48:55+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 194682
+   "bytes": 194680
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8423
+   "bytes": 8375
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 27095
+   "bytes": 27077
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15574
+   "bytes": 15494
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "a0a8aead64954b0a6c0068fb9d705a65",
-  "jobs.json": "3e9117a99fc169e56ae2e06c8d43ae9a",
-  "progress.json": "3e7f118991c871d2395ca6e468cdb965",
+  "jobs.json": "bee5e81dd4faa54192b2b7411af77689",
+  "progress.json": "8650520f9f8d819ded5a9725e617b075",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "1df02c96acd1172fd22861ea204ae9d5",
+  "source_health.json": "db6e605c8f7d1dc2dd31d029d1bda2f5",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "649f108b83a93690ed5de10de873a220"
+  "status.json": "96f23422bf5572ddeadbbd09f7bd3f1c"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "mJdsO9aikh5Crdck",
-   "ct": "IZKFylTWTDapBh4YiiKbToEBbBjkmmC+LML6TTar8A0EEifIF/98QW3kjnhQr1sS"
+   "iv": "V5fkuXULBF1p/tNc",
+   "ct": "ofQkPmTKyaZaW3DxsDlkHsUuI9TTLGMblZ4x9KgseZXQsDurAOvBi/bEDmwv+iH9"
   }
  },
  "ci": {
-  "iv": "zbaGB6/brwGHlJ1c",
-  "ct": "RANzkFRH0hFT8Ev3FNHxeve07W/W1f8vKCxAhwC2hXKfe63KjxUcn6wkMLzSuoGg"
+  "iv": "Sk5Vs2UOmfh+LeVf",
+  "ct": "NhGGYZszOH7RVgiAd4JLxpZiAwmRZDWH3UR40rdyjFZ4dUjrxvfQYto0rDl9w7aa"
  }
 }
