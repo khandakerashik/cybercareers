@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-24T23:06:48+00:00",
+ "sealed_at": "2026-11-25T00:06:03+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 183384
+   "bytes": 183381
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8455
+   "bytes": 8324
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26941
+   "bytes": 26971
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15619
+   "bytes": 15440
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "86fe443d48140de60a82e665d00db013",
-  "jobs.json": "49352e769d42ad33b01e65607bed33a7",
-  "progress.json": "58428138296dccc7cc882c2b709ac485",
+  "jobs.json": "e9d3eea6fb0b5a09d994aa78143d558b",
+  "progress.json": "3bc907af012b6e38f6112ff9375dc1bc",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "c25289bd8b0fb73172f047932fffcb15",
+  "source_health.json": "aeaf43a5f8995242fe111315fa770c5b",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "7f4f6a2a8f7ce78b4b4935b6eac74a4f"
+  "status.json": "22474435dd025b890596537f2eaf29ad"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "qz9baP3QSRJK7iNi",
-   "ct": "+8LsTTWsmEeHmIPFcjdvIUfE870iNClQc0JpbPcLC3AnqHb59779BVFF0xK3p/XF"
+   "iv": "dProMaqgiRpzA0LS",
+   "ct": "b664QeYpaJlLQcZB64lXAb5V9MKeFmr+X6YPEpfX4VUyRnb0Fl41i7nbf0Fu3ruk"
   }
  },
  "ci": {
-  "iv": "VYthyEfH1KmyPseZ",
-  "ct": "HPOuZ1l5Ed7a22S6GJyNxbQF4htwaMLowNqnz9qKvKtmUMjBR+M3L3othdbgjG6E"
+  "iv": "OhYLs8sOriavz02O",
+  "ct": "O4jemIZgXzwsh1iuibgCvfUh+tiDU2U1O/nkc1gHmt0gUukKyUKzcdAaUHOiouxe"
  }
 }
