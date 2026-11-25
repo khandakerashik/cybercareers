@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-25T02:26:29+00:00",
+ "sealed_at": "2026-11-25T03:06:30+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 183380
+   "bytes": 183387
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8382
+   "bytes": 8367
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26959
+   "bytes": 26969
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15520
+   "bytes": 15474
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "8ea20b113cd9120a72483e0ab231f995",
-  "jobs.json": "35a51b4e1c7d2986bc156b5eb5878247",
-  "progress.json": "ec188891aa7fbcb49a11a06654c63c8f",
+  "jobs.json": "38d39b7a4fa259c10aeba7569f386840",
+  "progress.json": "69300c657ae77f48f933e66a3a9e6567",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "46c249f4194bceb9b95f9d3fb1416f38",
+  "source_health.json": "045169e1fdbe978042eef2f1efb224cd",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "050e78cfd9f93c4c81e74fd1f7d038e4"
+  "status.json": "1a6f885a19a260d5cd390c96fd624e90"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "7acwZ5T1ElkgAwY9",
-   "ct": "fKvt6BRyWXBFviWvVK20K9uP0/gXmSVNy9vKnKNwa4Uqzdb5lzpAEgRmcdzCPt7E"
+   "iv": "rMHz3xjQXJXYDTzh",
+   "ct": "h3Dzfw2z6xdtQ9QyhZ6SONJG7lDUlggdOWH9UKi+lsk9leyA9hH9WL9/CN9e2QoA"
   }
  },
  "ci": {
-  "iv": "tU8FXV7VvcqxEnGc",
-  "ct": "F8h6ZOKJg8UyMkgCqvr+ja9iGuzfzWixEIRyDxSiqRzDekLSPRFvLRjxC5RsjvFO"
+  "iv": "IPK9oSg3bAJ831Bc",
+  "ct": "pPdYoA4wPrPajhtAOBhBiM4EN+8wqkjPlXwvATvzpSO+N6XvrhMAn2+U84NINiaY"
  }
 }
