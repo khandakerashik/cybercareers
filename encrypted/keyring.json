@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-25T19:07:54+00:00",
+ "sealed_at": "2026-11-25T20:07:34+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,15 +10,15 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 347
+   "bytes": 360
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 199258
+   "bytes": 199266
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8472
+   "bytes": 8516
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15655
+   "bytes": 15776
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "4cf1bd5fa52ad8d5f3a9c79ce065847d",
-  "jobs.json": "5e0271a9dff70e09ca81683cc43b15c8",
-  "progress.json": "72ee87674a76c95f34748fccdde80be6",
+  "feed_state.json": "4f293952e92db1a90a492e3eeef1c233",
+  "jobs.json": "c6b08730e3139828adb9e38c1d6078a6",
+  "progress.json": "1e3ea15b573b7784f273c6ca4be9c79e",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "1fb504ed5669d80e95bb1dfc95c1a758",
+  "source_health.json": "d9d894808f903e86fdb62a756327f98e",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "40585fb1741444901f6c9ed4cc75f4c7"
+  "status.json": "6b8406520a13a57a09d667021cffa27c"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "IYMEsb4bMwvIraKh",
-   "ct": "24kjSxiR7q6VIQZG2pvrVTa+W3k58zosPwbB1CWLbTMBn6YwK2Cd8FJYDi9d/Dg1"
+   "iv": "3uU4XBiZo4l3Uo/R",
+   "ct": "Ge8zRRsMpB8UJyOw/FCLkHrEwkOiDdKtiRD0BcCziayQGePkOaEPwADxIGbY8EVk"
   }
  },
  "ci": {
-  "iv": "NfzPvV2Wr8nsggCW",
-  "ct": "F9F/75eK/jvJ/Kez/f/ebHg+BP1dj+QxuGXWlbG8gQXmYvSHSZnbSHrhzOGBc27w"
+  "iv": "2ulpxVnCXGPCtV+p",
+  "ct": "xz4Y1DKg02ULLlQHB8zHkchf4vI1zXagXVMXWoexqu86ml0jOp6vSa6j2CUBfGqS"
  }
 }
