@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-26T04:06:35+00:00",
+ "sealed_at": "2026-11-26T05:03:33+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 199284
+   "bytes": 199277
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8444
+   "bytes": 8285
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26650
+   "bytes": 26622
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15615
+   "bytes": 15366
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "920a3147e80acf404cbfbb5378cf667a",
-  "jobs.json": "ebd6a7b46e334cb93b1f9aa86ff0851c",
-  "progress.json": "8fd6820794a9bde8b395e7f605832b59",
+  "jobs.json": "392b56982b0f560bcc8500a5180e95bd",
+  "progress.json": "f8eb69643746152f947d2a072f23e0af",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "fefbfc71feac6bbcf0d0099f63f52275",
+  "source_health.json": "cd791c0172a1064db742d43281120d20",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "057ee3f9063bba8797e7de7c786c27ad"
+  "status.json": "78cd999a69b84cba4c0b85a2a884b7b1"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "7O/ZO2XxIEnghkNe",
-   "ct": "bLwqmvhtJdY0worwdyMhUWhEB2fHsLpW0V1roMWGWesLH3qo0DLR1AQOkS5dMe2k"
+   "iv": "zL+xiixeLBMk5Pt5",
+   "ct": "NNJP8corxFZc/e3rgxBGnT/cWsumn5gTN5y5ta+oRxGiMFZi8VJusBdrYL8ASzk/"
   }
  },
  "ci": {
-  "iv": "u648fbedl54mtgJZ",
-  "ct": "bq3bc/NCxRnVg8XOKhC2WZbbNR+BlvCA2lpKNSnLpZ68VyVjl3SPjcV73daF52f4"
+  "iv": "HzlXCxIcJ5fciEMe",
+  "ct": "Cj5yGANk0z4ITGsPVNjowf+47HVtLhUYn7mkDk+CblLzA9UEop59Yqi/y16V5GB3"
  }
 }
