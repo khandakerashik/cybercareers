@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-27T01:06:15+00:00",
+ "sealed_at": "2026-11-27T02:06:39+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,15 +10,15 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 350
+   "bytes": 348
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 222774
+   "bytes": 222760
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8309
+   "bytes": 8448
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26665
+   "bytes": 26818
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15424
+   "bytes": 15605
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "729a54772187737337a17f2f2a5fc5b4",
-  "jobs.json": "2f57def4a1e2f2f2924b16a2ea995b69",
-  "progress.json": "dff241dd0a6400bcc7f657a66673b982",
+  "feed_state.json": "7a7d22db05b4407da71fe9a8b18eb9b7",
+  "jobs.json": "6b0616405ee8ac5936a14afa521e62b2",
+  "progress.json": "f452259c8e6dc56d0533020675cd6075",
   "rejected_jobs.json": "5b8329c24142a8fdecdd4c050a373874",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "32dcaf4970eb77d60a2d06dca748d54f",
+  "source_health.json": "57fa4c44d56b8353fb304e7c342d17e0",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "2c858c26af21651ae14f3a62493d07d6"
+  "status.json": "aa18103e49ab8b796743b2d0077291c3"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "8ZYV2ImGe0EFjjYc",
-   "ct": "DivMXEZqNBGSD9mXR0vSDO57BaAhgpRgpMuEii8nmQiC8Zt+m49C9ZGDds+fQWjj"
+   "iv": "PMNShEJ/5L2KJjL6",
+   "ct": "PwzoY2bJP16ftFMQbD5Unr74m2B2badTRdUvJpEy4KoVHvLD+utS2WckXhTmaohX"
   }
  },
  "ci": {
-  "iv": "Nm3zw/867lrWULQ/",
-  "ct": "TCmMp38kRwiRzYmdxWi5KnF2NjjR+63znuEAMF0HblfLZkHvLiHprU1wfqoNDMQ+"
+  "iv": "PH9/EMJ4dDajWgAB",
+  "ct": "8DkmyiVkZPUB0rJGVsJV6Jq5MtzZQOBTe+ua6In3DUSncE+C/l70b01MDyZDvLaK"
  }
 }
