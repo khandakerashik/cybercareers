@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-27T13:07:00+00:00",
+ "sealed_at": "2026-11-27T14:06:24+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 222754
+   "bytes": 222760
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8467
+   "bytes": 8417
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 27095
+   "bytes": 27092
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15614
+   "bytes": 15599
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "3125f9124cddd30dcd3857ada08d4a59",
-  "jobs.json": "d704bca5c1571f6b944077f5606e9933",
-  "progress.json": "6ec6f04940ef4d1195ecc79436d9fc0f",
+  "jobs.json": "6185259e977a914f5417ac64b1d9cd9f",
+  "progress.json": "91a571c3dd376d19dff19584cf3d970a",
   "rejected_jobs.json": "3cfe550e41603ca35e0ea3a5915982e5",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "dabf0e236f470d13591cbd8492e75e23",
+  "source_health.json": "c1e193343401947340423f8e9d8a16df",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "8c79580d3d363cbf180a0d3775049a78"
+  "status.json": "dbd1eaf66c60bbc958297ca5035b5587"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "Eh1Ko9Dg0xjjTTXn",
-   "ct": "OC3+uT0gvO3IFAwHJi10LsaHUdIDVYRuOt4xnfnwb7ge+6HWDmW44Y7s02cWBD8T"
+   "iv": "FUARajiKgNz2nP0w",
+   "ct": "bXMMjXBtZrjatyxWGCjNCmsz6Mw57ys9ZTQrbr6kZYhNUnHX4x6+6iy3/3DbeRIi"
   }
  },
  "ci": {
-  "iv": "c7C2gBMIJlCepjdJ",
-  "ct": "BOmcpcD5tH86pv9skcO8iAiQYC2U319UX5Svy1ccJl/XvcAda3+Gte1zoOWPbK5n"
+  "iv": "+SFA9C5ew0H9zvA1",
+  "ct": "KxiAZRFIj2Z8+Zf6PE91DIVBmH2FWM99EC1t78RweDqU4q4D3i04AauFDA+jUQwc"
  }
 }
