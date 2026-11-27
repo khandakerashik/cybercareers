@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-27T07:06:44+00:00",
+ "sealed_at": "2026-11-27T08:06:38+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 222771
+   "bytes": 222770
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8510
+   "bytes": 8257
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 27052
+   "bytes": 27091
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15505
+   "bytes": 15295
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "fb5adce957c099e798de49b9eaea6d41",
-  "jobs.json": "c83448528cd89fbbd4c2cb1f25b10b17",
-  "progress.json": "608dcf3f01050ca1add3bfa97e037d1a",
+  "jobs.json": "874e922efcd341116eacecb051950780",
+  "progress.json": "a68dc0a48d6e1311fa5367d5372942b3",
   "rejected_jobs.json": "c41af529d44cac3be1051605b87eb58d",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "da57f731fd05ed17ca8dfbd8ee4b1169",
+  "source_health.json": "64c84aa590b516c6248545a52727f619",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "5b775a460683d08854e46fd1719e6505"
+  "status.json": "6d4b99d8d7ff2793f8dc50c08599e5d3"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "5kOU3kTj5C4CA73p",
-   "ct": "5iIe/YzHkLpJHoT4X31BAyQGG1nlrMEvvyVm/pD8TuKjtSXT2cc/I2iL82eyTTp1"
+   "iv": "3Lis/pSYT96D2opM",
+   "ct": "+EUnplGDLExRoA9EdpV9rptsKyuC9aJmr+T+xmKbCJFv22Ik/hYoyUZ7sK1j7nYt"
   }
  },
  "ci": {
-  "iv": "lbSMJxrerpfFBxIq",
-  "ct": "17NU06sAGrxmF4erxd4s3/lutMUDgEe+UOC5uW8lG/8QktdM4NxB2vE5Fahw5cMC"
+  "iv": "4Kq5E6905k41s0R4",
+  "ct": "DSBB72jo/gHgjTzfYMrsB0hdr98Pr7kBgG5uxikmsFLQyEbhrRnI47d7veLQqITj"
  }
 }
