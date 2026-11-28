@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-28T02:01:00+00:00",
+ "sealed_at": "2026-11-28T03:05:56+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -10,19 +10,19 @@
   },
   "feed_state.json": {
    "path": "feed_state.bin",
-   "bytes": 339
+   "bytes": 348
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 226641
+   "bytes": 226649
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8402
+   "bytes": 8343
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
-   "bytes": 26993
+   "bytes": 26995
   },
   "search_queries.json": {
    "path": "search_queries.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 27049
+   "bytes": 26961
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15423
+   "bytes": 15356
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
-  "feed_state.json": "695df526f519d3d5c72edda4ae3a79f3",
-  "jobs.json": "2f314376a77c8c00f6983bd2c09fa277",
-  "progress.json": "7f7c9f6170f6307883ffbf20609cebd3",
-  "rejected_jobs.json": "fd68db9e0d5d3a3605184bfb4a64a97e",
+  "feed_state.json": "e6dae72b097a15cd7c2bee5160588a17",
+  "jobs.json": "3944623fadf3e082dd7a97bd2eb80206",
+  "progress.json": "0b633b20394c65101146bb947fcd02c4",
+  "rejected_jobs.json": "78981796c76f92d9f1a36a0349f4a46c",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "28fe85e09bc3f214041b4474b7791e0d",
+  "source_health.json": "c78cefa8021bf6482b6461a79529aeaa",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "c700940429327bb9686655f713459be5"
+  "status.json": "85195336d20a2fd2c2e85e95fdfc8466"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "Lmt/uSYGr0J80vj2",
-   "ct": "yHxGb2NdNP+T9lcqT11hnGJssAA9np946YhRBle86TdTY9eA0QpSwMWf49o56hvf"
+   "iv": "+Xl0wVXn69vxYVim",
+   "ct": "EdpoD5BMvc4bVahhS1op4NJS7ST/UEIRyaXkGDB5yPggj744T4Awh71zhlENZN10"
   }
  },
  "ci": {
-  "iv": "f8QbPD3W3j128/MY",
-  "ct": "0B2NBfi2gRisrDBcxr49GzYic/pyhev9+b+3RgjI0rPHO+uJEE7zoj2ucMsaz/j2"
+  "iv": "FLbLNfwidMoN6ebW",
+  "ct": "yqZ1r+h/02STDtnr22mYqFWDsAKI9dIn29/qDEZa74Lx15o2hxv+l/fNziVuRDPA"
  }
 }
