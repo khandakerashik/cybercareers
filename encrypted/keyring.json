@@ -1,6 +1,6 @@
 {
  "version": 1,
- "sealed_at": "2026-11-28T05:06:28+00:00",
+ "sealed_at": "2026-11-28T06:06:16+00:00",
  "cipher": "AES-256-GCM",
  "kdf": "PBKDF2-SHA256",
  "files": {
@@ -14,11 +14,11 @@
   },
   "jobs.json": {
    "path": "jobs.bin",
-   "bytes": 226662
+   "bytes": 226670
   },
   "progress.json": {
    "path": "progress.bin",
-   "bytes": 8462
+   "bytes": 8424
   },
   "rejected_jobs.json": {
    "path": "rejected_jobs.bin",
@@ -30,7 +30,7 @@
   },
   "source_health.json": {
    "path": "source_health.bin",
-   "bytes": 26801
+   "bytes": 26887
   },
   "sources.json": {
    "path": "sources.bin",
@@ -38,30 +38,30 @@
   },
   "status.json": {
    "path": "status.bin",
-   "bytes": 15643
+   "bytes": 15574
   }
  },
  "fingerprints": {
   "ats_discovered.json": "cfa5ec7d81ff35fca2407f8095c4102d",
   "feed_state.json": "ec74367a970118c7ace0c3743e7f8ebe",
-  "jobs.json": "79d227bf053288844eb41a0b950f359d",
-  "progress.json": "40883fcd08df74b0da3f552d967239ce",
+  "jobs.json": "e2caa03253cb41b071834e2066b3bee1",
+  "progress.json": "e4681b417f213cef4a7cb7646de69396",
   "rejected_jobs.json": "78981796c76f92d9f1a36a0349f4a46c",
   "search_queries.json": "4f01edd1482bc1c4ef0db0d8ebcd6ccf",
-  "source_health.json": "b94e88825579ccce8b348c922b7f887c",
+  "source_health.json": "5fed1e9f65ef0ef6f18299056b14d4c4",
   "sources.json": "2b5ef97710d6a1638e4045cea4110dd2",
-  "status.json": "eb14b44ec8d7a1b45c85f0d74dd33482"
+  "status.json": "6481bda7b8052930e2fdec1e76fe2a65"
  },
  "users": {
   "43494a0279b9d8187097bdf8803f893e4cc5344a46d3d9f8881dd32e1cbb9da6": {
    "salt": "9lYIdFcJo/c32+bO42MhYA==",
    "iterations": 600000,
-   "iv": "/E0FW2ZWEaMhnG6+",
-   "ct": "PZnpcxSR+HFQJIfp2wNeiiA5H7TtnDexjBARlxwu6Ps2QEZqzRP7r6F+62RDc066"
+   "iv": "XjMDnQ10/FVOTJJA",
+   "ct": "joVRl0NbON7C46E572EFWAT2gViXlvopuCmpteTTin+otAJVIILBeKT3qEVXDNCx"
   }
  },
  "ci": {
-  "iv": "6jEKgvZgy92UmrEt",
-  "ct": "ibmtW7qE/W67uHxvMH3dx6qzNtdAvmMtJv8ZhpSlavv8bYa8ErXpsYOipoDqsRVk"
+  "iv": "dZ3JAEDs2fG1gTBG",
+  "ct": "zYsrjztYQGu/RDsrQ4lVtWqa7XvUnxnsDi9EPn4BhBR3zepUyanmsVlCGCrmMvkD"
  }
 }
